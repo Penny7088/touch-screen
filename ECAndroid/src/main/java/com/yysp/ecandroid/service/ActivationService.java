@@ -13,7 +13,7 @@ public class ActivationService extends AccessibilityService {
         int eventType = event.getEventType();
         switch (eventType) {
             case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
-
+//
                 break;
         }
     }
