@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="JKEditText">
+
+        <!-- 需要分割的长度(X,X...) -->
+        <attr name="delimiterLength" format="string" />
+        <!-- 分隔符 -->
+        <attr name="delimiter" format="string" />
+        <!-- 输入框背景颜色 -->
+        <attr name="normalBackground" format="reference|color" />
+        <!-- 索引条左边距 -->
+        <attr name="paddingLeft" format="dimension" />
+        <!-- 索引条上边距 -->
+        <attr name="paddingTop" format="dimension" />
+        <!-- 索引条右边距 -->
+        <attr name="paddingRight" format="dimension" />
+        <!-- 索引条下边距 -->
+        <attr name="paddingBottom" format="dimension" />
+        <!-- return键状态 -->
+        <attr name="imeOptions">
+            <flag name="normal" value="0x00000000" />
+            <flag name="actionUnspecified" value="0x00000000" />
+            <flag name="actionNone" value="0x00000001" />
+            <flag name="actionGo" value="0x00000002" />
+            <flag name="actionSearch" value="0x00000003" />
+            <flag name="actionSend" value="0x00000004" />
+            <flag name="actionNext" value="0x00000005" />
+            <flag name="actionDone" value="0x00000006" />
+            <flag name="actionPrevious" value="0x00000007" />
+            <flag name="flagNoFullscreen" value="0x2000000" />
+            <flag name="flagNavigatePrevious" value="0x4000000" />
+            <flag name="flagNavigateNext" value="0x8000000" />
+            <flag name="flagNoExtractUi" value="0x10000000" />
+            <flag name="flagNoAccessoryAction" value="0x20000000" />
+            <flag name="flagNoEnterAction" value="0x40000000" />
+        </attr>
+        <!-- 输入法类型 -->
+        <attr name="inputType" >
+            <flag name="none" value="0x00000000" />
+            <flag name="text" value="0x00000001" />
+            <flag name="textCapCharacters" value="0x00001001" />
+            <flag name="textCapWords" value="0x00002001" />
+            <flag name="textCapSentences" value="0x00004001" />
+            <flag name="textAutoCorrect" value="0x00008001" />
+            <flag name="textAutoComplete" value="0x00010001" />
+            <flag name="textMultiLine" value="0x00020001" />
+            <flag name="textImeMultiLine" value="0x00040001" />
+            <flag name="textNoSuggestions" value="0x00080001" />
+            <flag name="textUri" value="0x00000011" />
+            <flag name="textEmailAddress" value="0x00000021" />
+            <flag name="textEmailSubject" value="0x00000031" />
+            <flag name="textShortMessage" value="0x00000041" />
+            <flag name="textLongMessage" value="0x00000051" />
+            <flag name="textPersonName" value="0x00000061" />
+            <flag name="textPostalAddress" value="0x00000071" />
+            <flag name="textPassword" value="0x00000081" />
+            <flag name="textVisiblePassword" value="0x00000091" />
+            <flag name="textWebEditText" value="0x000000a1" />
+            <flag name="textFilter" value="0x000000b1" />
+            <flag name="textPhonetic" value="0x000000c1" />
+            <flag name="textWebEmailAddress" value="0x000000d1" />
+            <flag name="textWebPassword" value="0x000000e1" />
+            <flag name="number" value="0x00000002" />
+            <flag name="numberSigned" value="0x00001002" />
+            <flag name="numberDecimal" value="0x00002002" />
+            <flag name="numberPassword" value="0x00000012" />
+            <flag name="phone" value="0x00000003" />
+            <flag name="datetime" value="0x00000004" />
+            <flag name="date" value="0x00000014" />
+            <flag name="time" value="0x00000024" />
+        </attr>
+        <!--光标图案 -->
+        <attr name="textCursorDrawable" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="JKSideBar">
+
+        <!-- 索引条边距 -->
+        <attr name="android:padding" />
+        <!-- 索引条左边距 -->
+        <attr name="android:paddingLeft" />
+        <!-- 索引条上边距 -->
+        <attr name="android:paddingTop" />
+        <!-- 索引条右边距 -->
+        <attr name="android:paddingRight" />
+        <!-- 索引条下边距 -->
+        <attr name="android:paddingBottom" />
+        <!-- 索引条背景颜色 -->
+        <attr name="android:background" />
+        <!-- 索引条选中后的背景颜色 -->
+        <attr name="selectBackground" format="color" />
+        <!-- 普通字体颜色 -->
+        <attr name="normalColor" format="color" />
+        <!-- 选择后字体颜色 -->
+        <attr name="selectColor" format="color" />
+        <!-- 字体大小 -->
+        <attr name="textSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="JKViewSwitcher">
+
+        <!-- 默认显示第几个页面 -->
+        <attr name="displayedChild" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="JKTextView">
+
+        <!-- 字体风格 -->
+        <attr name="textStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+            <flag name="underLine" value="4" />
+        </attr>
+
+        <!-- 最大行数 -->
+        <attr name="maxLines" format="integer" />
+    </declare-styleable>
+</resources>

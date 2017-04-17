@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.jkframework.control.JKToolBar
+        android:id="@+id/jktbToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize">
+
+    </com.jkframework.control.JKToolBar>
+
+    <com.jkframework.control.JKScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1">
+
+        <com.jkframework.control.JKTextView
+            android:id="@+id/jktvExceptionInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.jkframework.control.JKScrollView>
+
+    <EditText
+        android:id="@+id/etExceptionEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="@string/tInput"
+        android:imeOptions="actionSend"
+        android:singleLine="true" />
+
+    <LinearLayout
+        android:id="@+id/vlLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cbExceptionDebug"
+            style="?android:buttonBarStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tFrameworkDebug" />
+
+        <Button
+            android:id="@+id/cbExceptionExit"
+            style="?android:buttonBarStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="@string/tFrameworkExit" />
+    </LinearLayout>
+
+</LinearLayout>

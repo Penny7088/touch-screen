@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <com.jkframework.control.JKTextView
+        android:id="@+id/jktvLoginDemo"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:background="#CCCCCC"
+        android:gravity="center"
+        android:text="登录界面" />
+
+    <com.jkframework.control.JKTextView
+        android:id="@+id/jktvTabDemo"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:background="#CCCCCC"
+        android:gravity="center"
+        android:text="轮询界面" />
+
+</LinearLayout>

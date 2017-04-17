@@ -1,0 +1,84 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.yysp.ecandroid">
+
+    <application
+        android:name="com.yysp.ecandroid.application.ECApplication"
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${APPNAME}"
+        android:supportsRtl="true"
+        tools:replace="icon,label,allowBackup">
+
+        <activity
+            android:name="com.yysp.ecandroid.view.activity.ECLoadingActivity_"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ECStartTheme"></activity>
+
+        <activity
+            android:name="com.yysp.ecandroid.view.activity.ECMainActivity_"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/ECTheme" />
+
+        <activity
+            android:name="com.yysp.ecandroid.view.activity.ECLoginDemoActivity_"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ECTheme" />
+
+
+        <activity
+            android:name=".view.activity.ECTaskActivity_"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ECTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <service android:name=".service.LongRunningService" />
+        <service
+            android:name=".service.ActivationService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice" />
+        </service>
+
+
+        <receiver android:name=".receiver.AlarmReceiver" />
+
+        <!-- 腾讯bugly -->
+        <!--<meta-data-->
+        <!--android:name="BUGLY_APP_CHANNEL"-->
+        <!--android:value="${CHANNEL_NAME}" />-->
+        <!--<meta-data-->
+        <!--android:name="BUGLY_APPID"-->
+        <!--android:value="${QQBUGLY_ID}" />-->
+        <!--<meta-data-->
+        <!--android:name="BUGLY_ENABLE_DEBUG"-->
+        <!--android:value="false" />-->
+
+
+        <!-- 友盟推送sdk -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="${UMENG_APPKEY}"></meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="${UMENG_MESSAGE_SECRET}"></meta-data>
+
+
+    </application>
+</manifest>

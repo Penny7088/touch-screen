@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="设备Id:"
+            android:textSize="16dp" />
+
+        <com.jkframework.control.JKEditText
+            android:id="@+id/tv_deviceId"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_postId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="上报ID" />
+
+    <Button
+        android:id="@+id/bt_writeToFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="写入SdCard" />
+
+    <Button
+        android:id="@+id/bt_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="定时执行任务" />
+
+
+</LinearLayout>

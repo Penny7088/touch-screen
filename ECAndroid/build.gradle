@@ -1,0 +1,100 @@
+apply plugin: 'com.android.application'
+apply plugin: 'bugly'
+
+//bugly {
+//    appId = '236c0c1677'
+//    appKey = 'c0b95a04-7155-49b1-8de3-12db51c1450f'
+//}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.yysp.ecandroid"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1001
+        versionName "0.0.1"
+        multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["resourcePackageName": android.defaultConfig.applicationId]
+            }
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('../jksign.keystore')
+            storePassword "15802736416"
+            keyAlias "dayiplatform"
+            keyPassword "dayiplatform"
+        }
+
+        release {
+            storeFile file('../jksign.keystore')
+            storePassword "15802736416"
+            keyAlias "dayiplatform"
+            keyPassword "dayiplatform"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            jniDebuggable true
+            minifyEnabled false
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'proguard-project.txt'
+        exclude 'project.properties'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    productFlavors {
+        beta {
+            applicationId "com.yysp.ecandroid.beta"
+            manifestPlaceholders = [APPNAME: "空容器测试apk", CHANNEL_NAME: "beta", QQBUGLY_ID: "236c0c1677"]
+        }
+        offical {
+            applicationId "com.yysp.ecandroid"
+            manifestPlaceholders = [APPNAME     : "空容器apk", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677",
+                                    UMENG_APPKEY: "58f42b2d07fe650ea00022e2", UMENG_MESSAGE_SECRET: "ef0938b87444249d49da73d3e830bb07"
+            ]
+        }
+    }
+
+
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile project(':JKFramework')
+    annotationProcessor 'org.androidannotations:androidannotations:4.3.0'
+    compile 'org.androidannotations:androidannotations-api:4.3.0'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    //    compile project(':Crash:QQBugly')
+    compile project(':PushSDK')
+}

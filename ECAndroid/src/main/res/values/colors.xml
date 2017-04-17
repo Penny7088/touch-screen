@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Toolbar的背景色-->
+    <color name="colorPrimary">#3F51B5</color>
+    <!-- 状态栏背景色。-->
+    <color name="colorPrimaryDark">#303F9F</color>
+    <!-- 各控制元件(如：check box、switch 或是 radoi) 被勾选 (checked) 或是选定 (selected) 的颜色。-->
+    <color name="colorAccent">#FF4081</color>
+    <!-- 各控制元件的预设颜色。-->
+    <color name="colorControlNormal">#FF4081</color>
+    <!-- 标题与更多菜单中的文字颜色。-->
+    <color name="textColorPrimary">#3C3C3C</color>
+</resources>
