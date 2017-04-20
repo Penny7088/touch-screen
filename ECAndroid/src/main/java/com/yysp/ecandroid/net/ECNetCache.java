@@ -16,5 +16,5 @@ interface ECNetCache {
 
     @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
     Observable<ECLoginResponse> Login(Observable<ECLoginResponse> oReps, DynamicKey parameter, EvictProvider evictProvider);
-
+    
 }
