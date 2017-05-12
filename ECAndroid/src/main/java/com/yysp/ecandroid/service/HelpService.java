@@ -138,7 +138,7 @@ public class HelpService extends AccessibilityService {
                                 case MyPushIntentService.GetGroupPeoPleNum:
                                     String nums = PerformClickUtils.getNumFromInfo(PerformClickUtils.geyTextById(this, groupNum));
                                     JKLog.i(TAG, "task_nums:" + nums);
-                                    // TODO: 识别群人数为多少
+                                    // TODO:群人数为多少
                                     OthoerUtil.doOfTaskEnd();
                                     break;
                             }
