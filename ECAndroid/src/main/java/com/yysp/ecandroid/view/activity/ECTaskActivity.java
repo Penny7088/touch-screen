@@ -3,17 +3,20 @@ package com.yysp.ecandroid.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityManager;
 
-import com.jkframework.algorithm.JKFile;
-import com.jkframework.config.JKPreferences;
-import com.jkframework.control.JKEditText;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.jkframework.config.JKSystem;
 import com.jkframework.control.JKTextView;
 import com.jkframework.control.JKToast;
+import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.R;
 import com.yysp.ecandroid.service.LongRunningService;
-import com.yysp.ecandroid.util.ContactToAddUtil;
+import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.view.ECBaseActivity;
+
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -60,19 +63,37 @@ public class ECTaskActivity extends ECBaseActivity {
             bInit = true;
         }
 
-        tv_deviceId.setText(JKPreferences.GetSharePersistentString("deviceToken"));
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
+        if (!accessibilityManager.isEnabled()) {
+
+            new MaterialDialog.Builder(this).content("请打开空容器辅助功能!").positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                    JKToast.Show("找到空容器APK辅助功能，然后开启服务即可", 0);
+                    dialog.dismiss();
+                }
+            }).show();
+
+        }
+
+
     }
 
 
     @Click(R.id.bt_writeToFile)
-    void writeToFile() {
-
+    void writeToFile()  {
+        try {
+            ContactUtil.deleteContact(this,"18690611244");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Click(R.id.bt_task)
     void task() {
-        Intent intent = new Intent(this, LongRunningService.class);
-        startService(intent);
+       ContactUtil.addContact(this,"18690611244");
     }
 
     @Click(R.id.bt_start)
@@ -80,19 +101,21 @@ public class ECTaskActivity extends ECBaseActivity {
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
         if (!accessibilityManager.isEnabled()) {
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            JKToast.Show("找到检测辅助功能，然后开启服务即可", 0);
+            JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
         } else {
-            //开启任务
-            JKPreferences.SaveSharePersistent("doTasking",true);
             Intent intent = new Intent();
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            intent.setClassName(MM, LauncherUI);
+            intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
             startActivity(intent);
+
         }
-
-
     }
 
-
+    @Click(R.id.bt_postId)
+    void test() {
+        String uid = JKSystem.GetGUID();
+        JKLog.i("RT", "tasks:uid/" + uid);
+    }
 }

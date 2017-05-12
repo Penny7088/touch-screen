@@ -11,4 +11,9 @@ public class ECSdCardPath {
     public static final String Task_List_TXT = SD_CARD_PATH + "task.json";
     //获取任务结束命令文件
     public static final String Task_Finish_TXT = SD_CARD_PATH + "task_finish.txt";
+    //检测账号是否合格
+    public final static String DETECTION_TASK_Finish_TXT = SD_CARD_PATH + "detection_task_finish.txt";
+    //任务失败原因
+    public final static String Task_Fail_TXT = SD_CARD_PATH + "task_fail_reason.txt";
+
 }

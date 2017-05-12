@@ -11,6 +11,8 @@ import com.jkframework.debug.JKLog;
 
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2017/4/18.
@@ -37,6 +39,7 @@ public class PerformClickUtils {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null && (text.equals(nodeInfo.getText().toString()) || text.equals(nodeInfo.getContentDescription()))) {
                     performClick(nodeInfo);
+
                     break;
                 }
             }
@@ -98,6 +101,7 @@ public class PerformClickUtils {
     }
 
     //模拟点击事件
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void performClick(AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null) {
             return;
@@ -123,6 +127,7 @@ public class PerformClickUtils {
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
         }
     }
+
     //模拟Home事件
     public static void performHome(AccessibilityService service) {
         if (service == null) {
@@ -135,6 +140,23 @@ public class PerformClickUtils {
                 e.printStackTrace();
             }
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
+            JKLog.i("RT","task_run:home");
+        }
+    }
+
+    //模拟Home事件
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static void performAction(AccessibilityService service) {
+        if (service == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            service.performGlobalAction(AccessibilityNodeInfo.ACTION_PASTE);
         }
     }
 
@@ -181,6 +203,52 @@ public class PerformClickUtils {
         }
 
         return "";
+    }  //正则匹配数字
+
+    public static String getNumFromInfo(String numInfo) {
+        Pattern pattern = Pattern.compile("[^0-9]");
+        Matcher matcher = pattern.matcher(numInfo);
+        String num = matcher.replaceAll("");
+        return num;
+    }
+
+    /**
+     * 在当前页面查找文字内容
+     *
+     * @param text
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public static String findText(AccessibilityService accessibilityService, String text) {
+
+        AccessibilityNodeInfo accessibilityNodeInfo = accessibilityService.getRootInActiveWindow();
+        if (accessibilityNodeInfo == null) {
+            return "";
+        }
+
+        List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
+        if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
+            for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
+                if (nodeInfo != null && (text.equals(nodeInfo.getText().toString()) || text.equals(nodeInfo.getContentDescription()))) {
+                    return nodeInfo.getText().toString();
+                }
+            }
+        }
+        return "";
+    }
+
+
+    //模拟滑动事件
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static void performSwipe(AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return;
+        }
+        for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
+            if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
+                AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
+                node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            }
+        }
     }
 
 

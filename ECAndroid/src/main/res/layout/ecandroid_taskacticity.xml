@@ -20,19 +20,19 @@
         android:id="@+id/bt_postId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="上报ID" />
+        android:text="测试" />
 
     <Button
         android:id="@+id/bt_writeToFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="添加联系人" />
+        android:text="删除联系人" />
 
     <Button
         android:id="@+id/bt_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="定时执行任务" />
+        android:text="添加联系人" />
 
     <Button
         android:id="@+id/bt_start"
