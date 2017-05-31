@@ -3,7 +3,10 @@ package com.yysp.ecandroid.net;
 import com.jkframework.algorithm.JKEncryption;
 import com.jkframework.net.JKHttpRetrofit;
 import com.jkframework.serialization.JKJson;
-import com.yysp.ecandroid.data.bean.EcPostBean;
+import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
+import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
+import com.yysp.ecandroid.data.response.DisSigndoResponse;
 import com.yysp.ecandroid.data.response.ECLoginResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 
@@ -18,10 +21,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ECNetSend {
 
-    public static final String TestHost = "http://139.196.93.211:8080/saas-api/";
+    public static final String Host = "http://192.168.1.45:8080/saas-api/";
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
-            .baseUrl(TestHost)
+            .baseUrl(Host)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     public static ECNetInterface service = retrofit.create(ECNetInterface.class);
@@ -40,16 +43,21 @@ public class ECNetSend {
     }
 
 
-    public static Observable<EcPostBean> signUid(String deviceAlias) {
-        return service.sign(deviceAlias);
+    public static Observable<DisBean> signUid(String deviceAlias, String machineCode) {
+        DisSigndoResponse signdoResponse = new DisSigndoResponse(deviceAlias, machineCode);
+        return service.sign(signdoResponse);
     }
 
-    public static Observable<EcPostBean> taskApply(int taskType, String deviceAlias) {
-        return service.taskApply(taskType, deviceAlias);
+    public static Observable<DisGetTaskBean> taskApply(String taskId, String deviceAlias) {
+        return service.taskApply(taskId, deviceAlias);
     }
 
-    public static Observable<EcPostBean> taskStatus(ECTaskResultResponse resultResponse) {
+    public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse) {
         return service.taskStatus(resultResponse);
+    }
+
+    public static Observable<DisBean> addErrorMsg(AddErrorMsgResponse response) {
+        return service.addErrorMessage(response);
     }
 
 

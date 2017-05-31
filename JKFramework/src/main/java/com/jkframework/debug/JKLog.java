@@ -164,12 +164,12 @@ public class JKLog {
 	 */
 	public static synchronized void ErrorLog(String tMessage)
 	{
+		JKLog.e("RT","/++/"+tMessage);
 		if (JKDebug.nDebug != 0)
 		{
 			JKFile.CreateDir(ERROR_PATH);
-	        if (!JKFile.IsExists(ERROR_PATH))
-	            JKFile.WriteFile(ERROR_PATH, "");
-	        JKFile.AppendFile(ERROR_PATH, JKDate.GetFullDate(false) + ": " + GetFunctionPos() + "  " + tMessage + "\r\n");
+//	        if (!JKFile.IsExists(ERROR_PATH))
+//	        JKFile.AppendFile(ERROR_PATH, JKDate.GetFullDate(false) + ": " + GetFunctionPos() + "  " + tMessage + "\r\n");
 		}
 	}
 	

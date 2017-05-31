@@ -7,17 +7,20 @@ import java.util.List;
  */
 
 public class EcContactBean {
+
     /**
-     * targetMobiles : ["string"]
+     * targetAccounts : ["TaskAccountVO"]
      * taskID : string
-     * taskType : 2
+     * taskType : 502
      * internalAccount : string
+     * accountPassword : string
      */
 
     private String taskID;
     private int taskType;
     private String internalAccount;
-    private List<String> targetMobiles;
+    private String accountPassword;
+    private List<String> targetAccounts;
 
     public String getTaskID() {
         return taskID;
@@ -43,11 +46,19 @@ public class EcContactBean {
         this.internalAccount = internalAccount;
     }
 
-    public List<String> getTargetMobiles() {
-        return targetMobiles;
+    public String getAccountPassword() {
+        return accountPassword;
     }
 
-    public void setTargetMobiles(List<String> targetMobiles) {
-        this.targetMobiles = targetMobiles;
+    public void setAccountPassword(String accountPassword) {
+        this.accountPassword = accountPassword;
+    }
+
+    public List<String> getTargetAccounts() {
+        return targetAccounts;
+    }
+
+    public void setTargetAccounts(List<String> targetAccounts) {
+        this.targetAccounts = targetAccounts;
     }
 }

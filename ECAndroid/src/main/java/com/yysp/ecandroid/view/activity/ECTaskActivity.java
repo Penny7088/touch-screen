@@ -8,13 +8,20 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jkframework.config.JKPreferences;
 import com.jkframework.config.JKSystem;
 import com.jkframework.control.JKTextView;
 import com.jkframework.control.JKToast;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.R;
+import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
+import com.yysp.ecandroid.data.response.ECTaskResultResponse;
+import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.service.LongRunningService;
 import com.yysp.ecandroid.util.ContactUtil;
+import com.yysp.ecandroid.util.OthoerUtil;
 import com.yysp.ecandroid.view.ECBaseActivity;
 
 
@@ -23,7 +30,13 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.yysp.ecandroid.config.ECConfig.AliasName;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -34,7 +47,7 @@ public class ECTaskActivity extends ECBaseActivity {
      * 页面初始化
      */
     private boolean bInit = false;
-
+    public String TAG="saas-api_";
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
 
@@ -115,7 +128,39 @@ public class ECTaskActivity extends ECBaseActivity {
 
     @Click(R.id.bt_postId)
     void test() {
-        String uid = JKSystem.GetGUID();
-        JKLog.i("RT", "tasks:uid/" + uid);
+
+
+
+            ECTaskResultResponse resultResponse =new ECTaskResultResponse();
+            resultResponse.setTaskId("23309523788109");//taskId
+            resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
+            resultResponse.setDeviceAlias(AliasName);//别名
+            JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
+            ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(DisBean disBean) {
+                    JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
+                    if (disBean.getCode() == 200) {
+                        JKLog.i(TAG, TAG + "taskStatus:success");
+                    }
+                    OthoerUtil.doOfTaskEnd();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    JKLog.i(TAG, "erro:" + e.getMessage());
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+
     }
 }

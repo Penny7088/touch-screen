@@ -8,8 +8,18 @@ import java.util.List;
 
 public class ECTaskResultResponse {
 
+
+
+
     private int amount;
+    private int currentPage;
     private String deviceAlias;
+    private boolean isBankcard;
+    private boolean isConsume;
+    private boolean isRealname;
+    private String machineCode;
+    private int pageSize;
+    private String reason;
     private int status;
     private String taskId;
     private List<TaskResultBean> taskResult;
@@ -22,12 +32,68 @@ public class ECTaskResultResponse {
         this.amount = amount;
     }
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
     public String getDeviceAlias() {
         return deviceAlias;
     }
 
     public void setDeviceAlias(String deviceAlias) {
         this.deviceAlias = deviceAlias;
+    }
+
+    public boolean isIsBankcard() {
+        return isBankcard;
+    }
+
+    public void setIsBankcard(boolean isBankcard) {
+        this.isBankcard = isBankcard;
+    }
+
+    public boolean isIsConsume() {
+        return isConsume;
+    }
+
+    public void setIsConsume(boolean isConsume) {
+        this.isConsume = isConsume;
+    }
+
+    public boolean isIsRealname() {
+        return isRealname;
+    }
+
+    public void setIsRealname(boolean isRealname) {
+        this.isRealname = isRealname;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public int getStatus() {
@@ -55,38 +121,24 @@ public class ECTaskResultResponse {
     }
 
     public static class TaskResultBean {
-        /**
-         * account : string
-         * area : string
-         * birth : string
-         * mobile : string
-         * nickname : string
-         * profession : string
-         * reamrk : string
-         * result : string
-         * sex : string
-         * status : 0
-         * taskId : string
-         */
+
 
         private String account;
-        private String area;
-        private String birth;
+        private int currentPage;
         private String mobile;
         private String nickname;
-        private String profession;
-        private String reamrk;
+        private int pageSize;
+        private String remark;
         private String result;
-        private String sex;
         private int status;
-        private String taskId;
+        private String sex;
 
-        public String getAccount() {
-            return account;
+        public String getSex() {
+            return sex;
         }
 
-        public void setAccount(String account) {
-            this.account = account;
+        public void setSex(String sex) {
+            this.sex = sex;
         }
 
         public String getArea() {
@@ -97,12 +149,24 @@ public class ECTaskResultResponse {
             this.area = area;
         }
 
-        public String getBirth() {
-            return birth;
+        private String area;
+
+        private String taskId;
+
+        public String getAccount() {
+            return account;
         }
 
-        public void setBirth(String birth) {
-            this.birth = birth;
+        public void setAccount(String account) {
+            this.account = account;
+        }
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
+
+        public void setCurrentPage(int currentPage) {
+            this.currentPage = currentPage;
         }
 
         public String getMobile() {
@@ -121,20 +185,20 @@ public class ECTaskResultResponse {
             this.nickname = nickname;
         }
 
-        public String getProfession() {
-            return profession;
+        public int getPageSize() {
+            return pageSize;
         }
 
-        public void setProfession(String profession) {
-            this.profession = profession;
+        public void setPageSize(int pageSize) {
+            this.pageSize = pageSize;
         }
 
-        public String getReamrk() {
-            return reamrk;
+        public String getRemark() {
+            return remark;
         }
 
-        public void setReamrk(String reamrk) {
-            this.reamrk = reamrk;
+        public void setRemark(String remark) {
+            this.remark = remark;
         }
 
         public String getResult() {
@@ -143,14 +207,6 @@ public class ECTaskResultResponse {
 
         public void setResult(String result) {
             this.result = result;
-        }
-
-        public String getSex() {
-            return sex;
-        }
-
-        public void setSex(String sex) {
-            this.sex = sex;
         }
 
         public int getStatus() {

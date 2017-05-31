@@ -1,34 +1,31 @@
 package com.yysp.ecandroid.service;
 
-import android.accessibilityservice.AccessibilityService;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
-import com.jkframework.config.JKSystem;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
-import com.yysp.ecandroid.data.bean.EcPostBean;
+import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
-import com.yysp.ecandroid.receiver.AlarmReceiver;
 import com.yysp.ecandroid.util.OthoerUtil;
-import com.yysp.ecandroid.util.PerformClickUtils;
-import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.yysp.ecandroid.config.ECConfig.AliasName;
+import static com.yysp.ecandroid.service.MyPushIntentService.SendFriendCircle;
 
 
 /**
@@ -36,6 +33,10 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
  */
 
 public class LongRunningService extends Service {
+
+    ECTaskResultResponse response;
+    String TAG = "saas-api_";
+    int i = 0;
 
     @Nullable
     @Override
@@ -49,99 +50,198 @@ public class LongRunningService extends Service {
             @Override
             public void run() {
                 //todo 执行定时任务
-                doTask(ECSdCardPath.Task_Finish_TXT);
+                while (true) {
+                    try {
+                        readFileStatus(ECSdCardPath.Task_Finish_TXT);
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }).start();
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int time = 5 * 1000; // 这是定时的时间
-        long triggerAtTime = SystemClock.elapsedRealtime() + time;
-        Intent i = new Intent(this, AlarmReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
         return super.onStartCommand(intent, flags, startId);
 
     }
 
 
     //执行监控任务是否完成
-    private void doTask(String filePath) {
-        if (JKFile.IsSDCardAvailable()) {
-            if (JKFile.IsExists(ECSdCardPath.SD_CARD_PATH)) {
-                readFileStatus(filePath);
-            } else {
-                //不存在则创建path文件夹
-                JKFile.CreateDir(ECSdCardPath.SD_CARD_PATH);
-                readFileStatus(filePath);
-            }
-        }
-    }
+
 
     private void readFileStatus(String filePath) {
         //读取文件检测任务完成状态
+
         String task_status = JKFile.ReadFile(filePath);
-        JKLog.i("RT", "task_status:" + task_status);
         int taskType = JKPreferences.GetSharePersistentInt("taskType");
+        JKLog.i(TAG, "task_status:" + task_status + "**" + taskType);
+        response = new ECTaskResultResponse();
         if (task_status.equals(ECConfig.success)) {
+            //clear
+            JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
-                case MyPushIntentService.ContactAddFriendTpye:
+                case MyPushIntentService.SearchAddFriendType:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.ContactGetFriendInfo:
+                    doOfScript();
+                    break;
+                case MyPushIntentService.GetWxUserInfo:
                     doOfScript();
                     break;
                 case MyPushIntentService.CreatGroupType:
-                    ECTaskResultResponse response = new ECTaskResultResponse();
-                    response.setDeviceAlias(JKSystem.GetGUID());//TODO
-                    response.setStatus(ECConfig.TASK_FINISH);
-                    String id = String.valueOf(MyPushIntentService.CreatGroupType);
-                    response.setTaskId(id);
-                    doOfScriptCreatGroup(response);
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.CreatGroupTypeBySmallWx:
+                    //小号直接拉群
+                    postTaskFinish(response);
                     break;
                 case MyPushIntentService.GetGroupPeoPleNum:
-                    //脚本完成任务
-                    JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
-                    JKPreferences.SaveSharePersistent("doTasking", true);
+                    doOfScript();
+                    break;
+                case MyPushIntentService.GetCreatGroupInfo:
+                    doOfScript();
+                    break;
+                case MyPushIntentService.ChatWithFriend:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.LookFriendCircle:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.VoiceWithFriend:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.VideoWithFriend:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.Forwarding:
+                    postTaskFinish(response);
+                    break;
+                case SendFriendCircle:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.Clicklike:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.Comment:
+                    postTaskFinish(response);
                     break;
                 case MyPushIntentService.DetectionTask:
                     //反馈检测账号是否合格
-                    String task = JKFile.ReadFile(ECSdCardPath.DETECTION_TASK_Finish_TXT);
-                    JKLog.i("RT", "task_task:" + task);
-                    if (task.equals(ECConfig.Detetion_Success)) {
-                        //TODO: 2017/5/9 检测成功
-                        JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
-                        OthoerUtil.doOfTaskEnd();
-                    }
+                    postTaskFinish(response);
                     break;
-                case MyPushIntentService.GetWxUserInfo:
-                    JKPreferences.SaveSharePersistent("doTasking", true);
-                    OthoerUtil.launcherWx(this);
+                case MyPushIntentService.FriendNumInfo:
+                    doOfScript();
+                    break;
+                case MyPushIntentService.AgressAddInGroupMsg:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.AgressAddFriend:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.NeedContactAddFriend:
+                    postTaskFinish(response);
                     break;
             }
         } else if (task_status.equals(ECConfig.fail)) {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
-            // TODO: 2017/5/10 上报脚本执行失败原因并清除
             JKLog.i("RT", "task_fail:" + failReason);
-            JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
-            OthoerUtil.doOfTaskEnd();
+            JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
+            switch (taskType) {
+                case MyPushIntentService.SearchAddFriendType:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.ContactGetFriendInfo:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.GetWxUserInfo:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.CreatGroupType:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.CreatGroupTypeBySmallWx:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.GetGroupPeoPleNum:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.GetCreatGroupInfo:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.ChatWithFriend:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.LookFriendCircle:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.VoiceWithFriend:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.VideoWithFriend:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.Forwarding:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.SendFriendCircle:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.Clicklike:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.Comment:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.DetectionTask:
+                    String detectionTaskTxt = JKFile.ReadFile(ECSdCardPath.DETECTION_TASK_Finish_TXT);
+                    postTaskFailReason(response, failReason + "|" + detectionTaskTxt);
+                    break;
+                case MyPushIntentService.FriendNumInfo:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.AgressAddInGroupMsg:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.AgressAddFriend:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.NeedContactAddFriend:
+                    postTaskFailReason(response, failReason);
+                    break;
+            }
+
         } else {
             JKLog.i("RT", "task:" + "任务执行状态:没任务/正在执行");
         }
     }
 
-    private void doOfScriptCreatGroup(ECTaskResultResponse resultResponse) {
-        ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<EcPostBean>() {
+    /**
+     * 任务失败
+     *
+     * @param response
+     */
+    private void postTaskFailReason(ECTaskResultResponse response, String reason) {
+        JKPreferences.RemoveSharePersistent("taskType");//删除type以免轮休两次
+        response.setStatus(ECConfig.TASK_Fail);
+        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+        response.setDeviceAlias(AliasName);
+        response.setReason(reason);
+        ECNetSend.taskStatus(response).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(EcPostBean ecPostBean) {
-                if (ecPostBean.getCode() == 200) {
-                    JKLog.i("RT", "task_finish" + MyPushIntentService.CreatGroupType);
-                }
+            public void onNext(DisBean disBean) {
+                JKLog.i(TAG, disBean.getMsg() + "/" + disBean.getCode());
+                OthoerUtil.doOfTaskEnd();
+
             }
 
             @Override
             public void onError(Throwable e) {
-
+                OthoerUtil.AddErrorMsgUtil(e.getMessage());
             }
 
             @Override
@@ -149,12 +249,52 @@ public class LongRunningService extends Service {
 
             }
         });
+
     }
 
+    /**
+     * 任务完成
+     */
+    private void postTaskFinish(ECTaskResultResponse resultResponse) {
+        JKPreferences.RemoveSharePersistent("taskType");//删除type以免轮休两次
+        resultResponse.setTaskId(JKPreferences.GetSharePersistentString("taskId"));//taskId
+        resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
+        resultResponse.setDeviceAlias(AliasName);//别名
+        JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
+        ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(DisBean disBean) {
+                JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
+                if (disBean.getCode() == 200) {
+                    JKLog.i(TAG, TAG + "taskStatus:success");
+                }
+                OthoerUtil.doOfTaskEnd();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                JKLog.i(TAG, "erro:" + e.getMessage());
+                OthoerUtil.AddErrorMsgUtil(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+    }
+
+    /**
+     * 脚本执行完成任务APP接着工作
+     */
     private void doOfScript() {
-        //脚本完成任务
         JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
-        //app接着完成任务
         JKPreferences.SaveSharePersistent("doTasking", true);
         OthoerUtil.launcherWx(this);
     }

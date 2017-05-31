@@ -1,6 +1,9 @@
 package com.yysp.ecandroid.net;
 
-import com.yysp.ecandroid.data.bean.EcPostBean;
+import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
+import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
+import com.yysp.ecandroid.data.response.DisSigndoResponse;
 import com.yysp.ecandroid.data.response.ECLoginResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 
@@ -20,17 +23,22 @@ interface ECNetInterface {
     Observable<ECLoginResponse> Login(@Field("version") String tVersion, @Field("vars") String tJson);
 
     //注册发送设备id
-    @FormUrlEncoded
     @POST("device/sign.do")
-    Observable<EcPostBean> sign(@Field("deviceAlias") String deviceAlias);
+    Observable<DisBean> sign(@Body DisSigndoResponse response);
 
     //发送任务确认请求
     @FormUrlEncoded
-    @POST("task/taskApplyDemo2.do")
-    Observable<EcPostBean> taskApply(@Field("taskType") int taskType, @Field("deviceAlias") String deviceAlias);
+    @POST("task/taskApply.do")
+    Observable<DisGetTaskBean> taskApply(@Field("taskId") String taskId, @Field("deviceAlias") String deviceAlias);
 
     //发送任务结果回执
-    @POST("task/taskStatusDemo.do")
-    Observable<EcPostBean> taskStatus(@Body ECTaskResultResponse taskResultResponse);
+    @POST("task/taskStatus.do")
+    Observable<DisBean> taskStatus(@Body ECTaskResultResponse taskResultResponse);
+
+
+    //接口失败
+    @POST("/error/addErrorMessage.do")
+    Observable<DisBean> addErrorMessage(@Body AddErrorMsgResponse msgResponse);
+
 
 }

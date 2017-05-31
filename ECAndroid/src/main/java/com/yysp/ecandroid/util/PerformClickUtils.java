@@ -252,4 +252,34 @@ public class PerformClickUtils {
     }
 
 
+
+    //模拟向上滑动事件
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static void performSwipeUpOfGridView(AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return;
+        }
+        for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
+            if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.GridView")) {
+                AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
+                node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            }
+        }
+    }
+
+    //模拟向下滑动事件
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static void performSwipeDownOfGridView(AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return;
+        }
+        for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
+            if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.GridView")) {
+                AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
+                node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            }
+        }
+    }
+
+
 }

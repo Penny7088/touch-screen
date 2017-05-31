@@ -625,8 +625,9 @@ public class JKSystem {
      */
     public static String GetGUID() {
         String tAndroidImei = GetAndroidImei();
-        String tAndroidCode = GetAndroidCode();
-        return JKEncryption.MD5_32(tAndroidImei + tAndroidCode);
+//        String tAndroidCode = GetAndroidCode();
+//        return JKEncryption.MD5_32(tAndroidImei + tAndroidCode);
+        return tAndroidImei;
     }
 
     /**

@@ -1,16 +1,10 @@
 package com.yysp.ecandroid.application;
 
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Settings;
 import android.support.multidex.MultiDex;
-import android.text.TextUtils;
 
-import com.jkframework.config.JKPreferences;
-import com.jkframework.config.JKSystem;
-import com.jkframework.control.JKToast;
 import com.jkframework.debug.JKLog;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
@@ -22,18 +16,19 @@ import com.jkframework.config.JKVersion;
 import com.jkframework.debug.JKDebug;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
-import com.yysp.ecandroid.data.bean.EcPostBean;
+import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.service.LongRunningService;
 import com.yysp.ecandroid.service.MyPushIntentService;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.yysp.ecandroid.util.OthoerUtil;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.yysp.ecandroid.config.ECConfig.AliasName;
 
 public class ECApplication extends Application {
 
@@ -51,6 +46,7 @@ public class ECApplication extends Application {
     public void onCreate() {
         super.onCreate();
         JKDebug.Init(BuildConfig.DEBUG ? 1 : 0, getApplicationContext(), ECConfig.MESSAGE_CENTER);
+        OthoerUtil.CreatNeedFile();
 
         /*内存泄漏检测*/
         refWatcher = BuildConfig.DEBUG ? LeakCanary.install(this) : RefWatcher.DISABLED;
@@ -82,11 +78,11 @@ public class ECApplication extends Application {
             }
         });
 
-        mPushAgent.addAlias(JKSystem.GetGUID(), ECConfig.AliasType, new UTrack.ICallBack() {
+        mPushAgent.addAlias(AliasName, ECConfig.AliasType, new UTrack.ICallBack() {
             @Override
             public void onMessage(boolean b, String s) {
-                JKLog.i("RT", "uid:" + s);
-                postUid(s);
+                JKLog.i("RT", "uid:" + AliasName);
+                postUid(AliasName, AliasName);
             }
         });
 
@@ -96,29 +92,25 @@ public class ECApplication extends Application {
         Intent intent = new Intent(this, LongRunningService.class);
         startService(intent);
 
-        doSomeThing();
-    }
-
-    private void doSomeThing() {
-
-
     }
 
 
-    private void postUid(final String uid) {
-        ECNetSend.signUid(uid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<EcPostBean>() {
+    private void postUid(String uid, String machineCode) {
+        ECNetSend.signUid(uid, machineCode).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(EcPostBean ecSignBean) {
+            public void onNext(DisBean disSignBean) {
+                JKLog.i("saas-api_", "sign_do" + disSignBean.getCode() + "/" + disSignBean.getMsg());
             }
 
             @Override
             public void onError(Throwable e) {
-                JKLog.i("RT", "tasks:" + e.getMessage());
+                JKLog.i("saas-api_", "sign_do_erro:" + e.getMessage() + "/" + e.getLocalizedMessage() + "*" + e.toString());
+                OthoerUtil.AddErrorMsgUtil(e.getMessage());
             }
 
             @Override

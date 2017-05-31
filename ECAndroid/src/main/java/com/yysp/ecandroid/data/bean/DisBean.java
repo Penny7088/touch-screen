@@ -1,22 +1,30 @@
 package com.yysp.ecandroid.data.bean;
 
 /**
- * Created by Administrator on 2017/4/21.
+ * Created by Administrator on 2017/5/19.
  */
 
-public class EcPostBean {
+public class DisBean {
 
     /**
-     * code : 200
-     * data : null
-     * msg :
      * bizCode : 0
+     * code : 0
+     * data : string
+     * msg : string
      */
 
-    private int code;
-    private Object data;
-    private String msg;
     private int bizCode;
+    private int code;
+    private String data;
+    private String msg;
+
+    public int getBizCode() {
+        return bizCode;
+    }
+
+    public void setBizCode(int bizCode) {
+        this.bizCode = bizCode;
+    }
 
     public int getCode() {
         return code;
@@ -26,11 +34,11 @@ public class EcPostBean {
         this.code = code;
     }
 
-    public Object getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -40,13 +48,5 @@ public class EcPostBean {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public int getBizCode() {
-        return bizCode;
-    }
-
-    public void setBizCode(int bizCode) {
-        this.bizCode = bizCode;
     }
 }
