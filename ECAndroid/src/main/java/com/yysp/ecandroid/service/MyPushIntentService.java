@@ -147,10 +147,10 @@ public class MyPushIntentService extends UmengMessageService {
     private void doTypeTask(int taskType, String content) {
         switch (taskType) {
             case SearchAddFriendType:
-                AddToContact(this,content);
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
+                AddToContact(this,content);
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case GetWxUserInfo:
