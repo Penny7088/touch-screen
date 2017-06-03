@@ -73,15 +73,15 @@ android {
     }
 
     productFlavors {
-        beta {
-            applicationId "com.yysp.ecandroid.beta"
-            manifestPlaceholders = [APPNAME: "空容器测试apk", CHANNEL_NAME: "beta", QQBUGLY_ID: "236c0c1677"]
-        }
         offical {
             applicationId "com.yysp.ecandroid"
             manifestPlaceholders = [APPNAME     : "空容器apk", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677",
                                     UMENG_APPKEY: "58f42b2d07fe650ea00022e2", UMENG_MESSAGE_SECRET: "ef0938b87444249d49da73d3e830bb07"
             ]
+        }
+        beta {
+            applicationId "com.yysp.ecandroid.beta"
+            manifestPlaceholders = [APPNAME: "空容器测试apk", CHANNEL_NAME: "beta", QQBUGLY_ID: "236c0c1677"]
         }
     }
 

@@ -131,36 +131,73 @@ public class ECTaskActivity extends ECBaseActivity {
 
 
 
-            ECTaskResultResponse resultResponse =new ECTaskResultResponse();
-            resultResponse.setTaskId("23309523788109");//taskId
-            resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
-            resultResponse.setDeviceAlias(AliasName);//别名
-            JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
-            ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-                @Override
-                public void onSubscribe(Disposable d) {
+        ECTaskResultResponse resultResponse =new ECTaskResultResponse();
+        resultResponse.setTaskId("23309523788109");//taskId
+        resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
+        resultResponse.setDeviceAlias(AliasName);//别名
+        JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
+        ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
+            }
+
+            @Override
+            public void onNext(DisBean disBean) {
+                JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
+                if (disBean.getCode() == 200) {
+                    JKLog.i(TAG, TAG + "taskStatus:success");
                 }
+                OthoerUtil.doOfTaskEnd();
+            }
 
-                @Override
-                public void onNext(DisBean disBean) {
-                    JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
-                    if (disBean.getCode() == 200) {
-                        JKLog.i(TAG, TAG + "taskStatus:success");
-                    }
-                    OthoerUtil.doOfTaskEnd();
-                }
+            @Override
+            public void onError(Throwable e) {
+                JKLog.i(TAG, "erro:" + e.getMessage());
+            }
 
-                @Override
-                public void onError(Throwable e) {
-                    JKLog.i(TAG, "erro:" + e.getMessage());
-                }
+            @Override
+            public void onComplete() {
 
-                @Override
-                public void onComplete() {
-
-                }
-            });
+            }
+        });
 
     }
+
+    @Click(R.id.bt_CloseScreenOrder)
+    void  CloseScreenOrder(){
+//        CloseScreenOrder();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //todo 执行定时任务
+                int i = 0;
+                while ( i < 3 ) {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i++;
+                }
+//                OpenScreenOrder();
+            }
+        }).start();
+    }
+
+    @Click(R.id.bt_OpenMessagebar)
+    void OpenMessagebar(){
+//        OpenMessagebar();
+    }
+
+    @Click(R.id.bt_CloseMessagebar)
+    void CloseMessagebar(){
+//        CloseMessagebar();
+    }
+
+    @Click(R.id.bt_volume)
+    void Volume(){
+//        Volume();
+    }
+
 }
