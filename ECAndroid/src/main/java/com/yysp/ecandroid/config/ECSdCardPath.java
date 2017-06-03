@@ -6,7 +6,8 @@ package com.yysp.ecandroid.config;
 
 public class ECSdCardPath {
     //存放KRQ脚本文件夹
-    public static final String SD_CARD_PATH = "/storage/emulated/legacy/KRQ/";
+//    public static final String SD_CARD_PATH = "/storage/emulated/legacy/KRQ/";
+    public static final String SD_CARD_PATH = "/storage/emulated/0/KRQ/";
     //任务命令文件
     public static final String Task_List_TXT = SD_CARD_PATH + "task.json";
     //获取任务结束命令文件
