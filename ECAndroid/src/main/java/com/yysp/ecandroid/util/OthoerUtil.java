@@ -11,6 +11,9 @@ import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -39,6 +42,7 @@ public class OthoerUtil {
         JKPreferences.RemoveSharePersistent("doTasking");
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");
+        JKPreferences.RemoveSharePersistent("pushData");
     }
 
 
@@ -64,12 +68,15 @@ public class OthoerUtil {
             if (!JKFile.IsFile(ECSdCardPath.DETECTION_TASK_Finish_TXT)) {
                 JKFile.creatFileTxt(ECSdCardPath.DETECTION_TASK_Finish_TXT);
             }
+            if (!JKFile.IsFile(ECSdCardPath.NendBF)) {
+                JKFile.creatFileTxt(ECSdCardPath.NendBF);
+            }
         }
     }
 
 
-    public static void AddErrorMsgUtil(String msg){
-        AddErrorMsgResponse errorMsgResponse=new AddErrorMsgResponse(msg);
+    public static void AddErrorMsgUtil(String msg) {
+        AddErrorMsgResponse errorMsgResponse = new AddErrorMsgResponse(msg);
         ECNetSend.addErrorMsg(errorMsgResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -91,5 +98,19 @@ public class OthoerUtil {
             }
         });
     }
+
+
+    public static void deleContanct(Context context) {
+        //删除通讯录
+        ArrayList<String> list = JKPreferences.GetSharePersistentArrayString("phoneList");
+        for (String phone : list) {
+            try {
+                ContactUtil.deleteContact(context, phone);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }

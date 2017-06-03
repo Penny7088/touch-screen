@@ -1,8 +1,12 @@
 package com.yysp.ecandroid.net;
 
 import com.jkframework.algorithm.JKEncryption;
+import com.jkframework.algorithm.JKFile;
+import com.jkframework.config.JKPreferences;
 import com.jkframework.net.JKHttpRetrofit;
 import com.jkframework.serialization.JKJson;
+import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
@@ -53,6 +57,7 @@ public class ECNetSend {
     }
 
     public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse) {
+        JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         return service.taskStatus(resultResponse);
     }
 

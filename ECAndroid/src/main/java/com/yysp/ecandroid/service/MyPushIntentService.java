@@ -65,6 +65,7 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int DetectionTask = 516;
     public final static int FriendNumInfo = 517;
     public final static int AgressAddInGroupMsg = 518;
+    public final static int DeleFriend = 521;
     public final static int AgressAddFriend = 525;
     public final static int NeedContactAddFriend = 527;
 
@@ -125,6 +126,7 @@ public class MyPushIntentService extends UmengMessageService {
 
     private void doTaskWithId(int taskType, String content) {
         JKLog.i(TAG, "data:" + content);
+        JKPreferences.SaveSharePersistent("pushData", content);//备份
         //TODO
         Intent intent;
         //判断辅助服务是否开启
@@ -150,7 +152,7 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
-                AddToContact(this,content);
+                AddToContact(this, content);
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case GetWxUserInfo:
@@ -201,10 +203,14 @@ public class MyPushIntentService extends UmengMessageService {
             case AgressAddInGroupMsg:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
+            case DeleFriend:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
             case AgressAddFriend:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case NeedContactAddFriend:
+                AddToContact(this, content);
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
         }
@@ -221,7 +227,7 @@ public class MyPushIntentService extends UmengMessageService {
         List<String> phoneList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             ContactUtil.addContact(context, list.get(i).getMobile());
-            JKLog.i(TAG,"phone:"+list.get(i).getMobile());
+            JKLog.i(TAG, "phone:" + list.get(i).getMobile());
             phoneList.add(list.get(i).getMobile());
         }
         JKPreferences.SaveSharePersistent("phoneList", (ArrayList<String>) phoneList);

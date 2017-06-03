@@ -135,10 +135,14 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.AgressAddInGroupMsg:
                     postTaskFinish(response);
                     break;
+                case MyPushIntentService.DeleFriend:
+                    postTaskFinish(response);
+                    break;
                 case MyPushIntentService.AgressAddFriend:
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
+                    OthoerUtil.deleContanct(this);
                     postTaskFinish(response);
                     break;
             }
@@ -202,10 +206,14 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.AgressAddInGroupMsg:
                     postTaskFailReason(response, failReason);
                     break;
+                case MyPushIntentService.DeleFriend:
+                    postTaskFailReason(response,failReason);
+                    break;
                 case MyPushIntentService.AgressAddFriend:
                     postTaskFailReason(response, failReason);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
+                    OthoerUtil.deleContanct(this);
                     postTaskFailReason(response, failReason);
                     break;
             }
@@ -236,7 +244,6 @@ public class LongRunningService extends Service {
             public void onNext(DisBean disBean) {
                 JKLog.i(TAG, disBean.getMsg() + "/" + disBean.getCode());
                 OthoerUtil.doOfTaskEnd();
-
             }
 
             @Override
