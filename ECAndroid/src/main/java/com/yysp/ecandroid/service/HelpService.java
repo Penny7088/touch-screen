@@ -45,7 +45,8 @@ public class HelpService extends AccessibilityService {
     boolean isNeedSwipe = false;
 
     //控件id
-    String vx_name_id = "com.tencent.mm:id/mh";
+    String vx_name_id = "com.tencent.mm:id/aeq";
+    String vx_remark="com.tencent.mm:id/aze";
     String wx_user_id = "com.tencent.mm:id/ig";
     String no_more_people_id = "com.tencent.mm:id/ae8";
     String gender_id = "com.tencent.mm:id/aeu";
@@ -105,6 +106,7 @@ public class HelpService extends AccessibilityService {
                                 case MyPushIntentService.GetWxUserInfo:
                                     if (fromType == 1) {
                                         try {
+                                            sleepAndClickText(1000, "通讯录");
                                             getWxUserInfo();
                                             fromType = 0;
                                         } catch (InterruptedException e) {
@@ -238,11 +240,11 @@ public class HelpService extends AccessibilityService {
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
+                                    fromType = 1;
                                     Intent intent = new Intent();
                                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                                     intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
                                     startActivity(intent);
-                                    fromType = 1;
                                     break;
                             }
                             break;
@@ -285,6 +287,7 @@ public class HelpService extends AccessibilityService {
             //任务执行完善后工作
             response.setStatus(ECConfig.TASK_FINISH);
             response.setDeviceAlias(AliasName);
+            JKLog.i(TAG,"task_"+groupList.size());
             response.setTaskResult(groupList);
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
@@ -292,7 +295,7 @@ public class HelpService extends AccessibilityService {
             fromType = 0;
         }
         lastName = list.get(count).getText().toString();
-        Log.i(TAG, "task_GroupN:" + list.size());
+        Log.i(TAG, "task_:" + list.size()+"/"+lastName);
 
     }
 
@@ -309,8 +312,13 @@ public class HelpService extends AccessibilityService {
         if (PerformClickUtils.geyTextById(service, titleId).equals("")) {
             //需要滑动
             PerformClickUtils.performSwipe(nodeInfo);
-            PerformClickUtils.findViewIdAndClick(service, titleId);
-            getFromType = -1;
+            try {
+                Thread.sleep(1000);
+                PerformClickUtils.findViewIdAndClick(this, titleId);
+                getFromType = -1;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
             //不需要滑动
             List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
@@ -377,47 +385,44 @@ public class HelpService extends AccessibilityService {
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void getWxUserInfo() throws InterruptedException {
-        sleepAndClickText(1000, "通讯录");
         String text = PerformClickUtils.geyTextById(this, no_more_people_id);
 
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(wx_user_id);
 
-        int j = 0;
-        if (page == 1) {
-            j = 0;
-        } else {
-            j = 1;
-        }
-
-        for (int i = j; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             //获取微信名
-            sleepAndClickText(1000, list.get(i).getText().toString());
             wxUserBean = new ECTaskResultResponse.TaskResultBean();
+            String user = list.get(i).getText().toString();
+            JKLog.i(TAG,"item:"+user);
+            sleepAndClickText(1000, user);
+
             wxUserBean.setRemark(list.get(i).getText().toString());
             wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
             wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
             wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
             infoList.add(wxUserBean);
+            Thread.sleep(500);
             PerformClickUtils.performBack(this);
         }
-        page++;
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         PerformClickUtils.performSwipe(nodeInfo);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         if (!text.equals("")) {
             JKLog.i(TAG, "task_:滑到底部了" + infoList.size());
+            page = 1;
+            fromType = 1;
             //任务执行完善后工作
-            OthoerUtil.deleContanct(this);//删除通讯录
             ECTaskResultResponse response = new ECTaskResultResponse();
             response.setStatus(ECConfig.TASK_FINISH);
             response.setDeviceAlias(AliasName);
             response.setTaskResult(infoList);
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
+        } else {
+            Thread.sleep(1000);
+            PerformClickUtils.performHome(this);
         }
-        PerformClickUtils.performHome(this);
-
     }
 
     @Override
@@ -431,12 +436,19 @@ public class HelpService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void delewithListView() {
         addFromType = 0;
+        int index;
         AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
         List<AccessibilityNodeInfo> infoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(textId);
+        JKLog.i(TAG, "info:" + infoList.size());
+        if (infoList.size() == 0) {
+            index = 0;
+        } else {
+            index = infoList.size() - 1;
+        }
+        JKLog.i(TAG, "infos" + infoList.get(index).getText().toString());
         List<ECTaskResultResponse.TaskResultBean> list = new ArrayList<>();
-        JKLog.i(TAG, "task_size:" + infoList.get(infoList.size() - 1).getText().toString() + ":" + list.size());
-        if (!lastName.equals(infoList.get(infoList.size() - 1).getText().toString())) {
-            int j = 0;
+        if (!lastName.equals(infoList.get(index).getText().toString())) {
+            int j;
             if (page == 1) {
                 j = 0;
             } else {
@@ -453,7 +465,7 @@ public class HelpService extends AccessibilityService {
                 }
 
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                wxUserBean.setRemark(infoList.get(i).getText().toString());
+                wxUserBean.setRemark(PerformClickUtils.geyTextById(this,vx_remark));
                 wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
@@ -471,6 +483,9 @@ public class HelpService extends AccessibilityService {
             addFromType = 1;
         } else {
             isNeedSwipe = false;
+            addFromType = 1;
+            lastName = "";
+            OthoerUtil.deleContanct(this);//删除通讯录
             JKLog.i(TAG, "task_:滑动通讯录底部了!");
             ECTaskResultResponse response = new ECTaskResultResponse();
             response.setStatus(ECConfig.TASK_FINISH);
@@ -480,7 +495,7 @@ public class HelpService extends AccessibilityService {
             doOfTaskEnd(response);
         }
 
-        lastName = infoList.get(infoList.size() - 1).getText().toString();
+        lastName = infoList.get(index).getText().toString();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -501,7 +516,7 @@ public class HelpService extends AccessibilityService {
             public void onNext(DisBean disBean) {
                 JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
                 if (disBean.getCode() == 200) {
-                    JKLog.i(TAG, TAG + "taskStatus:success");
+                    JKLog.i(TAG, "item_taskStatus:success");
                 }
                 OthoerUtil.doOfTaskEnd();
             }

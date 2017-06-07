@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -51,9 +52,6 @@ public class ECTaskActivity extends ECBaseActivity {
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
 
-    @ViewById(R.id.tv_deviceId)
-    JKTextView tv_deviceId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +59,7 @@ public class ECTaskActivity extends ECBaseActivity {
         if (savedInstanceState != null) {
             bInit = savedInstanceState.getBoolean("Init", false);
         }
+        Toast.makeText(this,ECConfig.AliasName,Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -95,18 +94,10 @@ public class ECTaskActivity extends ECBaseActivity {
     }
 
 
-    @Click(R.id.bt_writeToFile)
-    void writeToFile()  {
-        try {
-            ContactUtil.deleteContact(this,"18690611244");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Click(R.id.bt_task)
     void task() {
-       ContactUtil.addContact(this,"18690611244");
+       OthoerUtil.doOfTaskEnd();
     }
 
     @Click(R.id.bt_start)
@@ -126,43 +117,6 @@ public class ECTaskActivity extends ECBaseActivity {
         }
     }
 
-    @Click(R.id.bt_postId)
-    void test() {
-
-
-
-        ECTaskResultResponse resultResponse =new ECTaskResultResponse();
-        resultResponse.setTaskId("23309523788109");//taskId
-        resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
-        resultResponse.setDeviceAlias(AliasName);//别名
-        JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
-        ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(DisBean disBean) {
-                JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
-                if (disBean.getCode() == 200) {
-                    JKLog.i(TAG, TAG + "taskStatus:success");
-                }
-                OthoerUtil.doOfTaskEnd();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                JKLog.i(TAG, "erro:" + e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
-    }
 
     @Click(R.id.bt_CloseScreenOrder)
     void  CloseScreenOrder(){

@@ -65,6 +65,8 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int DetectionTask = 516;
     public final static int FriendNumInfo = 517;
     public final static int AgressAddInGroupMsg = 518;
+    public final static int GoOutGroup = 519;
+    public final static int KickOutGroup = 520;
     public final static int DeleFriend = 521;
     public final static int AgressAddFriend = 525;
     public final static int NeedContactAddFriend = 527;
@@ -127,7 +129,6 @@ public class MyPushIntentService extends UmengMessageService {
     private void doTaskWithId(int taskType, String content) {
         JKLog.i(TAG, "data:" + content);
         JKPreferences.SaveSharePersistent("pushData", content);//备份
-        //TODO
         Intent intent;
         //判断辅助服务是否开启
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
@@ -201,6 +202,12 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case AgressAddInGroupMsg:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case GoOutGroup:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case KickOutGroup:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case DeleFriend:

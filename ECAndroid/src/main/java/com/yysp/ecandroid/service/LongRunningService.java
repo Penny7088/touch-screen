@@ -135,6 +135,12 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.AgressAddInGroupMsg:
                     postTaskFinish(response);
                     break;
+                case MyPushIntentService.GoOutGroup:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.KickOutGroup:
+                    postTaskFinish(response);
+                    break;
                 case MyPushIntentService.DeleFriend:
                     postTaskFinish(response);
                     break;
@@ -204,6 +210,12 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason);
                     break;
                 case MyPushIntentService.AgressAddInGroupMsg:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.GoOutGroup:
+                    postTaskFailReason(response, failReason);
+                    break;
+                case MyPushIntentService.KickOutGroup:
                     postTaskFailReason(response, failReason);
                     break;
                 case MyPushIntentService.DeleFriend:
