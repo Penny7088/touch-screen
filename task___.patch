@@ -1,0 +1,16 @@
+Index: ECAndroid/src/main/java/com/yysp/ecandroid/service/HelpService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ECAndroid/src/main/java/com/yysp/ecandroid/service/HelpService.java	(date 1494579010000)
++++ ECAndroid/src/main/java/com/yysp/ecandroid/service/HelpService.java	(revision )
+@@ -138,7 +138,7 @@
+                                 case MyPushIntentService.GetGroupPeoPleNum:
+                                     String nums = PerformClickUtils.getNumFromInfo(PerformClickUtils.geyTextById(this, groupNum));
+                                     JKLog.i(TAG, "task_nums:" + nums);
+-                                    // TODO: 识别该群人数为多少
++                                    // TODO: 识别群人数为多少
+                                     OthoerUtil.doOfTaskEnd();
+                                     break;
+                             }

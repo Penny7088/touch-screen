@@ -46,7 +46,7 @@ public class HelpService extends AccessibilityService {
 
     //控件id
     String vx_name_id = "com.tencent.mm:id/aeq";
-    String vx_remark="com.tencent.mm:id/aze";
+    String vx_remark = "com.tencent.mm:id/aze";
     String wx_user_id = "com.tencent.mm:id/ig";
     String no_more_people_id = "com.tencent.mm:id/ae8";
     String gender_id = "com.tencent.mm:id/aeu";
@@ -265,14 +265,17 @@ public class HelpService extends AccessibilityService {
         List<ECTaskResultResponse.TaskResultBean> groupList = new ArrayList<>();
 
         int count = list.size() - 1;
+        JKLog.i(TAG,"task_count:"+count+"***"+list.get(count).getText().toString());
         if (!lastName.equals(list.get(count).getText().toString())) {
             for (int i = 0; i < list.size(); i++) {
                 //获取微信名
                 Thread.sleep(1000);
                 PerformClickUtils.performClick(list.get(i));
+                Thread.sleep(1000);
                 //反馈消息
 
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                JKLog.i(TAG, "task_group:" + list.get(i).getText().toString());
                 wxUserBean.setNickname(list.get(i).getText().toString());
                 groupList.add(wxUserBean);
                 Thread.sleep(2000);
@@ -287,7 +290,7 @@ public class HelpService extends AccessibilityService {
             //任务执行完善后工作
             response.setStatus(ECConfig.TASK_FINISH);
             response.setDeviceAlias(AliasName);
-            JKLog.i(TAG,"task_"+groupList.size());
+            JKLog.i(TAG, "*************************"+"task_finish" + groupList.size()+"*************************");
             response.setTaskResult(groupList);
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
@@ -295,7 +298,7 @@ public class HelpService extends AccessibilityService {
             fromType = 0;
         }
         lastName = list.get(count).getText().toString();
-        Log.i(TAG, "task_:" + list.size()+"/"+lastName);
+        Log.i(TAG, "task_s:" + list.size() + "/" + lastName);
 
     }
 
@@ -345,12 +348,12 @@ public class HelpService extends AccessibilityService {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void getInfo(AccessibilityNodeInfo nodeInfo) {
-        JKLog.i(TAG, "task_" + getFromType);
+        JKLog.i(TAG, "task_type" + getFromType);
         if (getFromType == 1) {
             //滑动
             PerformClickUtils.performSwipeUpOfGridView(nodeInfo);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
                 clickGetInfo(nodeInfo);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -361,7 +364,7 @@ public class HelpService extends AccessibilityService {
             PerformClickUtils.performSwipeDownOfGridView(nodeInfo);
             PerformClickUtils.findViewIdAndClick(this, groupName);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
                 PerformClickUtils.performBack(this);
                 getFromType = 0;
                 getInfo(nodeInfo);
@@ -371,7 +374,7 @@ public class HelpService extends AccessibilityService {
 
         } else if (getFromType == 0) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
                 clickGetInfo(nodeInfo);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -389,12 +392,11 @@ public class HelpService extends AccessibilityService {
 
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(wx_user_id);
-
         for (int i = 0; i < list.size(); i++) {
             //获取微信名
             wxUserBean = new ECTaskResultResponse.TaskResultBean();
             String user = list.get(i).getText().toString();
-            JKLog.i(TAG,"item:"+user);
+            JKLog.i(TAG, "item:" + user);
             sleepAndClickText(1000, user);
 
             wxUserBean.setRemark(list.get(i).getText().toString());
@@ -465,7 +467,7 @@ public class HelpService extends AccessibilityService {
                 }
 
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                wxUserBean.setRemark(PerformClickUtils.geyTextById(this,vx_remark));
+                wxUserBean.setRemark(PerformClickUtils.geyTextById(this, vx_remark));
                 wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
