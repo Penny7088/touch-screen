@@ -47,6 +47,7 @@ public class ECApplication extends Application {
         super.onCreate();
         JKDebug.Init(BuildConfig.DEBUG ? 1 : 0, getApplicationContext(), ECConfig.MESSAGE_CENTER);
         OthoerUtil.CreatNeedFile();
+        OthoerUtil.doOfTaskEnd();
 
         /*内存泄漏检测*/
         refWatcher = BuildConfig.DEBUG ? LeakCanary.install(this) : RefWatcher.DISABLED;
