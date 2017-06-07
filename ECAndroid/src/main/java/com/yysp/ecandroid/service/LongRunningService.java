@@ -86,6 +86,7 @@ public class LongRunningService extends Service {
                     doOfScript();
                     break;
                 case MyPushIntentService.GetWxUserInfo:
+                    HelpService.fromType = 1;
                     doOfScript();
                     break;
                 case MyPushIntentService.CreatGroupType:

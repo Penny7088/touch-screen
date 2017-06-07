@@ -32,14 +32,10 @@ public class PerformClickUtils {
             return;
         }
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
-        JKLog.d("aaaa", nodeInfoList.size() + "   text   =   " + text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                JKLog.d("dddddd", "   nodeInfo   =   " + nodeInfo);
-                JKLog.d("cccccc", "   nodeInfo   =   " + nodeInfo.getText());
                 if (nodeInfo != null && ((nodeInfo.getText() != null && text.equals(nodeInfo.getText().toString())) || (nodeInfo.getContentDescription() != null && text.equals(nodeInfo.getContentDescription())))) {
                     performClick(nodeInfo);
-                    JKLog.d("bbbbbbb", nodeInfoList.size() + "   nodeInfo   =   " + nodeInfo.getText().toString());
                     break;
                 }
             }
