@@ -4,13 +4,11 @@ import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.jkframework.debug.JKLog;
 
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,13 +31,15 @@ public class PerformClickUtils {
         if (accessibilityNodeInfo == null) {
             return;
         }
-
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
+        JKLog.d("aaaa", nodeInfoList.size() + "   text   =   " + text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null && (text.equals(nodeInfo.getText().toString()) || text.equals(nodeInfo.getContentDescription()))) {
+                JKLog.d("dddddd", "   nodeInfo   =   " + nodeInfo);
+                JKLog.d("cccccc", "   nodeInfo   =   " + nodeInfo.getText());
+                if (nodeInfo != null && ((nodeInfo.getText() != null && text.equals(nodeInfo.getText().toString())) || (nodeInfo.getContentDescription() != null && text.equals(nodeInfo.getContentDescription())))) {
                     performClick(nodeInfo);
-
+                    JKLog.d("bbbbbbb", nodeInfoList.size() + "   nodeInfo   =   " + nodeInfo.getText().toString());
                     break;
                 }
             }
