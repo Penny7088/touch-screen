@@ -83,6 +83,7 @@ public class LongRunningService extends Service {
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
+                    HelpService.lastName = "";
                     doOfScript();
                     break;
                 case MyPushIntentService.GetWxUserInfo:
@@ -220,7 +221,7 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason);
                     break;
                 case MyPushIntentService.DeleFriend:
-                    postTaskFailReason(response,failReason);
+                    postTaskFailReason(response, failReason);
                     break;
                 case MyPushIntentService.AgressAddFriend:
                     postTaskFailReason(response, failReason);

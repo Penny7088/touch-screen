@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
+import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
@@ -36,9 +37,11 @@ public class OthoerUtil {
 
 
     public static void doOfTaskEnd() {
+        JKFile.WriteFile(ECSdCardPath.Task_List_TXT, "");
         JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
         JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
-
+        JKFile.WriteFile(ECSdCardPath.NendBF,"");
+        JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT,"");
         JKPreferences.RemoveSharePersistent("doTasking");
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");

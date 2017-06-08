@@ -34,8 +34,7 @@ import static com.yysp.ecandroid.config.ECConfig.AliasName;
 @RequiresApi(api = Build.VERSION_CODES.DONUT)
 public class HelpService extends AccessibilityService {
     String TAG = "RT";
-    String lastName = "";
-    int count = 0;
+    public static String lastName = "";
     int page = 1;
     int taskType;
 
@@ -93,7 +92,6 @@ public class HelpService extends AccessibilityService {
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
-                lastName = "";
                 String ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
                 JKLog.i("RT", "do_task:" + taskType + "/" + isTasking);
@@ -106,7 +104,7 @@ public class HelpService extends AccessibilityService {
                                     sleepAndClickId(1000, new_friend);
                                     break;
                                 case MyPushIntentService.GetWxUserInfo:
-                                    JKLog.i(TAG,"-------"+fromType+"-------");
+                                    JKLog.i(TAG, "-------" + fromType + "-------");
                                     if (fromType == 1) {
                                         try {
                                             sleepAndClickText(1000, "通讯录");
@@ -198,7 +196,6 @@ public class HelpService extends AccessibilityService {
                             switch (taskType) {
                                 case MyPushIntentService.ContactGetFriendInfo:
                                     sleepAndClickText(2000, "添加手机联系人");
-                                    count++;
                                     break;
                             }
                             break;
@@ -228,7 +225,13 @@ public class HelpService extends AccessibilityService {
                                             }
                                             delewithListView();
                                         } else {
+                                            try {
+                                                Thread.sleep(2000);
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
                                             delewithListView();
+
                                         }
                                     }
                             }
@@ -275,7 +278,7 @@ public class HelpService extends AccessibilityService {
                 //反馈消息
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
                 JKLog.i(TAG, "task_group:" + list.get(i).getText().toString());
-                JKLog.i(TAG, "task_group:" + PerformClickUtils.geyTextById(this,"com.tencent.mm:id/mh"));
+                JKLog.i(TAG, "task_group:" + PerformClickUtils.geyTextById(this, "com.tencent.mm:id/mh"));
                 wxUserBean.setNickname(list.get(i).getText().toString());
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
@@ -292,7 +295,6 @@ public class HelpService extends AccessibilityService {
             //任务执行完善后工作
             response.setStatus(ECConfig.TASK_FINISH);
             response.setDeviceAlias(AliasName);
-            JKLog.i(TAG, "*************************" + "task_finish" + infoList.size() + "*************************");
             response.setTaskResult(infoList);
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
@@ -422,10 +424,9 @@ public class HelpService extends AccessibilityService {
             response.setTaskResult(infoList);
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
-            JKLog.i(TAG,"-------"+"fromType"+"-------");
         } else {
             Thread.sleep(1000);
-            JKLog.i(TAG,"-------"+"performHome"+"-------");
+            JKLog.i(TAG, "-------" + "performHome" + "-------");
             PerformClickUtils.performHome(this);
         }
     }
@@ -441,71 +442,65 @@ public class HelpService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void delewithListView() {
         addFromType = 0;
-        int index;
         AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
-        List<AccessibilityNodeInfo> infoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(textId);
-        JKLog.i(TAG, "info:" + infoList.size());
-        if (infoList.size() == 0) {
-            index = 0;
-        } else {
-            index = infoList.size() - 1;
-        }
-        JKLog.i(TAG, "infos" + infoList.get(index).getText().toString());
-        List<ECTaskResultResponse.TaskResultBean> list = new ArrayList<>();
-        if (!lastName.equals(infoList.get(index).getText().toString())) {
-            int j;
-            if (page == 1) {
-                j = 0;
+        List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(textId);
+        JKLog.i(TAG, "502_size:" + nodeInfoList.size());
+        if (nodeInfoList.size() != 0) {
+            if (!lastName.equals(nodeInfoList.get(nodeInfoList.size() - 1).getText().toString())) {
+                lastName = nodeInfoList.get(nodeInfoList.size() - 1).getText().toString();
+                int j;
+                if (page == 1) {
+                    j = 0;
+                } else {
+                    j = 1;
+                }
+
+                for (int i = j; i < nodeInfoList.size(); i++) {
+                    //获取微信名
+                    sleepAndClickText(1000, nodeInfoList.get(i).getText().toString());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                    wxUserBean.setRemark(PerformClickUtils.geyTextById(this, vx_remark));
+                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
+                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                    infoList.add(wxUserBean);
+                    try {
+                        Thread.sleep(2000);
+                        PerformClickUtils.performBack(this);
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                JKLog.i("RT", "502,is:" + isNeedSwipe);
+                page++;
+                isNeedSwipe = true;
+                addFromType = 1;
             } else {
-                j = 1;
+                isNeedSwipe = false;
+                addFromType = 1;
+                JKLog.i(TAG, "502:滑动通讯录底部了!");
+                OthoerUtil.deleContanct(this);//删除通讯录
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskResult(infoList);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
             }
-
-            for (int i = j; i < infoList.size(); i++) {
-                //获取微信名
-                sleepAndClickText(1000, infoList.get(i).getText().toString());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                wxUserBean.setRemark(PerformClickUtils.geyTextById(this, vx_remark));
-                wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
-                wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
-                wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
-                list.add(wxUserBean);
-                try {
-                    Thread.sleep(2000);
-                    PerformClickUtils.performBack(this);
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            page++;
-            isNeedSwipe = true;
-            addFromType = 1;
-        } else {
-            isNeedSwipe = false;
-            addFromType = 1;
-            lastName = "";
-            OthoerUtil.deleContanct(this);//删除通讯录
-            JKLog.i(TAG, "task_:滑动通讯录底部了!");
-            ECTaskResultResponse response = new ECTaskResultResponse();
-            response.setStatus(ECConfig.TASK_FINISH);
-            response.setDeviceAlias(AliasName);
-            response.setTaskResult(list);
-            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-            doOfTaskEnd(response);
         }
 
-        lastName = infoList.get(index).getText().toString();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
     }
 
