@@ -51,7 +51,6 @@ import android.widget.LinearLayout;
 import com.jkframework.activity.JKBaseActivity;
 import com.jkframework.algorithm.JKAnalysis;
 import com.jkframework.algorithm.JKConvert;
-import com.jkframework.algorithm.JKEncryption;
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.bean.JKDeviceType;
 import com.jkframework.callback.JKBatteryLinstener;
@@ -625,7 +624,7 @@ public class JKSystem {
      */
     public static String GetGUID() {
         String tAndroidImei = GetAndroidImei();
-//        String tAndroidCode = GetAndroidCode();
+//        String tAndroidCode = GetAndroidCode()
 //        return JKEncryption.MD5_32(tAndroidImei + tAndroidCode);
         return tAndroidImei;
     }

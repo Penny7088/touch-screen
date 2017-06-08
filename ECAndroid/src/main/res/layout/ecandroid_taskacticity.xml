@@ -16,12 +16,23 @@
         android:textSize="16dp" />
 
 
+    <Button
+        android:id="@+id/bt_postId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试" />
+
+    <Button
+        android:id="@+id/bt_writeToFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="删除联系人" />
 
     <Button
         android:id="@+id/bt_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="初始化" />
+        android:text="添加联系人" />
 
     <Button
         android:id="@+id/bt_start"
