@@ -75,7 +75,7 @@ android {
     productFlavors {
         offical {
             applicationId "com.yysp.ecandroid"
-            manifestPlaceholders = [APPNAME     : "任务(勿删)", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677",
+            manifestPlaceholders = [APPNAME     : "辅助(勿删)", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677",
                                     UMENG_APPKEY: "58f42b2d07fe650ea00022e2", UMENG_MESSAGE_SECRET: "ef0938b87444249d49da73d3e830bb07"
             ]
         }
