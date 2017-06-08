@@ -101,6 +101,7 @@ public class LongRunningService extends Service {
                     doOfScript();
                     break;
                 case MyPushIntentService.GetCreatGroupInfo:
+                    HelpService.lastName = "";
                     doOfScript();
                     break;
                 case MyPushIntentService.ChatWithFriend:

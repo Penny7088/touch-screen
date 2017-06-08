@@ -264,45 +264,43 @@ public class HelpService extends AccessibilityService {
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void clickGetInfo(AccessibilityNodeInfo nodeInfo) throws InterruptedException {
-
+        JKLog.i(TAG, "507_task:");
         List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupName);
+        if (list.size() != 0) {
+            JKLog.i(TAG, "507_last_name:" + list.get(list.size() - 1).getText().toString());
+            if (!lastName.equals(list.get(list.size() - 1).getText().toString())) {
+                lastName = list.get(list.size() - 1).getText().toString();
+                for (int i = 0; i < list.size(); i++) {
+                    //获取微信名
+                    Thread.sleep(1000);
+                    PerformClickUtils.performClick(list.get(i));
+                    Thread.sleep(1000);
+                    //反馈消息
+                    wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, "com.tencent.mm:id/mh"));
+                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                    infoList.add(wxUserBean);
+                    Thread.sleep(2000);
+                    PerformClickUtils.performBack(this);
+                    Thread.sleep(1000);
+                }
+                getFromType = 1;
+                fromType = 1;
+            } else {
 
-        int count = list.size() - 1;
-        JKLog.i(TAG, "task_count:" + count + "********" + list.get(count).getText().toString());
-        if (!lastName.equals(list.get(count).getText().toString())) {
-            for (int i = 0; i < list.size(); i++) {
-                //获取微信名
-                Thread.sleep(1000);
-                PerformClickUtils.performClick(list.get(i));
-                Thread.sleep(1000);
-                //反馈消息
-                wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                JKLog.i(TAG, "task_group:" + list.get(i).getText().toString());
-                JKLog.i(TAG, "task_group:" + PerformClickUtils.geyTextById(this, "com.tencent.mm:id/mh"));
-                wxUserBean.setNickname(list.get(i).getText().toString());
-                wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
-                wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
-                infoList.add(wxUserBean);
-                Thread.sleep(2000);
-                PerformClickUtils.performBack(this);
-                Thread.sleep(1000);
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                //任务执行完善后工作
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskResult(infoList);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
+                fromType = 0;
             }
-            getFromType = 1;
-            fromType = 1;
-        } else {
-
-            ECTaskResultResponse response = new ECTaskResultResponse();
-            //任务执行完善后工作
-            response.setStatus(ECConfig.TASK_FINISH);
-            response.setDeviceAlias(AliasName);
-            response.setTaskResult(infoList);
-            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-            doOfTaskEnd(response);
-            lastName = "";
-            fromType = 0;
+            Log.i(TAG, "task_s:" + list.size() + "/" + lastName);
         }
-        lastName = list.get(count).getText().toString();
-        Log.i(TAG, "task_s:" + list.size() + "/" + lastName);
+
 
     }
 
@@ -333,7 +331,7 @@ public class HelpService extends AccessibilityService {
                 //获取微信名
                 sleepAndClickText(1000, list.get(i).getText().toString());
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                wxUserBean.setRemark(list.get(i).getText().toString());
+                JKLog.i(TAG, "507_no_" + list.get(i).getText().toString());
                 wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
@@ -364,11 +362,12 @@ public class HelpService extends AccessibilityService {
             }
         } else if (getFromType == -1) {
             //向上滑动
-            PerformClickUtils.performSwipeDownOfGridView(nodeInfo);
-            PerformClickUtils.findViewIdAndClick(this, groupName);
             try {
+                PerformClickUtils.performSwipeDownOfGridView(nodeInfo);
                 Thread.sleep(2000);
-//                PerformClickUtils.performBack(this);
+                PerformClickUtils.findViewIdAndClick(this, groupName);
+                Thread.sleep(2000);
+                PerformClickUtils.performBack(this);
                 getFromType = 0;
                 getInfo(nodeInfo);
             } catch (InterruptedException e) {
