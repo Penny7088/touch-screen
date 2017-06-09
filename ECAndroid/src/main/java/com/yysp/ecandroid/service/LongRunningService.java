@@ -2,11 +2,8 @@ package com.yysp.ecandroid.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
@@ -14,7 +11,6 @@ import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
-import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.OthoerUtil;
@@ -83,6 +79,7 @@ public class LongRunningService extends Service {
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
+                    HelpService.addFromType = 1;
                     HelpService.lastName = "";
                     doOfScript();
                     break;

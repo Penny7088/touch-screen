@@ -13,7 +13,6 @@ import com.jkframework.config.JKPreferences;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.bean.DisBean;
-import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.OthoerUtil;
@@ -39,7 +38,7 @@ public class HelpService extends AccessibilityService {
     int taskType;
 
     public static int fromType = 1;
-    int addFromType = 1;
+    public static int addFromType = 1;
     int getFromType = -1;
     boolean isNeedSwipe = false;
 
