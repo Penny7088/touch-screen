@@ -162,9 +162,8 @@ public class HelpService extends AccessibilityService {
                                     //群识别,滑动
                                     try {
                                         Thread.sleep(2000);
-                                        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
                                         fromType = 1;
-                                        goToGroupPeoPleInfo(this, nodeInfo);
+                                        goToGroupPeoPleInfo();
                                         Thread.sleep(3000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
@@ -306,25 +305,15 @@ public class HelpService extends AccessibilityService {
 
     /**
      * 获取群组中成员信息
-     *
-     * @param nodeInfo
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void goToGroupPeoPleInfo(AccessibilityService service, AccessibilityNodeInfo nodeInfo) {
+    private void goToGroupPeoPleInfo() {
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         String titleId = "android:id/title";
         String groupNameId = "com.tencent.mm:id/ce7";
-        if (PerformClickUtils.geyTextById(service, titleId).equals("")) {
-            //需要滑动
-            PerformClickUtils.performSwipe(nodeInfo);
-            try {
-                Thread.sleep(1000);
-                PerformClickUtils.findViewIdAndClick(this, titleId);
-                getFromType = -1;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
+        JKLog.i(TAG, "507_pf***:" + PerformClickUtils.getContentDescriptionById(this, titleId));
+        if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
             //不需要滑动
             List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
             for (int i = 0; i < list.size(); i++) {
@@ -336,7 +325,13 @@ public class HelpService extends AccessibilityService {
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                 infoList.add(wxUserBean);
-                PerformClickUtils.performBack(this);
+                try {
+                    Thread.sleep(2000);
+                    PerformClickUtils.performBack(this);
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             ECTaskResultResponse response = new ECTaskResultResponse();
             response.setStatus(ECConfig.TASK_FINISH);
@@ -345,6 +340,19 @@ public class HelpService extends AccessibilityService {
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
             getFromType = -1;
+        } else if (PerformClickUtils.geyTextById(this, titleId).equals("")) {
+            //需要滑动
+            PerformClickUtils.performSwipe(nodeInfo);
+            try {
+                Thread.sleep(1000);
+                if (PerformClickUtils.geyTextById(this, titleId).equals("查看全部群成员")) {
+                    Thread.sleep(1000);
+                    PerformClickUtils.findViewIdAndClick(this, titleId);
+                    getFromType = -1;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -553,7 +561,6 @@ public class HelpService extends AccessibilityService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
