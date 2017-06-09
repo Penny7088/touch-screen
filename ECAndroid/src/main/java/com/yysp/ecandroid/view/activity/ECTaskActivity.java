@@ -9,35 +9,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jkframework.config.JKPreferences;
-import com.jkframework.config.JKSystem;
-import com.jkframework.control.JKTextView;
 import com.jkframework.control.JKToast;
-import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.R;
 import com.yysp.ecandroid.config.ECConfig;
-import com.yysp.ecandroid.data.bean.DisBean;
-import com.yysp.ecandroid.data.bean.DisGetTaskBean;
-import com.yysp.ecandroid.data.response.ECTaskResultResponse;
-import com.yysp.ecandroid.net.ECNetSend;
-import com.yysp.ecandroid.service.LongRunningService;
-import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.OthoerUtil;
 import com.yysp.ecandroid.view.ECBaseActivity;
-
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.yysp.ecandroid.config.ECConfig.AliasName;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -48,6 +30,7 @@ public class ECTaskActivity extends ECBaseActivity {
      * 页面初始化
      */
     private boolean bInit = false;
+    public String TAG="saas-api_";
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
 
@@ -116,5 +99,41 @@ public class ECTaskActivity extends ECBaseActivity {
         }
     }
 
+
+    @Click(R.id.bt_CloseScreenOrder)
+    void  CloseScreenOrder(){
+//        CloseScreenOrder();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //todo 执行定时任务
+                int i = 0;
+                while ( i < 3 ) {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i++;
+                }
+//                OpenScreenOrder();
+            }
+        }).start();
+    }
+
+    @Click(R.id.bt_OpenMessagebar)
+    void OpenMessagebar(){
+//        OpenMessagebar();
+    }
+
+    @Click(R.id.bt_CloseMessagebar)
+    void CloseMessagebar(){
+//        CloseMessagebar();
+    }
+
+    @Click(R.id.bt_volume)
+    void Volume(){
+//        Volume();
+    }
 
 }

@@ -7,6 +7,27 @@
     android:orientation="vertical">
 
 
+    <com.jkframework.control.JKTextView
+        android:id="@+id/tv_deviceId"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:textSize="16dp" />
+
+
+    <Button
+        android:id="@+id/bt_postId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试" />
+
+    <Button
+        android:id="@+id/bt_writeToFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="删除联系人" />
+
     <Button
         android:id="@+id/bt_task"
         android:layout_width="match_parent"
@@ -19,6 +40,29 @@
         android:layout_height="wrap_content"
         android:text="开启辅助功能" />
 
+    <Button
+        android:id="@+id/bt_CloseScreenOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CloseScreenOrder" />
+
+    <Button
+        android:id="@+id/bt_OpenMessagebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OpenMessagebar" />
+
+    <Button
+        android:id="@+id/bt_CloseMessagebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CloseMessagebar" />
+
+    <Button
+        android:id="@+id/bt_volume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="音量下键" />
 
 
 </LinearLayout>
