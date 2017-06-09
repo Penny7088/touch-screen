@@ -130,7 +130,7 @@ public class LongRunningService extends Service {
                     break;
                 case MyPushIntentService.DetectionTask:
                     //反馈检测账号是否合格
-                    postTaskFinish(response);
+                   doOfScript();
                     break;
                 case MyPushIntentService.FriendNumInfo:
                     doOfScript();

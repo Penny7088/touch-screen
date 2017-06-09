@@ -104,7 +104,6 @@ public class HelpService extends AccessibilityService {
                                     sleepAndClickId(1000, new_friend);
                                     break;
                                 case MyPushIntentService.GetWxUserInfo:
-                                    JKLog.i(TAG, "-------" + fromType + "-------");
                                     if (fromType == 1) {
                                         try {
                                             sleepAndClickText(1000, "通讯录");
@@ -128,6 +127,28 @@ public class HelpService extends AccessibilityService {
                                         response.setDeviceAlias(AliasName);
                                         response.setAmount(Integer.parseInt(friendNum));
                                         doOfTaskEnd(response);
+                                    }
+                                    break;
+                                case MyPushIntentService.DetectionTask:
+                                    sleepAndClickText(1000, "通讯录");
+                                    String nums = PerformClickUtils.geyTextById(this, no_more_people_id);
+                                    if (!nums.equals("")) {
+                                        String friendNum = PerformClickUtils.getNumFromInfo(nums);
+                                        JKLog.i(TAG, "task_friendNum:" + friendNum);
+                                        int num=Integer.parseInt(friendNum);
+                                        ECTaskResultResponse response = new ECTaskResultResponse();
+                                        if (num>=3){
+                                            response.setStatus(ECConfig.TASK_FINISH);
+                                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                                            response.setDeviceAlias(AliasName);
+                                            doOfTaskEnd(response);
+                                        } else {
+                                            response.setStatus(ECConfig.TASK_Fail);
+                                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                                            response.setDeviceAlias(AliasName);
+                                            response.setReason("好友数量不够");
+                                            doOfTaskEnd(response);
+                                        }
                                     }
                                     break;
                             }
