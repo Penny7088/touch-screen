@@ -48,7 +48,6 @@ public class ECTaskActivity extends ECBaseActivity {
      * 页面初始化
      */
     private boolean bInit = false;
-    public String TAG="saas-api_";
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
 
@@ -117,41 +116,5 @@ public class ECTaskActivity extends ECBaseActivity {
         }
     }
 
-
-    @Click(R.id.bt_CloseScreenOrder)
-    void  CloseScreenOrder(){
-//        CloseScreenOrder();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //todo 执行定时任务
-                int i = 0;
-                while ( i < 3 ) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    i++;
-                }
-//                OpenScreenOrder();
-            }
-        }).start();
-    }
-
-    @Click(R.id.bt_OpenMessagebar)
-    void OpenMessagebar(){
-//        OpenMessagebar();
-    }
-
-    @Click(R.id.bt_CloseMessagebar)
-    void CloseMessagebar(){
-//        CloseMessagebar();
-    }
-
-    @Click(R.id.bt_volume)
-    void Volume(){
-//        Volume();
-    }
 
 }
