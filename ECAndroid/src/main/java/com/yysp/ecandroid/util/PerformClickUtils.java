@@ -170,8 +170,10 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null) {
+                if (nodeInfo != null && nodeInfo.getText() != null) {
                     return nodeInfo.getText().toString();
+                }else {
+                    return "";
                 }
             }
         }
@@ -243,6 +245,18 @@ public class PerformClickUtils {
             if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                 AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                 node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            }
+        }
+    }
+
+    public static void performSwipeBack(AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return;
+        }
+        for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
+            if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
+                AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
+                node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
             }
         }
     }

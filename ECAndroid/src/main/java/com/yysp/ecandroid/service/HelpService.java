@@ -331,6 +331,11 @@ public class HelpService extends AccessibilityService {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void goToGroupPeoPleInfo() {
+        try {
+            Thread.sleep(1000*20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         String titleId = "android:id/title";
         String groupNameId = "com.tencent.mm:id/ce7";
@@ -370,6 +375,59 @@ public class HelpService extends AccessibilityService {
                 if (PerformClickUtils.geyTextById(this, titleId).equals("查看全部群成员")) {
                     Thread.sleep(1000);
                     PerformClickUtils.findViewIdAndClick(this, titleId);
+                    getFromType = -1;
+                }else if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
+
+                    PerformClickUtils.performSwipeBack(nodeInfo);
+                    Thread.sleep(1000);
+                    nodeInfo = getRootInActiveWindow();
+                    List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
+                    for (int i = 0; i < list.size(); i++) {
+                        //获取微信名
+                        sleepAndClickText(1000, list.get(i).getText().toString());
+                        wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                        JKLog.i(TAG, "507_no_" + list.get(i).getText().toString());
+                        wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
+                        wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                        wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                        infoList.add(wxUserBean);
+                        try {
+                            Thread.sleep(2000);
+                            PerformClickUtils.performBack(this);
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    PerformClickUtils.performSwipe(nodeInfo);
+                    Thread.sleep(1000);
+                    nodeInfo = getRootInActiveWindow();
+                    list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
+                    for (int i = 0; i < list.size(); i++) {
+                        //获取微信名
+                        sleepAndClickText(1000, list.get(i).getText().toString());
+                        wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                        JKLog.i(TAG, "507_no_" + list.get(i).getText().toString());
+                        wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
+                        wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                        wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                        infoList.add(wxUserBean);
+                        try {
+                            Thread.sleep(2000);
+                            PerformClickUtils.performBack(this);
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    ECTaskResultResponse response = new ECTaskResultResponse();
+                    response.setStatus(ECConfig.TASK_FINISH);
+                    response.setDeviceAlias(AliasName);
+                    response.setTaskResult(infoList);
+                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                    doOfTaskEnd(response);
                     getFromType = -1;
                 }
             } catch (InterruptedException e) {
