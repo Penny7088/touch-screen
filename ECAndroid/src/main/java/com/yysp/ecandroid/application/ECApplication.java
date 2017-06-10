@@ -105,12 +105,12 @@ public class ECApplication extends Application {
 
             @Override
             public void onNext(DisBean disSignBean) {
-                JKLog.i("saas-api_", "sign_do" + disSignBean.getCode() + "/" + disSignBean.getMsg());
+                JKLog.i("RT", "sign_do" + disSignBean.getCode() + "/" + disSignBean.getMsg());
             }
 
             @Override
             public void onError(Throwable e) {
-                JKLog.i("saas-api_", "sign_do_erro:" + e.getMessage() + "/" + e.getLocalizedMessage() + "*" + e.toString());
+                JKLog.i("RT", "sign_do_erro:" + e.getMessage() + "/" + e.getLocalizedMessage() + "*" + e.toString());
                 OthoerUtil.AddErrorMsgUtil(e.getMessage());
             }
 
