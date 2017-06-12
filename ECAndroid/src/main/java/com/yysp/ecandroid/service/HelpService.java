@@ -604,6 +604,8 @@ public class HelpService extends AccessibilityService {
                 JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, "item_taskStatus:success");
+                }else {
+                    OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
                 }
 
                 OthoerUtil.doOfTaskEnd();

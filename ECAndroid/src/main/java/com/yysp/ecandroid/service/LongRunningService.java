@@ -292,6 +292,9 @@ public class LongRunningService extends Service {
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, TAG + "taskStatus:success");
                 }
+                else {
+                    OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
+                }
                 OthoerUtil.doOfTaskEnd();
             }
 
@@ -315,6 +318,11 @@ public class LongRunningService extends Service {
     private void doOfScript() {
         JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
         JKPreferences.SaveSharePersistent("doTasking", true);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         OthoerUtil.launcherWx(this);
     }
 }

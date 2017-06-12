@@ -40,7 +40,7 @@ public class OthoerUtil {
         JKFile.WriteFile(ECSdCardPath.Task_List_TXT, "");
         JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
         JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
-        JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT,"");
+        JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT, "");
         JKPreferences.RemoveSharePersistent("doTasking");
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");
@@ -108,6 +108,7 @@ public class OthoerUtil {
         for (String phone : list) {
             try {
                 ContactUtil.deleteContact(context, phone);
+                JKLog.i("RT", "del:" + phone);
             } catch (Exception e) {
                 e.printStackTrace();
             }

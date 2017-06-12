@@ -60,7 +60,7 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null) {
+                if (nodeInfo != null && nodeInfo.getText() != null) {
                     performClick(nodeInfo);
                     break;
                 }
@@ -136,7 +136,7 @@ public class PerformClickUtils {
                 e.printStackTrace();
             }
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
-            JKLog.i("RT","task_run:home");
+            JKLog.i("RT", "task_run:home");
         }
     }
 
@@ -172,7 +172,7 @@ public class PerformClickUtils {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null && nodeInfo.getText() != null) {
                     return nodeInfo.getText().toString();
-                }else {
+                } else {
                     return "";
                 }
             }
@@ -194,7 +194,7 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null) {
+                if (nodeInfo != null && nodeInfo.getText() != null) {
                     return nodeInfo.getContentDescription().toString();
                 }
             }
@@ -260,7 +260,6 @@ public class PerformClickUtils {
             }
         }
     }
-
 
 
     //模拟向上滑动事件
