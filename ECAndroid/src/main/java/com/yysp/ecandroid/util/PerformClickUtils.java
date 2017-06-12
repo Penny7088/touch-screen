@@ -194,7 +194,7 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null && nodeInfo.getText() != null) {
+                if (nodeInfo != null && nodeInfo.getContentDescription() != null) {
                     return nodeInfo.getContentDescription().toString();
                 }
             }
