@@ -341,7 +341,6 @@ public class HelpService extends AccessibilityService {
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         String titleId = "android:id/title";
         String groupNameId = "com.tencent.mm:id/ce7";
-        JKLog.i(TAG, "507_pf***:" + PerformClickUtils.getContentDescriptionById(this, titleId));
         if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
             //不需要滑动
             List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
@@ -388,7 +387,6 @@ public class HelpService extends AccessibilityService {
                         //获取微信名
                         sleepAndClickText(1000, list.get(i).getText().toString());
                         wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                        JKLog.i(TAG, "507_no_" + list.get(i).getText().toString());
                         wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                         wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                         wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
