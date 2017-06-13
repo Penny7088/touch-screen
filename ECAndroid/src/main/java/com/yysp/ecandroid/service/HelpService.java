@@ -105,13 +105,18 @@ public class HelpService extends AccessibilityService {
                                     break;
                                 case MyPushIntentService.GetWxUserInfo:
                                     if (fromType == 1) {
-                                        try {
                                             sleepAndClickText(1000, "通讯录");
                                             fromType = 0;
-                                            getWxUserInfo();
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                            new Thread(){
+                                                @Override
+                                                public void run() {
+                                                    try {
+                                                        getWxUserInfo();
+                                                    } catch (InterruptedException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }.start();
                                     }
                                     break;
                                 case MyPushIntentService.FriendNumInfo:
@@ -119,8 +124,6 @@ public class HelpService extends AccessibilityService {
                                     String text = PerformClickUtils.geyTextById(this, no_more_people_id);
                                     if (!text.equals("")) {
                                         String friendNum = PerformClickUtils.getNumFromInfo(text);
-                                        JKLog.i(TAG, "task_friendNum:" + friendNum);
-
                                         ECTaskResultResponse response = new ECTaskResultResponse();
                                         response.setStatus(ECConfig.TASK_FINISH);
                                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
@@ -134,10 +137,9 @@ public class HelpService extends AccessibilityService {
                                     String nums = PerformClickUtils.geyTextById(this, no_more_people_id);
                                     if (!nums.equals("")) {
                                         String friendNum = PerformClickUtils.getNumFromInfo(nums);
-                                        JKLog.i(TAG, "task_friendNum:" + friendNum);
-                                        int num=Integer.parseInt(friendNum);
+                                        int num = Integer.parseInt(friendNum);
                                         ECTaskResultResponse response = new ECTaskResultResponse();
-                                        if (num>=3){
+                                        if (num >= 3) {
                                             response.setStatus(ECConfig.TASK_FINISH);
                                             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                                             response.setDeviceAlias(AliasName);
@@ -183,10 +185,15 @@ public class HelpService extends AccessibilityService {
                                     //群识别,滑动
                                     try {
                                         Thread.sleep(2000);
-                                        if(fromTypeGroupPeoPleInfo == 1){
+                                        if (fromTypeGroupPeoPleInfo == 1) {
                                             fromType = 1;
                                             fromTypeGroupPeoPleInfo = 0;
-                                            goToGroupPeoPleInfo();
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    goToGroupPeoPleInfo();
+                                                }
+                                            }.start();
                                         }
                                         Thread.sleep(3000);
                                     } catch (InterruptedException e) {
@@ -199,10 +206,15 @@ public class HelpService extends AccessibilityService {
                         case SeeRoomMemberUI:
                             switch (taskType) {
                                 case MyPushIntentService.GetCreatGroupInfo:
-                                    AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+                                    final AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
                                     if (fromType == 1) {
                                         fromType = 0;
-                                        getInfo(nodeInfo);
+                                        new Thread(){
+                                            @Override
+                                            public void run() {
+                                                getInfo(nodeInfo);
+                                            }
+                                        }.start();
                                     }
                                     break;
                             }
@@ -246,15 +258,25 @@ public class HelpService extends AccessibilityService {
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
-                                            delewithListView();
+
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    delewithListView();
+                                                }
+                                            }.start();
                                         } else {
                                             try {
                                                 Thread.sleep(2000);
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
-                                            delewithListView();
-
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    delewithListView();
+                                                }
+                                            }.start();
                                         }
                                     }
                             }
@@ -334,7 +356,7 @@ public class HelpService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void goToGroupPeoPleInfo() {
         try {
-            Thread.sleep(1000*20);
+            Thread.sleep(1000 * 20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -376,7 +398,7 @@ public class HelpService extends AccessibilityService {
                     Thread.sleep(1000);
                     PerformClickUtils.findViewIdAndClick(this, titleId);
                     getFromType = -1;
-                }else if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
+                } else if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
 
                     PerformClickUtils.performSwipeBack(nodeInfo);
                     Thread.sleep(1000);
@@ -492,7 +514,7 @@ public class HelpService extends AccessibilityService {
             wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
             wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
             infoList.add(wxUserBean);
-            Thread.sleep(500);
+            Thread.sleep(1500);
             PerformClickUtils.performBack(this);
         }
 
@@ -602,7 +624,7 @@ public class HelpService extends AccessibilityService {
                 JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, "item_taskStatus:success");
-                }else {
+                } else {
                     OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
                 }
                 OthoerUtil.doOfTaskEnd();
