@@ -348,15 +348,14 @@ public class HelpService extends AccessibilityService {
                 //获取微信名
                 sleepAndClickText(1000, list.get(i).getText().toString());
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                JKLog.i(TAG, "507_no_" + list.get(i).getText().toString());
                 wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                 infoList.add(wxUserBean);
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1500);
                     PerformClickUtils.performBack(this);
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -608,7 +607,6 @@ public class HelpService extends AccessibilityService {
                 }
                 OthoerUtil.doOfTaskEnd();
                 infoList.clear();
-
             }
 
             @Override

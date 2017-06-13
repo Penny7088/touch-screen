@@ -34,7 +34,7 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null && ((nodeInfo.getText() != null && text.equals(nodeInfo.getText().toString())) || (nodeInfo.getContentDescription() != null && text.equals(nodeInfo.getContentDescription())))) {
+                if (nodeInfo != null) {
                     performClick(nodeInfo);
                     break;
                 }
@@ -226,7 +226,7 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null && (text.equals(nodeInfo.getText().toString()) || text.equals(nodeInfo.getContentDescription()))) {
+                if (nodeInfo != null && nodeInfo.getText() != null && text.equals(nodeInfo.getText().toString())) {
                     return nodeInfo.getText().toString();
                 }
             }
