@@ -250,6 +250,11 @@ public class HelpService extends AccessibilityService {
                             switch (taskType) {
                                 case MyPushIntentService.ContactGetFriendInfo:
                                     if (addFromType == 1) {
+                                        try {
+                                            Thread.sleep(2000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
                                         if (isNeedSwipe) {
                                             AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
                                             PerformClickUtils.performSwipe(accessibilityNodeInfo);
@@ -570,7 +575,8 @@ public class HelpService extends AccessibilityService {
                     }
 
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                    wxUserBean.setRemark(PerformClickUtils.geyTextById(this, vx_remark));
+                    JKLog.i("RT", "infos:" + nodeInfoList.get(i).getText().toString());
+                    wxUserBean.setMobile(nodeInfoList.get(i).getText().toString());
                     wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
