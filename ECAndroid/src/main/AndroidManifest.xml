@@ -17,25 +17,6 @@
         android:supportsRtl="true"
         tools:replace="icon,label,allowBackup">
 
-        <activity
-            android:name="com.yysp.ecandroid.view.activity.ECLoadingActivity_"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/ECStartTheme"></activity>
-
-        <activity
-            android:name="com.yysp.ecandroid.view.activity.ECMainActivity_"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/ECTheme" />
-
-        <activity
-            android:name="com.yysp.ecandroid.view.activity.ECLoginDemoActivity_"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/ECTheme" />
-
 
         <activity
             android:name=".view.activity.ECTaskActivity_"
@@ -66,16 +47,6 @@
 
         </service>
 
-        <!-- 腾讯bugly -->
-        <!--<meta-data-->
-        <!--android:name="BUGLY_APP_CHANNEL"-->
-        <!--android:value="${CHANNEL_NAME}" />-->
-        <!--<meta-data-->
-        <!--android:name="BUGLY_APPID"-->
-        <!--android:value="${QQBUGLY_ID}" />-->
-        <!--<meta-data-->
-        <!--android:name="BUGLY_ENABLE_DEBUG"-->
-        <!--android:value="false" />-->
 
 
         <!-- 友盟推送sdk -->

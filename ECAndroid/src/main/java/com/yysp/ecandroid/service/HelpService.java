@@ -105,18 +105,18 @@ public class HelpService extends AccessibilityService {
                                     break;
                                 case MyPushIntentService.GetWxUserInfo:
                                     if (fromType == 1) {
-                                            sleepAndClickText(1000, "通讯录");
-                                            fromType = 0;
-                                            new Thread(){
-                                                @Override
-                                                public void run() {
-                                                    try {
-                                                        getWxUserInfo();
-                                                    } catch (InterruptedException e) {
-                                                        e.printStackTrace();
-                                                    }
+                                        sleepAndClickText(1000, "通讯录");
+                                        fromType = 0;
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    getWxUserInfo();
+                                                } catch (InterruptedException e) {
+                                                    e.printStackTrace();
                                                 }
-                                            }.start();
+                                            }
+                                        }.start();
                                     }
                                     break;
                                 case MyPushIntentService.FriendNumInfo:
@@ -209,7 +209,7 @@ public class HelpService extends AccessibilityService {
                                     final AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
                                     if (fromType == 1) {
                                         fromType = 0;
-                                        new Thread(){
+                                        new Thread() {
                                             @Override
                                             public void run() {
                                                 getInfo(nodeInfo);

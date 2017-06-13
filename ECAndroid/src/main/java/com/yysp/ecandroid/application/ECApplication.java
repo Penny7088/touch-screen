@@ -14,8 +14,6 @@ import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECVersion;
 import com.jkframework.config.JKVersion;
 import com.jkframework.debug.JKDebug;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.net.ECNetSend;
@@ -35,12 +33,7 @@ public class ECApplication extends Application {
     /**
      * 内存监听对象
      */
-    private RefWatcher refWatcher;
 
-    public static RefWatcher getRefWatcher(Context context) {
-        ECApplication application = (ECApplication) context.getApplicationContext();
-        return application.refWatcher;
-    }
 
     @Override
     public void onCreate() {
@@ -50,7 +43,6 @@ public class ECApplication extends Application {
         OthoerUtil.doOfTaskEnd();
 
         /*内存泄漏检测*/
-        refWatcher = BuildConfig.DEBUG ? LeakCanary.install(this) : RefWatcher.DISABLED;
 
         /*初始化*/
         boolean bInit = JKVersion.CheckVersion();
