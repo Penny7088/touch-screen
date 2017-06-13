@@ -533,7 +533,6 @@ public class HelpService extends AccessibilityService {
             doOfTaskEnd(response);
         } else {
             Thread.sleep(1000);
-            JKLog.i(TAG, "-------" + "performHome" + "-------");
             PerformClickUtils.performHome(this);
         }
     }
