@@ -5,7 +5,6 @@ import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.net.JKHttpRetrofit;
 import com.jkframework.serialization.JKJson;
-import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;

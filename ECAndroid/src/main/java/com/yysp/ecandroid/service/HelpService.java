@@ -37,6 +37,7 @@ public class HelpService extends AccessibilityService {
     int page = 1;
     int taskType;
 
+    public static int fromTypeGroupPeoPleInfo = 1;
     public static int fromType = 1;
     public static int addFromType = 1;
     int getFromType = -1;
@@ -182,8 +183,11 @@ public class HelpService extends AccessibilityService {
                                     //群识别,滑动
                                     try {
                                         Thread.sleep(2000);
-                                        fromType = 1;
-                                        goToGroupPeoPleInfo();
+                                        if(fromTypeGroupPeoPleInfo == 1){
+                                            fromType = 1;
+                                            fromTypeGroupPeoPleInfo = 0;
+                                            goToGroupPeoPleInfo();
+                                        }
                                         Thread.sleep(3000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
@@ -419,7 +423,6 @@ public class HelpService extends AccessibilityService {
                             e.printStackTrace();
                         }
                     }
-
                     ECTaskResultResponse response = new ECTaskResultResponse();
                     response.setStatus(ECConfig.TASK_FINISH);
                     response.setDeviceAlias(AliasName);
@@ -605,7 +608,6 @@ public class HelpService extends AccessibilityService {
                 }else {
                     OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
                 }
-
                 OthoerUtil.doOfTaskEnd();
                 infoList.clear();
 
@@ -620,7 +622,6 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onComplete() {
-
             }
         });
 
