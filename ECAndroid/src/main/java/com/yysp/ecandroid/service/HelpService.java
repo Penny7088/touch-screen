@@ -551,7 +551,6 @@ public class HelpService extends AccessibilityService {
         addFromType = 0;
         AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(textId);
-        JKLog.i(TAG, "502_size:" + nodeInfoList.size());
         if (nodeInfoList.size() != 0) {
             if (!lastName.equals(nodeInfoList.get(nodeInfoList.size() - 1).getText().toString())) {
                 lastName = nodeInfoList.get(nodeInfoList.size() - 1).getText().toString();
