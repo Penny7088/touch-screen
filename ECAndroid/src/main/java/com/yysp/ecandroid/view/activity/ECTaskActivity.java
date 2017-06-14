@@ -41,7 +41,6 @@ public class ECTaskActivity extends ECBaseActivity {
         if (savedInstanceState != null) {
             bInit = savedInstanceState.getBoolean("Init", false);
         }
-        Toast.makeText(this,ECConfig.AliasName,Toast.LENGTH_LONG).show();
     }
 
     @Override

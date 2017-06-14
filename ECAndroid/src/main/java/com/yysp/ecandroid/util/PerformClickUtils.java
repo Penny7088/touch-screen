@@ -241,22 +241,27 @@ public class PerformClickUtils {
         if (nodeInfo == null) {
             return;
         }
-        for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
-            if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
-                AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
-                node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+        if (nodeInfo.getChildCount() > 0) {
+            for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
+                if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
+                    AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
+                    node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                }
             }
         }
+
     }
 
     public static void performSwipeBack(AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null) {
             return;
         }
-        for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
-            if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
-                AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
-                node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        if (nodeInfo.getChildCount() > 0) {
+            for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
+                if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
+                    AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
+                    node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+                }
             }
         }
     }

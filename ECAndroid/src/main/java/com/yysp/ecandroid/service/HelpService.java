@@ -573,9 +573,7 @@ public class HelpService extends AccessibilityService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                    JKLog.i("RT", "infos:" + nodeInfoList.get(i).getText().toString());
                     wxUserBean.setMobile(nodeInfoList.get(i).getText().toString());
                     wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
