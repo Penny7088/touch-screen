@@ -15,6 +15,8 @@ public class ECConfig {
     public final static int TASK_DOING_AlREALY_REQ = 602;
     //任务失败
     public final static int TASK_Fail = 605;
+    //搜索频繁
+    public final static int TASK_searMoreErro = 60;
     //检测成功
     public final static String Detetion_Success="检测成功";
     //成功

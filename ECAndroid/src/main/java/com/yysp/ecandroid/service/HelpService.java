@@ -247,8 +247,15 @@ public class HelpService extends AccessibilityService {
                             }
                             break;
                         case MobileFriendUI:
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             switch (taskType) {
+
                                 case MyPushIntentService.ContactGetFriendInfo:
+                                    JKLog.i("RT", "add:" + addFromType);
                                     if (addFromType == 1) {
                                         try {
                                             Thread.sleep(2000);
@@ -263,7 +270,6 @@ public class HelpService extends AccessibilityService {
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
-
                                             new Thread() {
                                                 @Override
                                                 public void run() {
@@ -595,7 +601,12 @@ public class HelpService extends AccessibilityService {
                 isNeedSwipe = false;
                 addFromType = 1;
                 JKLog.i(TAG, "502:滑动通讯录底部了!");
-                OthoerUtil.deleContanct(this);//删除通讯录
+                new Thread(){
+                    @Override
+                    public void run() {
+                        OthoerUtil.deleContanct(HelpService.this);//删除通讯录
+                    }
+                }.start();
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
                 response.setDeviceAlias(AliasName);
@@ -608,6 +619,16 @@ public class HelpService extends AccessibilityService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        } else {
+            isNeedSwipe = false;
+            addFromType = 1;
+            OthoerUtil.deleContanct(this);//删除通讯录
+            ECTaskResultResponse response = new ECTaskResultResponse();
+            response.setStatus(ECConfig.TASK_Fail);
+            response.setDeviceAlias(AliasName);
+            response.setReason("通讯录无人");
+            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+            doOfTaskEnd(response);
         }
 
 

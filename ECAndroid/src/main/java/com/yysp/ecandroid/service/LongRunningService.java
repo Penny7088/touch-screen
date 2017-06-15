@@ -128,7 +128,7 @@ public class LongRunningService extends Service {
                     break;
                 case MyPushIntentService.DetectionTask:
                     //反馈检测账号是否合格
-                   doOfScript();
+                    doOfScript();
                     break;
                 case MyPushIntentService.FriendNumInfo:
                     doOfScript();
@@ -159,75 +159,79 @@ public class LongRunningService extends Service {
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
-                    postTaskFailReason(response, failReason);
+                    if (failReason.equals("搜索频繁")) {
+                        postTaskFailReason(response, failReason, ECConfig.TASK_searMoreErro);
+                    } else {
+                        postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    }
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.GetWxUserInfo:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.CreatGroupType:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.CreatGroupTypeBySmallWx:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.GetGroupPeoPleNum:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.GetCreatGroupInfo:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.ChatWithFriend:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.LookFriendCircle:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.VoiceWithFriend:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.VideoWithFriend:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.Forwarding:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.SendFriendCircle:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.Clicklike:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.Comment:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.DetectionTask:
                     String detectionTaskTxt = JKFile.ReadFile(ECSdCardPath.DETECTION_TASK_Finish_TXT);
-                    postTaskFailReason(response, failReason + "|" + detectionTaskTxt);
+                    postTaskFailReason(response, failReason + "|" + detectionTaskTxt, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.FriendNumInfo:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.AgressAddInGroupMsg:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.GoOutGroup:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.KickOutGroup:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.DeleFriend:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.AgressAddFriend:
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
                     OthoerUtil.deleContanct(this);
-                    postTaskFailReason(response, failReason);
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
             }
 
@@ -241,9 +245,9 @@ public class LongRunningService extends Service {
      *
      * @param response
      */
-    private void postTaskFailReason(ECTaskResultResponse response, String reason) {
+    private void postTaskFailReason(ECTaskResultResponse response, String reason, int status) {
         JKPreferences.RemoveSharePersistent("taskType");//删除type以免轮休两次
-        response.setStatus(ECConfig.TASK_Fail);
+        response.setStatus(status);
         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
         response.setDeviceAlias(AliasName);
         response.setReason(reason);
@@ -292,8 +296,7 @@ public class LongRunningService extends Service {
                 JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, TAG + "taskStatus:success");
-                }
-                else {
+                } else {
                     OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
                 }
                 OthoerUtil.doOfTaskEnd();

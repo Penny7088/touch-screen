@@ -147,13 +147,18 @@ public class MyPushIntentService extends UmengMessageService {
         }
     }
 
-    private void doTypeTask(int taskType, String content) {
+    private void doTypeTask(int taskType, final String content) {
         switch (taskType) {
             case SearchAddFriendType:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
-                AddToContact(this, content);
+                new Thread(){
+                    @Override
+                    public void run() {
+                        AddToContact(MyPushIntentService.this, content);
+                    }
+                }.start();
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case GetWxUserInfo:
@@ -217,7 +222,12 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case NeedContactAddFriend:
-                AddToContact(this, content);
+                new Thread(){
+                    @Override
+                    public void run() {
+                        AddToContact(MyPushIntentService.this, content);
+                    }
+                }.start();
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
         }
@@ -232,6 +242,7 @@ public class MyPushIntentService extends UmengMessageService {
         Gson gson = new Gson();
         List<DisGetTaskBean.DataBean.TargetAccountsBean> list = gson.fromJson(custom, DisGetTaskBean.DataBean.class).getTargetAccounts();
         List<String> phoneList = new ArrayList<>();
+        JKLog.i(TAG, "phone_size:" + list.size());
         for (int i = 0; i < list.size(); i++) {
             ContactUtil.addContact(context, list.get(i).getMobile());
             JKLog.i(TAG, "phone:" + list.get(i).getMobile());
