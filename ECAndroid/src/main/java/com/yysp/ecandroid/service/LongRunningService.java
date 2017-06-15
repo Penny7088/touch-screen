@@ -80,6 +80,7 @@ public class LongRunningService extends Service {
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
                     HelpService.addFromType = 1;
+                    HelpService.CountType = 1;
                     HelpService.lastName = "";
                     doOfScript();
                     break;

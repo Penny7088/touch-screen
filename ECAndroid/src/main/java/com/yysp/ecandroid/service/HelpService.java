@@ -80,6 +80,7 @@ public class HelpService extends AccessibilityService {
     public static final String SelectContactUI = "com.tencent.mm.ui.contact.SelectContactUI";
     //
     public static final String BindMContactIntroUI = "com.tencent.mm.ui.bindmobile.BindMContactIntroUI";
+    public static int CountType;
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -265,11 +266,7 @@ public class HelpService extends AccessibilityService {
                                         if (isNeedSwipe) {
                                             AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
                                             PerformClickUtils.performSwipe(accessibilityNodeInfo);
-                                            try {
-                                                Thread.sleep(2000);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
+
                                             new Thread() {
                                                 @Override
                                                 public void run() {
@@ -277,11 +274,7 @@ public class HelpService extends AccessibilityService {
                                                 }
                                             }.start();
                                         } else {
-                                            try {
-                                                Thread.sleep(2000);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
+
                                             new Thread() {
                                                 @Override
                                                 public void run() {
@@ -558,6 +551,11 @@ public class HelpService extends AccessibilityService {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void delewithListView() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         addFromType = 0;
         AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(textId);
@@ -601,7 +599,7 @@ public class HelpService extends AccessibilityService {
                 isNeedSwipe = false;
                 addFromType = 1;
                 JKLog.i(TAG, "502:滑动通讯录底部了!");
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
                         OthoerUtil.deleContanct(HelpService.this);//删除通讯录
@@ -620,15 +618,28 @@ public class HelpService extends AccessibilityService {
                 e.printStackTrace();
             }
         } else {
-            isNeedSwipe = false;
-            addFromType = 1;
-            OthoerUtil.deleContanct(this);//删除通讯录
-            ECTaskResultResponse response = new ECTaskResultResponse();
-            response.setStatus(ECConfig.TASK_Fail);
-            response.setDeviceAlias(AliasName);
-            response.setReason("通讯录无人");
-            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-            doOfTaskEnd(response);
+            if (CountType >= 2) {
+                isNeedSwipe = false;
+                addFromType = 1;
+                OthoerUtil.deleContanct(this);//删除通讯录
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_Fail);
+                response.setDeviceAlias(AliasName);
+                response.setReason("通讯录无人");
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
+            } else {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                PerformClickUtils.performBack(this);
+                CountType++;
+                isNeedSwipe = false;
+                addFromType = 1;
+            }
+
         }
 
 
