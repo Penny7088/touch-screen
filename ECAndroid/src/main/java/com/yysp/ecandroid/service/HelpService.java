@@ -54,6 +54,7 @@ public class HelpService extends AccessibilityService {
     String groupName = "com.tencent.mm:id/aab";
     String new_friend = "com.tencent.mm:id/ax5";
     String groupNum = "android:id/text1";
+
     List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
 
 
@@ -80,6 +81,8 @@ public class HelpService extends AccessibilityService {
     public static final String SelectContactUI = "com.tencent.mm.ui.contact.SelectContactUI";
     //
     public static final String BindMContactIntroUI = "com.tencent.mm.ui.bindmobile.BindMContactIntroUI";
+    //弹出框
+    public static final String dialogUI = "com.tencent.mm.ui.base.h";
     public static int CountType;
 
 
@@ -285,6 +288,12 @@ public class HelpService extends AccessibilityService {
                                     }
                             }
                             break;
+                        case dialogUI:
+                            switch (taskType) {
+                                case MyPushIntentService.ContactGetFriendInfo:
+                                    sleepAndClickText(2000, "确定");
+                                    break;
+                            }
                         case HomeLauncherUI:
                             switch (taskType) {
                                 case MyPushIntentService.GetWxUserInfo:
