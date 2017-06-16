@@ -655,7 +655,6 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onNext(DisBean disBean) {
-                JKLog.i(TAG, "taskStatus:" + disBean.getCode() + "/" + disBean.getMsg());
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, "item_taskStatus:success");
                 } else {
