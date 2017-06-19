@@ -7,7 +7,7 @@ apply plugin: 'bugly'
 //}
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 25
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
@@ -98,5 +98,5 @@ dependencies {
     compile 'org.androidannotations:androidannotations-api:4.3.0'
     compile 'com.afollestad.material-dialogs:core:0.9.4.4'
     compile project(':PushSDK')
-
+    provided files('libs/framework.jar')
 }

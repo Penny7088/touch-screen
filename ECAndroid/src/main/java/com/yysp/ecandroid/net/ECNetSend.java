@@ -1,5 +1,8 @@
 package com.yysp.ecandroid.net;
 
+import android.content.Context;
+import android.view.WindowManager;
+
 import com.jkframework.algorithm.JKEncryption;
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
@@ -24,8 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ECNetSend {
 
-//        public static final String Host = "http://192.168.1.45:8080/saas-api/";
-    public static final String Host = "http://192.168.1.134:8080/dis-api/";
+    public static final String Host = "http://192.168.1.45:8080/saas-api/";
+//    public static final String Host = "http://192.168.1.134:8080/dis-api/";
 
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
@@ -44,7 +47,9 @@ public class ECNetSend {
         return service.taskApply(taskId, deviceAlias);
     }
 
-    public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse) {
+    public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse, Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        wm.setTpDisable(1);//打开屏幕触摸
         JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         return service.taskStatus(resultResponse);
     }

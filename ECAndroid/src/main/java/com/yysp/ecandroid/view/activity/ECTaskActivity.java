@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.Toast;
+import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jkframework.control.JKToast;
 import com.yysp.ecandroid.R;
-import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.util.OthoerUtil;
 import com.yysp.ecandroid.view.ECBaseActivity;
 
@@ -55,7 +54,7 @@ public class ECTaskActivity extends ECBaseActivity {
         if (!bInit) {
             bInit = true;
         }
-
+        OpenScreenOrder();
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
         if (!accessibilityManager.isEnabled()) {
 
@@ -74,65 +73,14 @@ public class ECTaskActivity extends ECBaseActivity {
 
     }
 
-
-
-    @Click(R.id.bt_task)
-    void task() {
-       OthoerUtil.doOfTaskEnd();
+    void  CloseScreenOrder(){//关闭屏幕触摸
+        WindowManager wm = (WindowManager) getSystemService(this.WINDOW_SERVICE);
+        wm.setTpDisable(0);
     }
 
-    @Click(R.id.bt_start)
-    void start() {
-        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
-        if (!accessibilityManager.isEnabled()) {
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
-        } else {
-            Intent intent = new Intent();
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
-            startActivity(intent);
-
-        }
-    }
-
-
-    @Click(R.id.bt_CloseScreenOrder)
-    void  CloseScreenOrder(){
-//        CloseScreenOrder();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //todo 执行定时任务
-                int i = 0;
-                while ( i < 3 ) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    i++;
-                }
-//                OpenScreenOrder();
-            }
-        }).start();
-    }
-
-    @Click(R.id.bt_OpenMessagebar)
-    void OpenMessagebar(){
-//        OpenMessagebar();
-    }
-
-    @Click(R.id.bt_CloseMessagebar)
-    void CloseMessagebar(){
-//        CloseMessagebar();
-    }
-
-    @Click(R.id.bt_volume)
-    void Volume(){
-//        Volume();
+    void OpenScreenOrder(){//打开屏幕触摸
+        WindowManager wm = (WindowManager) getSystemService(this.WINDOW_SERVICE);
+        wm.setTpDisable(1);
     }
 
 }

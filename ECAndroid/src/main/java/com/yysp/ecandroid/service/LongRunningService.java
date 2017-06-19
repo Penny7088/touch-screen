@@ -272,7 +272,7 @@ public class LongRunningService extends Service {
         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
         response.setDeviceAlias(AliasName);
         response.setReason(reason);
-        ECNetSend.taskStatus(response).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+        ECNetSend.taskStatus(response,this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -306,7 +306,7 @@ public class LongRunningService extends Service {
         resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
         resultResponse.setDeviceAlias(AliasName);//别名
         JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
-        ECNetSend.taskStatus(resultResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+        ECNetSend.taskStatus(resultResponse,this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
 
