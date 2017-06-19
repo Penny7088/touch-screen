@@ -46,6 +46,7 @@ public class HelpService extends AccessibilityService {
     //控件id
     String vx_name_id = "com.tencent.mm:id/aeq";
     String vx_remark = "com.tencent.mm:id/aze";
+    String wx_name = "com.tencent.mm:id/mh";
     String wx_user_id = "com.tencent.mm:id/ig";
     String no_more_people_id = "com.tencent.mm:id/ae8";
     String gender_id = "com.tencent.mm:id/aeu";
@@ -54,6 +55,12 @@ public class HelpService extends AccessibilityService {
     String groupName = "com.tencent.mm:id/aab";
     String new_friend = "com.tencent.mm:id/ax5";
     String groupNum = "android:id/text1";
+    String noReadId = "com.tencent.mm:id/ia";//未读消息小红点
+    String agreeText = "我通过了你的朋友验证请求，现在我们可以开始聊天了";
+    String userHeadImgId = "com.tencent.mm:id/ik";
+    String isEndNoReadId = "com.tencent.mm:id/buf";
+    String addBt = "com.tencent.mm:id/aej";
+
 
     List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
 
@@ -83,6 +90,9 @@ public class HelpService extends AccessibilityService {
     public static final String BindMContactIntroUI = "com.tencent.mm.ui.bindmobile.BindMContactIntroUI";
     //弹出框
     public static final String dialogUI = "com.tencent.mm.ui.base.h";
+    //详情界面
+    public static final String ContactInfoUI = "com.tencent.mm.plugin.profile.ui.ContactInfoUI";
+    public static final String SayHiWithSnsPermissionUI = "com.tencent.mm.plugin.profile.ui.SayHiWithSnsPermissionUI";
     public static int CountType;
 
 
@@ -96,6 +106,7 @@ public class HelpService extends AccessibilityService {
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
+
                 String ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
                 JKLog.i("RT", "do_task:" + taskType + "/" + isTasking);
@@ -157,6 +168,18 @@ public class HelpService extends AccessibilityService {
                                         }
                                     }
                                     break;
+                                case MyPushIntentService.ViewMessage:
+                                    //TODO
+
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            if (fromType == 1) {
+                                                doViewMessageTask(getRootInActiveWindow());
+                                            }
+                                        }
+                                    }.start();
+                                    break;
                             }
                             break;
                         case FMessageConversationUI://新的朋友
@@ -205,18 +228,50 @@ public class HelpService extends AccessibilityService {
                                     }
 
                                     break;
+                                case MyPushIntentService.AddFriendFromGroup:
+                                    //群加友
+                                    try {
+                                        Thread.sleep(2000);
+                                        if (fromTypeGroupPeoPleInfo == 1) {
+                                            fromType = 1;
+                                            fromTypeGroupPeoPleInfo = 0;
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    addGroupFriend();
+                                                }
+                                            }.start();
+                                        }
+                                        Thread.sleep(3000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    break;
+
                             }
                             break;
                         case SeeRoomMemberUI:
+                            final AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
                             switch (taskType) {
                                 case MyPushIntentService.GetCreatGroupInfo:
-                                    final AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
                                     if (fromType == 1) {
                                         fromType = 0;
                                         new Thread() {
                                             @Override
                                             public void run() {
                                                 getInfo(nodeInfo);
+                                            }
+                                        }.start();
+                                    }
+                                    break;
+                                case MyPushIntentService.AddFriendFromGroup:
+                                    if (fromType == 1) {
+                                        fromType = 0;
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                swipeAddFriend(nodeInfo);
                                             }
                                         }.start();
                                     }
@@ -292,9 +347,37 @@ public class HelpService extends AccessibilityService {
                             switch (taskType) {
                                 case MyPushIntentService.ContactGetFriendInfo:
                                     sleepAndClickText(2000, "确定");
+                                    PerformClickUtils.performBack(this);
                                     break;
                             }
+                            break;
+                        case ContactInfoUI:
+                            switch (taskType) {
+                                case MyPushIntentService.ViewFriendNews:
+                                    JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, vx_name_id));
+                                    JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, wx_name));
+                                    JKLog.i("RT", "task_533:" + PerformClickUtils.getContentDescriptionById(this, gender_id));
+                                    JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, ares_id));
+
+                                    wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                                    wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
+                                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, wx_name));
+                                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                                    infoList.add(wxUserBean);
+
+                                    ECTaskResultResponse response = new ECTaskResultResponse();
+                                    response.setStatus(ECConfig.TASK_FINISH);
+                                    response.setDeviceAlias(AliasName);
+                                    response.setTaskResult(infoList);
+                                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                                    doOfTaskEnd(response);
+
+                                    break;
+                            }
+                            break;
                         case HomeLauncherUI:
+                            Intent intent;
                             switch (taskType) {
                                 case MyPushIntentService.GetWxUserInfo:
                                     try {
@@ -303,7 +386,19 @@ public class HelpService extends AccessibilityService {
                                         e.printStackTrace();
                                     }
                                     fromType = 1;
-                                    Intent intent = new Intent();
+                                    intent = new Intent();
+                                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
+                                    startActivity(intent);
+                                    break;
+                                case MyPushIntentService.ViewMessage:
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    fromType = 1;
+                                    intent = new Intent();
                                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                                     intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
                                     startActivity(intent);
@@ -314,6 +409,98 @@ public class HelpService extends AccessibilityService {
                     }
                 }
 
+        }
+    }
+
+    /*
+     寻找未读消息
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void doViewMessageTask(AccessibilityNodeInfo nodeInfo) {
+        fromType = 0;
+        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(noReadId);
+        JKLog.i("RT", "task_532:" + list.size());
+        List<AccessibilityNodeInfo> noRead = nodeInfo.findAccessibilityNodeInfosByViewId(isEndNoReadId);
+        JKLog.i("RT", "task_532:" + noRead.size());
+        if (noRead.size() != 0) {
+            if (list.size() != 0) {
+                for (int i = 0; i < list.size(); i++) {
+                    sleepAndClickId(2000, noReadId);
+                    try {
+                        Thread.sleep(2000);
+                        String agree_msg = PerformClickUtils.findText(this, agreeText);
+                        if (!agree_msg.equals("")) {
+                            JKLog.i("RT", "task_532:同意为好友");
+                            List<AccessibilityNodeInfo> headList = nodeInfo.findAccessibilityNodeInfosByViewId(userHeadImgId);
+                            PerformClickUtils.performClick(headList.get(0));
+                            Thread.sleep(3000);
+                            JKLog.i("RT", "task_532:" + PerformClickUtils.geyTextById(this, vx_name_id));
+                            JKLog.i("RT", "task_532:" + PerformClickUtils.geyTextById(this, wx_name));
+                            JKLog.i("RT", "task_532:" + PerformClickUtils.getContentDescriptionById(this, gender_id));
+                            JKLog.i("RT", "task_532:" + PerformClickUtils.getContentDescriptionById(this, ares_id));
+
+                            wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                            wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_remark));
+                            wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
+                            wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                            wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                            infoList.add(wxUserBean);
+
+                            Thread.sleep(2000);
+                            PerformClickUtils.performBack(this);
+                            Thread.sleep(2000);
+                            PerformClickUtils.performBack(this);
+                        } else {
+                            JKLog.i("RT", "task_532:无同意好友");
+                            Thread.sleep(3000);
+                            PerformClickUtils.performBack(this);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                swipeAndHome(nodeInfo);
+            } else {
+                JKLog.i("RT", "task_532:滑动到底部了!");
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
+            }
+
+        } else {
+            if (infoList.size() != 0) {
+                JKLog.i("RT", "task_532:读完未读消息了!!!");
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
+            } else {
+                JKLog.i("RT", "task_532:没有未读消息!!!");
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                response.setReason("没有未读消息");
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
+            }
+
+        }
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void swipeAndHome(AccessibilityNodeInfo nodeInfo) {
+        try {
+            Thread.sleep(2000);
+            PerformClickUtils.performSwipe(nodeInfo);
+            Thread.sleep(2000);
+            PerformClickUtils.performHome(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -335,7 +522,7 @@ public class HelpService extends AccessibilityService {
                     Thread.sleep(1000);
                     //反馈消息
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, "com.tencent.mm:id/mh"));
+                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, wx_name));
                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                     infoList.add(wxUserBean);
@@ -346,7 +533,6 @@ public class HelpService extends AccessibilityService {
                 getFromType = 1;
                 fromType = 1;
             } else {
-
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 //任务执行完善后工作
                 response.setStatus(ECConfig.TASK_FINISH);
@@ -360,6 +546,106 @@ public class HelpService extends AccessibilityService {
         }
 
 
+    }
+
+    /**
+     * 获取群组中成员信息
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void addGroupFriend() {
+        try {
+            Thread.sleep(1000 * 20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        String titleId = "android:id/title";
+        String groupNameId = "com.tencent.mm:id/ce7";
+        if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
+            //不需要滑动
+            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
+            for (int i = 0; i < list.size(); i++) {
+                //获取微信名
+                sleepAndClickText(1000, list.get(i).getText().toString());
+                try {
+                    Thread.sleep(3000);
+                    sleepAndClickId(1000, addBt);
+                    sleepAndClickId(1000, "com.tencent.mm:id/gl");
+                    Thread.sleep(2000);
+                    PerformClickUtils.performBack(this);
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            ECTaskResultResponse response = new ECTaskResultResponse();
+            response.setStatus(ECConfig.TASK_FINISH);
+            response.setDeviceAlias(AliasName);
+            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+            doOfTaskEnd(response);
+            getFromType = -1;
+        } else if (PerformClickUtils.geyTextById(this, titleId).equals("")) {
+            //需要滑动
+            PerformClickUtils.performSwipe(nodeInfo);
+            try {
+                Thread.sleep(1000);
+                if (PerformClickUtils.geyTextById(this, titleId).equals("查看全部群成员")) {
+                    Thread.sleep(1000);
+                    PerformClickUtils.findViewIdAndClick(this, titleId);
+                    getFromType = -1;
+                } else if (PerformClickUtils.getContentDescriptionById(this, titleId).equals("分隔栏")) {
+
+                    PerformClickUtils.performSwipeBack(nodeInfo);
+                    Thread.sleep(1000);
+                    nodeInfo = getRootInActiveWindow();
+                    List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
+                    for (int i = 0; i < list.size(); i++) {
+                        //获取微信名
+                        sleepAndClickText(1000, list.get(i).getText().toString());
+                        try {
+                            Thread.sleep(3000);
+                            sleepAndClickId(1000, addBt);
+                            Thread.sleep(2000);
+                            sleepAndClickText(1000, "发送");
+                            Thread.sleep(2000);
+                            PerformClickUtils.performBack(this);
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    PerformClickUtils.performSwipe(nodeInfo);
+                    Thread.sleep(1000);
+                    nodeInfo = getRootInActiveWindow();
+                    list = nodeInfo.findAccessibilityNodeInfosByViewId(groupNameId);
+                    for (int i = 0; i < list.size(); i++) {
+                        //获取微信名
+                        sleepAndClickText(1000, list.get(i).getText().toString());
+                        try {
+                            Thread.sleep(3000);
+                            sleepAndClickId(1000, addBt);
+                            Thread.sleep(2000);
+                            sleepAndClickText(1000, "发送");
+                            Thread.sleep(2000);
+                            PerformClickUtils.performBack(this);
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    ECTaskResultResponse response = new ECTaskResultResponse();
+                    response.setStatus(ECConfig.TASK_FINISH);
+                    response.setDeviceAlias(AliasName);
+                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                    doOfTaskEnd(response);
+                    getFromType = -1;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -505,6 +791,93 @@ public class HelpService extends AccessibilityService {
         }
 
     }
+
+
+    /**
+     * 滑动群
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void swipeAddFriend(AccessibilityNodeInfo nodeInfo) {
+        JKLog.i(TAG, "task_type" + getFromType);
+        if (getFromType == 1) {
+            //滑动
+            PerformClickUtils.performSwipeUpOfGridView(nodeInfo);
+            try {
+                Thread.sleep(3000);
+                clickAddGroup(nodeInfo);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else if (getFromType == -1) {
+            //向上滑动
+            try {
+                PerformClickUtils.performSwipeDownOfGridView(nodeInfo);
+                Thread.sleep(2000);
+                PerformClickUtils.findViewIdAndClick(this, groupName);
+                Thread.sleep(2000);
+                PerformClickUtils.performBack(this);
+                getFromType = 0;
+                swipeAddFriend(nodeInfo);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        } else if (getFromType == 0) {
+            try {
+                Thread.sleep(3000);
+                clickAddGroup(nodeInfo);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+    /**
+     * 点击群组人员进入信息界面
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void clickAddGroup(AccessibilityNodeInfo nodeInfo) throws InterruptedException {
+        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(groupName);
+        if (list.size() != 0) {
+            JKLog.i(TAG, "534_last_name:" + list.get(list.size() - 1).getText().toString());
+            if (!lastName.equals(list.get(list.size() - 1).getText().toString())) {
+                lastName = list.get(list.size() - 1).getText().toString();
+                for (int i = 0; i < list.size(); i++) {
+                    //获取微信名
+                    Thread.sleep(1000);
+                    PerformClickUtils.performClick(list.get(i));
+                    Thread.sleep(1000);
+                    //反馈消息
+                    try {
+                        Thread.sleep(3000);
+                        sleepAndClickId(1000, addBt);
+                        Thread.sleep(4000);
+                        sleepAndClickId(1000, "com.tencent.mm:id/gl");
+                        Thread.sleep(4000);
+                        PerformClickUtils.performBack(this);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                getFromType = 1;
+                fromType = 1;
+            } else {
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                //任务执行完善后工作
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskResult(infoList);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
+                fromType = 0;
+            }
+            Log.i(TAG, "task_s:" + list.size() + "/" + lastName);
+        }
+    }
+
 
     /**
      * 拿到用户信息

@@ -70,6 +70,9 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int DeleFriend = 521;
     public final static int AgressAddFriend = 525;
     public final static int NeedContactAddFriend = 527;
+    public final static int ViewMessage = 532;
+    public final static int ViewFriendNews = 533;
+    public final static int AddFriendFromGroup = 534;
 
     @Override
     public void onMessage(Context context, Intent intent) {
@@ -153,7 +156,7 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
                         AddToContact(MyPushIntentService.this, content);
@@ -222,7 +225,7 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case NeedContactAddFriend:
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
                         AddToContact(MyPushIntentService.this, content);
@@ -230,6 +233,16 @@ public class MyPushIntentService extends UmengMessageService {
                 }.start();
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
+            case ViewMessage:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case ViewFriendNews:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case AddFriendFromGroup:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+
         }
 
     }

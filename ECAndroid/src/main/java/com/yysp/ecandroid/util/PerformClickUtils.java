@@ -5,8 +5,10 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.TextView;
 
 import com.jkframework.debug.JKLog;
+
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -243,7 +245,7 @@ public class PerformClickUtils {
         }
         if (nodeInfo.getChildCount() > 0) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
-                if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
+                if (!nodeInfo.getChild(0).getChild(i).getClassName().equals("") && nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                     node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                 }

@@ -24,8 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ECNetSend {
 
-//    public static final String Host = "http://192.168.1.45:8080/saas-api/";
-        public static final String Host = "http://192.168.1.134:8080/dis-api/";
+//        public static final String Host = "http://192.168.1.45:8080/saas-api/";
+    public static final String Host = "http://192.168.1.134:8080/dis-api/";
 
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
@@ -33,19 +33,6 @@ public class ECNetSend {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     public static ECNetInterface service = retrofit.create(ECNetInterface.class);
-
-
-    public static Observable<ECLoginResponse> Login(String tAccount, String tPassword) {
-        JKJson jkjJson = new JKJson();
-        jkjJson.CreateNode("action", "user_login_get");
-        jkjJson.CreateNode("username", tAccount);
-        jkjJson.CreateNode("password", JKEncryption.MD5_32(tPassword));
-        jkjJson.CreateNode("account_type", "2001");
-
-
-        return JKHttpRetrofit.GetRetrofitCache().using(ECNetCache.class)
-                .Login(service.Login("v2", jkjJson.GetString()), new DynamicKey(jkjJson.GetString()), new EvictProvider(true));
-    }
 
 
     public static Observable<DisBean> signUid(String deviceAlias, String machineCode) {

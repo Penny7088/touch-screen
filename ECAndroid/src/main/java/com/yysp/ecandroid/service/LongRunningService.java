@@ -153,6 +153,16 @@ public class LongRunningService extends Service {
                     OthoerUtil.deleContanct(this);
                     postTaskFinish(response);
                     break;
+                case MyPushIntentService.ViewMessage:
+                    HelpService.fromType = 1;
+                    doOfScript();
+                    break;
+                case MyPushIntentService.ViewFriendNews:
+                    doOfScript();
+                    break;
+                case MyPushIntentService.AddFriendFromGroup:
+                    doOfScript();
+                    break;
             }
         } else if (task_status.equals(ECConfig.fail)) {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
@@ -234,6 +244,16 @@ public class LongRunningService extends Service {
                     OthoerUtil.deleContanct(this);
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
+                case MyPushIntentService.ViewMessage:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+                case MyPushIntentService.ViewFriendNews:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+                case MyPushIntentService.AddFriendFromGroup:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+
             }
 
         } else {
