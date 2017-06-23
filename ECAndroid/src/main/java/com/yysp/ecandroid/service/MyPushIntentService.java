@@ -106,6 +106,8 @@ public class MyPushIntentService extends UmengMessageService {
                         if (disGetTaskBean.getData() != null) {
                             JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
                             if (disGetTaskBean.getData() != null) {
+                                WindowManager wm = (WindowManager) getSystemService(MyPushIntentService.this.WINDOW_SERVICE);
+                                wm.setTpDisable(0);//关闭屏幕触摸
                                 JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
                                 doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
