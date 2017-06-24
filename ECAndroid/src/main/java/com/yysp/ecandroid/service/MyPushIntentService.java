@@ -3,6 +3,7 @@ package com.yysp.ecandroid.service;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 
 import com.google.gson.Gson;
