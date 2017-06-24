@@ -6,11 +6,13 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityManager;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jkframework.control.JKToast;
 import com.yysp.ecandroid.R;
+import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.util.OthoerUtil;
 import com.yysp.ecandroid.view.ECBaseActivity;
 
@@ -29,7 +31,7 @@ public class ECTaskActivity extends ECBaseActivity {
      * 页面初始化
      */
     private boolean bInit = false;
-    public String TAG="saas-api_";
+    public String TAG = "saas-api_";
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
 
@@ -40,6 +42,7 @@ public class ECTaskActivity extends ECBaseActivity {
         if (savedInstanceState != null) {
             bInit = savedInstanceState.getBoolean("Init", false);
         }
+        JKToast.Show("测试服:" + ECConfig.AliasName, 0);
     }
 
     @Override
@@ -73,12 +76,12 @@ public class ECTaskActivity extends ECBaseActivity {
 
     }
 
-    void  CloseScreenOrder(){//关闭屏幕触摸
+    void CloseScreenOrder() {//关闭屏幕触摸
         WindowManager wm = (WindowManager) getSystemService(this.WINDOW_SERVICE);
         wm.setTpDisable(0);
     }
 
-    void OpenScreenOrder(){//打开屏幕触摸
+    void OpenScreenOrder() {//打开屏幕触摸
         WindowManager wm = (WindowManager) getSystemService(this.WINDOW_SERVICE);
         wm.setTpDisable(1);
     }

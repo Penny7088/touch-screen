@@ -163,6 +163,9 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.AddFriendFromGroup:
                     doOfScript();
                     break;
+                case MyPushIntentService.CleanSystemFile:
+                    postTaskFinish(response);
+                    break;
             }
         } else if (task_status.equals(ECConfig.fail)) {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
@@ -253,6 +256,9 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.AddFriendFromGroup:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
+                case MyPushIntentService.CleanSystemFile:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
 
             }
 
@@ -272,7 +278,7 @@ public class LongRunningService extends Service {
         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
         response.setDeviceAlias(AliasName);
         response.setReason(reason);
-        ECNetSend.taskStatus(response,this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+        ECNetSend.taskStatus(response, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -306,7 +312,7 @@ public class LongRunningService extends Service {
         resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
         resultResponse.setDeviceAlias(AliasName);//别名
         JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
-        ECNetSend.taskStatus(resultResponse,this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+        ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
 

@@ -74,6 +74,7 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int ViewMessage = 532;
     public final static int ViewFriendNews = 533;
     public final static int AddFriendFromGroup = 534;
+    public final static int CleanSystemFile = 535;
 
     @Override
     public void onMessage(Context context, Intent intent) {
@@ -243,6 +244,9 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case AddFriendFromGroup:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case CleanSystemFile:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
 
