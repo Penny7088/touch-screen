@@ -14,6 +14,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -630,15 +631,24 @@ public class JKSystem {
     }
 
     public static String GetGUID(int slotId) {
-        try {
-            TelephonyManager telephonyManager = (TelephonyManager) JKDebug.hContext.getSystemService(Context.TELEPHONY_SERVICE);
-            String tBack = telephonyManager.getDeviceId(slotId);
-            if (tBack == null)
-                tBack = "";
-            return tBack;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
+        SharedPreferences sharedPreferences =  JKDebug.hContext.getSharedPreferences("imei",Context.MODE_PRIVATE);
+        String imei = sharedPreferences.getString("imei","");
+        if(imei.equals("")){
+            try {
+                TelephonyManager telephonyManager = (TelephonyManager) JKDebug.hContext.getSystemService(Context.TELEPHONY_SERVICE);
+                String tBack = telephonyManager.getDeviceId(slotId);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("imei", tBack);
+                editor.commit();
+                if (tBack == null)
+                    tBack = "";
+                return tBack;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+        }else {
+            return imei;
         }
     }
 
