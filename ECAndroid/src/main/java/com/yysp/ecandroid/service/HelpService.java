@@ -314,7 +314,6 @@ public class HelpService extends AccessibilityService {
                             switch (taskType) {
 
                                 case MyPushIntentService.ContactGetFriendInfo:
-                                    JKLog.i("RT", "add:" + addFromType);
                                     if (addFromType == 1) {
                                         try {
                                             Thread.sleep(2000);
@@ -968,7 +967,7 @@ public class HelpService extends AccessibilityService {
 
                 for (int i = j; i < nodeInfoList.size(); i++) {
                     //获取微信名
-                    sleepAndClickText(1000, nodeInfoList.get(i).getText().toString());
+//                    sleepAndClickText(1000, nodeInfoList.get(i).getText().toString());
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -976,9 +975,9 @@ public class HelpService extends AccessibilityService {
                     }
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                     wxUserBean.setMobile(nodeInfoList.get(i).getText().toString());
-                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
-                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
-                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+//                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
+//                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+//                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                     infoList.add(wxUserBean);
                     try {
                         Thread.sleep(2000);
@@ -988,14 +987,12 @@ public class HelpService extends AccessibilityService {
                         e.printStackTrace();
                     }
                 }
-                JKLog.i("RT", "502,is:" + isNeedSwipe);
                 page++;
                 isNeedSwipe = true;
                 addFromType = 1;
             } else {
                 isNeedSwipe = false;
                 addFromType = 1;
-                JKLog.i(TAG, "502:滑动通讯录底部了!");
                 new Thread() {
                     @Override
                     public void run() {
