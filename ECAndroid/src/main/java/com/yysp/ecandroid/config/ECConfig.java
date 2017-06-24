@@ -1,6 +1,8 @@
 package com.yysp.ecandroid.config;
 
 
+import android.telephony.TelephonyManager;
+
 import com.jkframework.config.JKSystem;
 
 public class ECConfig {
@@ -26,6 +28,6 @@ public class ECConfig {
     //别名type
     public final static String AliasType="uid";
     //别名
-    public final static String AliasName= JKSystem.GetGUID();
+    public final static String AliasName= JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
 
 }

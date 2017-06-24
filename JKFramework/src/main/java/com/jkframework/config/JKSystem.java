@@ -629,6 +629,19 @@ public class JKSystem {
         return tAndroidImei;
     }
 
+    public static String GetGUID(int slotId) {
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager) JKDebug.hContext.getSystemService(Context.TELEPHONY_SERVICE);
+            String tBack = telephonyManager.getDeviceId(slotId);
+            if (tBack == null)
+                tBack = "";
+            return tBack;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     /**
      * 获取android 机器码
      *
