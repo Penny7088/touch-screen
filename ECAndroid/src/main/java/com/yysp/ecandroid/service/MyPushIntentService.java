@@ -93,42 +93,46 @@ public class MyPushIntentService extends UmengMessageService {
         final Gson gson = new Gson();
         DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
         JKLog.i(TAG, "taskId:" + disPushBean.getTaskId());
-        JKPreferences.SaveSharePersistent("taskId", disPushBean.getTaskId());
-        //等于0请求任务
-        ECNetSend.taskApply(disPushBean.getTaskId(), AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                new Observer<DisGetTaskBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        String tsId = JKPreferences.GetSharePersistentString("taskId");
+        if (!tsId.equals(disPushBean.getTaskId())) {
+            JKPreferences.SaveSharePersistent("taskId", disPushBean.getTaskId());
+            //等于0请求任务
+            ECNetSend.taskApply(disPushBean.getTaskId(), AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                    new Observer<DisGetTaskBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(DisGetTaskBean disGetTaskBean) {
-                        JKLog.i(TAG, "taskBean:" + disGetTaskBean.getMsg());
-                        if (disGetTaskBean.getData() != null) {
-                            JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
+                        @Override
+                        public void onNext(DisGetTaskBean disGetTaskBean) {
+                            JKLog.i(TAG, "taskBean:" + disGetTaskBean.getMsg());
                             if (disGetTaskBean.getData() != null) {
+                                JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                if (disGetTaskBean.getData() != null) {
                                 WindowManager wm = (WindowManager) getSystemService(MyPushIntentService.this.WINDOW_SERVICE);
                                 wm.setTpDisable(0);//关闭屏幕触摸
-                                JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-                                String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                    String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                    doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        JKLog.i(TAG, "task_APPLY:" + e.getMessage());
-                        OthoerUtil.AddErrorMsgUtil(e.getMessage());
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            JKLog.i(TAG, "task_APPLY:" + e.getMessage());
+                            OthoerUtil.AddErrorMsgUtil("startTask:task_Aapply:" + e.getMessage());
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
+                        }
                     }
-                }
-        );
+            );
+        }
+
 
     }
 

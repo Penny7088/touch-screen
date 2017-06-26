@@ -103,7 +103,7 @@ public class ECApplication extends Application {
             @Override
             public void onError(Throwable e) {
                 JKLog.i("RT", "sign_do_erro:" + e.getMessage() + "/" + e.getLocalizedMessage() + "*" + e.toString());
-                OthoerUtil.AddErrorMsgUtil(e.getMessage());
+                OthoerUtil.AddErrorMsgUtil("signUid:" + e.getMessage());
             }
 
             @Override

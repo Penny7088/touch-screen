@@ -50,7 +50,6 @@ public class ECNetSend {
     public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse, Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
         wm.setTpDisable(1);//打开屏幕触摸
-        JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         return service.taskStatus(resultResponse);
     }
 

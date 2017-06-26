@@ -18,4 +18,6 @@ public class ECSdCardPath {
     public final static String Task_Fail_TXT = SD_CARD_PATH + "task_fail_reason.txt";
     //需要备份
     public final static String NendBF = SD_CARD_PATH + "NeedBf.txt";
+    //备注
+    public final static String ResultTxt = SD_CARD_PATH + "result.txt";
 }

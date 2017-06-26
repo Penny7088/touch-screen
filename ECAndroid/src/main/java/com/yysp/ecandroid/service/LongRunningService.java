@@ -76,7 +76,11 @@ public class LongRunningService extends Service {
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
-                    postTaskFinish(response);
+                    postTaskFinish(response);//TODO
+//                    if (!JKFile.ReadFile(ECSdCardPath.ResultTxt).equals("")) {
+//                        //已经是好友了
+//                    } else {
+//                    }
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
                     HelpService.addFromType = 1;
@@ -292,7 +296,8 @@ public class LongRunningService extends Service {
 
             @Override
             public void onError(Throwable e) {
-                OthoerUtil.AddErrorMsgUtil(e.getMessage());
+                OthoerUtil.AddErrorMsgUtil("postTaskFailReason:taskStatus:" + e.getMessage());
+                OthoerUtil.doOfTaskEnd();
             }
 
             @Override
@@ -307,11 +312,13 @@ public class LongRunningService extends Service {
      * 任务完成
      */
     private void postTaskFinish(ECTaskResultResponse resultResponse) {
+
         JKPreferences.RemoveSharePersistent("taskType");//删除type以免轮休两次
         resultResponse.setTaskId(JKPreferences.GetSharePersistentString("taskId"));//taskId
         resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
         resultResponse.setDeviceAlias(AliasName);//别名
         JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
+        JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -324,7 +331,7 @@ public class LongRunningService extends Service {
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, TAG + "taskStatus:success");
                 } else {
-                    OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
+                    OthoerUtil.AddErrorMsgUtil("postTaskFinish:taskStatus:" + disBean.getMsg());
                 }
                 OthoerUtil.doOfTaskEnd();
             }
@@ -332,7 +339,8 @@ public class LongRunningService extends Service {
             @Override
             public void onError(Throwable e) {
                 JKLog.i(TAG, "erro:" + e.getMessage());
-                OthoerUtil.AddErrorMsgUtil(e.getMessage());
+                OthoerUtil.AddErrorMsgUtil("postTaskFinish:taskStatus:" + e.getMessage());
+                OthoerUtil.doOfTaskEnd();
             }
 
             @Override

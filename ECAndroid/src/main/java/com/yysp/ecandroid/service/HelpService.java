@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
@@ -975,6 +977,7 @@ public class HelpService extends AccessibilityService {
                     }
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                     wxUserBean.setMobile(nodeInfoList.get(i).getText().toString());
+                    JKLog.i(TAG, "task_contanct:" + nodeInfoList.get(i).getText().toString());
 //                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
 //                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
 //                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
@@ -1041,6 +1044,7 @@ public class HelpService extends AccessibilityService {
 
 
     private void doOfTaskEnd(ECTaskResultResponse resultResponse) {
+        JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -1052,7 +1056,7 @@ public class HelpService extends AccessibilityService {
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, "item_taskStatus:success");
                 } else {
-                    OthoerUtil.AddErrorMsgUtil(disBean.getMsg());
+                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
                 }
                 OthoerUtil.doOfTaskEnd();
                 infoList.clear();
@@ -1062,7 +1066,7 @@ public class HelpService extends AccessibilityService {
             public void onError(Throwable e) {
                 JKLog.i(TAG, "erro:" + e.getMessage());
                 OthoerUtil.doOfTaskEnd();
-                OthoerUtil.AddErrorMsgUtil(e.getMessage());
+                OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
             }
 
             @Override
