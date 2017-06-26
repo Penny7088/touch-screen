@@ -57,7 +57,7 @@ public class ECTaskActivity extends ECBaseActivity {
         if (!bInit) {
             bInit = true;
         }
-//        OpenScreenOrder();
+        OpenScreenOrder();
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
         if (!accessibilityManager.isEnabled()) {
 
