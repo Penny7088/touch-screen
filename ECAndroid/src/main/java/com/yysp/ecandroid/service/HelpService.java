@@ -982,13 +982,7 @@ public class HelpService extends AccessibilityService {
 //                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
 //                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                     infoList.add(wxUserBean);
-                    try {
-                        Thread.sleep(2000);
-                        PerformClickUtils.performBack(this);
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
                 }
                 page++;
                 isNeedSwipe = true;
