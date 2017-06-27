@@ -17,9 +17,7 @@ import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisPushBean;
-import com.yysp.ecandroid.data.bean.EcContactBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
-import com.yysp.ecandroid.data.bean.EcGetTaskBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
@@ -46,7 +44,7 @@ import static com.yysp.ecandroid.config.ECConfig.AliasName;
  */
 
 public class MyPushIntentService extends UmengMessageService {
-    String TAG = "saas-api_";
+    String TAG = "RT";
     //taskType
     public final static int SearchAddFriendType = 501;
     public final static int ContactGetFriendInfo = 502;
@@ -110,8 +108,8 @@ public class MyPushIntentService extends UmengMessageService {
                             if (disGetTaskBean.getData() != null) {
                                 JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
                                 if (disGetTaskBean.getData() != null) {
-                                WindowManager wm = (WindowManager) getSystemService(MyPushIntentService.this.WINDOW_SERVICE);
-                                wm.setTpDisable(0);//关闭屏幕触摸
+//                                WindowManager wm = (WindowManager) getSystemService(MyPushIntentService.this.WINDOW_SERVICE);
+//                                wm.setTpDisable(0);//关闭屏幕触摸
                                     JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                     String jsonStr = gson.toJson(disGetTaskBean.getData());
                                     doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
@@ -123,7 +121,13 @@ public class MyPushIntentService extends UmengMessageService {
                         @Override
                         public void onError(Throwable e) {
                             JKLog.i(TAG, "task_APPLY:" + e.getMessage());
-                            OthoerUtil.AddErrorMsgUtil("startTask:task_Aapply:" + e.getMessage());
+                            ECTaskResultResponse response = new ECTaskResultResponse();
+                            response.setStatus(ECConfig.TASK_Fail);
+                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                            response.setDeviceAlias(AliasName);
+
+                            doSomeThing(response);
+
                         }
 
                         @Override
@@ -131,8 +135,45 @@ public class MyPushIntentService extends UmengMessageService {
                         }
                     }
             );
+        } else {
+            JKLog.i(TAG, "task_重复的taskId");
         }
 
+
+    }
+
+    private void doSomeThing(ECTaskResultResponse resultResponse) {
+        ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(DisBean disBean) {
+                JKLog.i(TAG, "task" + disBean.getCode() + "/." +
+                        disBean.getMsg());
+                if (disBean.getCode() == 200) {
+                    JKLog.i(TAG, "item_taskStatus:success");
+                } else {
+                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
+                }
+                OthoerUtil.doOfTaskEnd();
+
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                JKLog.i(TAG, "erro:" + e.getMessage());
+                OthoerUtil.doOfTaskEnd();
+                OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
 
     }
 

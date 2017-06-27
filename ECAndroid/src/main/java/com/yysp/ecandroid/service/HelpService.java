@@ -52,6 +52,8 @@ public class HelpService extends AccessibilityService {
     String wx_user_id = "com.tencent.mm:id/ig";
     String no_more_people_id = "com.tencent.mm:id/ae8";
     String gender_id = "com.tencent.mm:id/aeu";
+    String sign = "";
+    String phoneId = "";
     String ares_id = "android:id/summary";
     String textId = "com.tencent.mm:id/aze";
     String groupName = "com.tencent.mm:id/aab";
@@ -361,8 +363,12 @@ public class HelpService extends AccessibilityService {
                                     JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, ares_id));
 
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                                    wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
-                                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, wx_name));
+                                    String vx = PerformClickUtils.geyTextById(this, vx_name_id);
+                                    String x[] = vx.split(":");
+                                    if (x.length != 0) {
+                                        wxUserBean.setAccount(x[1]);
+                                    }
+                                    wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                                     infoList.add(wxUserBean);
@@ -453,10 +459,12 @@ public class HelpService extends AccessibilityService {
                                 Thread.sleep(2000);
                                 PerformClickUtils.performBack(this);
                             }
+                            fromType = 1;
                         } else {
                             JKLog.i("RT", "task_532:无同意好友");
                             Thread.sleep(3000);
                             PerformClickUtils.performBack(this);
+                            fromType = 1;
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -464,6 +472,7 @@ public class HelpService extends AccessibilityService {
                 }
                 swipeAndHome(nodeInfo);
             } else {
+                fromType = 1;
                 JKLog.i("RT", "task_532:滑动到底部了!");
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
@@ -474,6 +483,7 @@ public class HelpService extends AccessibilityService {
 
         } else {
             if (infoList.size() != 0) {
+                fromType = 1;
                 JKLog.i("RT", "task_532:读完未读消息了!!!");
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
@@ -481,6 +491,7 @@ public class HelpService extends AccessibilityService {
                 response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                 doOfTaskEnd(response);
             } else {
+                fromType = 1;
                 JKLog.i("RT", "task_532:没有未读消息!!!");
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setReason("没有未读消息");
@@ -909,15 +920,16 @@ public class HelpService extends AccessibilityService {
                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
                 String user = list.get(i).getText().toString();
                 JKLog.i(TAG, "item:" + user);
-                sleepAndClickText(1000, user);
+                sleepAndClickText(2000, user);
 
                 wxUserBean.setRemark(list.get(i).getText().toString());
                 wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
                 wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                 wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                 infoList.add(wxUserBean);
-                Thread.sleep(1500);
+                Thread.sleep(2000);
                 PerformClickUtils.performBack(this);
+                Thread.sleep(2000);
             }
         }
         Thread.sleep(1000);
@@ -950,7 +962,7 @@ public class HelpService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void delewithListView() {
         try {
-            Thread.sleep(20000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -982,7 +994,12 @@ public class HelpService extends AccessibilityService {
 //                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
 //                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                     infoList.add(wxUserBean);
-
+                    PerformClickUtils.performBack(this);
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 page++;
                 isNeedSwipe = true;
@@ -1047,6 +1064,7 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onNext(DisBean disBean) {
+                JKLog.i(TAG, "task" + disBean.getMsg() + "**-" + disBean.getCode());
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, "item_taskStatus:success");
                 } else {

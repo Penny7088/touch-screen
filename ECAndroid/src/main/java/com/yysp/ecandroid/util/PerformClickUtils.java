@@ -95,7 +95,6 @@ public class PerformClickUtils {
                 }
             }
         }
-
     }
 
     //模拟点击事件
@@ -243,7 +242,7 @@ public class PerformClickUtils {
         if (nodeInfo == null) {
             return;
         }
-        if (nodeInfo.getChildCount() > 0) {
+        if (nodeInfo.getChildCount() > 0 && nodeInfo.getChild(0) != null) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
                 if (!nodeInfo.getChild(0).getChild(i).getClassName().equals("") && nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
@@ -258,7 +257,7 @@ public class PerformClickUtils {
         if (nodeInfo == null) {
             return;
         }
-        if (nodeInfo.getChildCount() > 0) {
+        if (nodeInfo.getChildCount() > 0 && nodeInfo.getChild(0) != null) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
                 if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
@@ -275,7 +274,7 @@ public class PerformClickUtils {
         if (nodeInfo == null) {
             return;
         }
-        if (nodeInfo.getChildCount() > 0) {
+        if (nodeInfo.getChildCount() > 0 && nodeInfo.getChild(0) != null) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
                 if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.GridView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
@@ -291,7 +290,7 @@ public class PerformClickUtils {
         if (nodeInfo == null) {
             return;
         }
-        if (nodeInfo.getChildCount() > 0) {
+        if (nodeInfo.getChildCount() > 0 && nodeInfo.getChild(0) != null) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
                 if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.GridView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);

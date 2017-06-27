@@ -42,6 +42,7 @@ public class OthoerUtil {
         JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
         JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT, "");
         JKFile.WriteFile(ECSdCardPath.ResultTxt, "");
+
         JKPreferences.RemoveSharePersistent("doTasking");
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");
@@ -91,6 +92,7 @@ public class OthoerUtil {
 
             @Override
             public void onNext(DisBean disBean) {
+
             }
 
             @Override

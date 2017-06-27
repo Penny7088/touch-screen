@@ -20,6 +20,7 @@ public class DisGetTaskBean {
     private String addFriendMessage;
     private int amount;
 
+
     public String getGroupName() {
         return groupName;
     }

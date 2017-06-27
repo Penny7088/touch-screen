@@ -31,8 +31,7 @@ import static com.yysp.ecandroid.service.MyPushIntentService.SendFriendCircle;
 public class LongRunningService extends Service {
 
     ECTaskResultResponse response;
-    String TAG = "saas-api_";
-    int i = 0;
+    String TAG = "RT";
 
     @Nullable
     @Override
@@ -267,7 +266,7 @@ public class LongRunningService extends Service {
             }
 
         } else {
-            JKLog.i("RT", "task:" + "任务执行状态:没任务/正在执行");
+            JKLog.i("saas_api_", "task:" + "任务执行状态:没任务/正在执行");
         }
     }
 
