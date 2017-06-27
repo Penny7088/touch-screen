@@ -88,58 +88,69 @@ public class MyPushIntentService extends UmengMessageService {
 
     private void startTask(final String msg) {
         //开启任务
-        final Gson gson = new Gson();
-        DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
-        JKLog.i(TAG, "taskId:" + disPushBean.getTaskId());
-        String tsId = JKPreferences.GetSharePersistentString("taskId");
-        if (!tsId.equals(disPushBean.getTaskId())) {
-            JKPreferences.SaveSharePersistent("taskId", disPushBean.getTaskId());
-            //等于0请求任务
-            ECNetSend.taskApply(disPushBean.getTaskId(), AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                    new Observer<DisGetTaskBean>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
+        if (!accessibilityManager.isEnabled()){
+            final Gson gson = new Gson();
+            DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
+            JKLog.i(TAG, "辅助未打开 " + "taskId:" + disPushBean.getTaskId());
+            ECTaskResultResponse response = new ECTaskResultResponse();
+            response.setStatus(ECConfig.TASK_Fail);
+            response.setTaskId(disPushBean.getTaskId());
+            response.setDeviceAlias(AliasName);
 
-                        }
+            doSomeThing(response);
+        }else {
+            final Gson gson = new Gson();
+            DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
+            JKLog.i(TAG, "taskId:" + disPushBean.getTaskId());
+            String tsId = JKPreferences.GetSharePersistentString("taskId");
+            if (!tsId.equals(disPushBean.getTaskId())) {
+                JKPreferences.SaveSharePersistent("taskId", disPushBean.getTaskId());
+                //等于0请求任务
+                ECNetSend.taskApply(disPushBean.getTaskId(), AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                        new Observer<DisGetTaskBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                        @Override
-                        public void onNext(DisGetTaskBean disGetTaskBean) {
-                            JKLog.i(TAG, "taskBean:" + disGetTaskBean.getMsg());
-                            if (disGetTaskBean.getData() != null) {
-                                JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
+                            }
+
+                            @Override
+                            public void onNext(DisGetTaskBean disGetTaskBean) {
+                                JKLog.i(TAG, "taskBean:" + disGetTaskBean.getMsg());
                                 if (disGetTaskBean.getData() != null) {
+                                    JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                    if (disGetTaskBean.getData() != null) {
 //                                WindowManager wm = (WindowManager) getSystemService(MyPushIntentService.this.WINDOW_SERVICE);
 //                                wm.setTpDisable(0);//关闭屏幕触摸
-                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-                                    String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                    doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                        JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                        String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                        doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
+                                    }
                                 }
                             }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                JKLog.i(TAG, "task_APPLY:" + e.getMessage());
+                                ECTaskResultResponse response = new ECTaskResultResponse();
+                                response.setStatus(ECConfig.TASK_Fail);
+                                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                                response.setDeviceAlias(AliasName);
+
+                                doSomeThing(response);
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                            }
                         }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            JKLog.i(TAG, "task_APPLY:" + e.getMessage());
-                            ECTaskResultResponse response = new ECTaskResultResponse();
-                            response.setStatus(ECConfig.TASK_Fail);
-                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-                            response.setDeviceAlias(AliasName);
-
-                            doSomeThing(response);
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                        }
-                    }
-            );
-        } else {
-            JKLog.i(TAG, "task_重复的taskId");
+                );
+            } else {
+                JKLog.i(TAG, "task_重复的taskId");
+            }
         }
-
-
     }
 
     private void doSomeThing(ECTaskResultResponse resultResponse) {
