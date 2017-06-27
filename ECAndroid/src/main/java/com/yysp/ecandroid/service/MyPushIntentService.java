@@ -117,16 +117,22 @@ public class MyPushIntentService extends UmengMessageService {
                             @Override
                             public void onNext(DisGetTaskBean disGetTaskBean) {
                                 JKLog.i(TAG, "taskBean:" + disGetTaskBean.getMsg());
-                                if (disGetTaskBean.getData() != null) {
+                                if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskID() != null) {
                                     JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
-                                    if (disGetTaskBean.getData() != null) {
 //                                WindowManager wm = (WindowManager) getSystemService(MyPushIntentService.this.WINDOW_SERVICE);
 //                                wm.setTpDisable(0);//关闭屏幕触摸
-                                        JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-                                        String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                        doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                    String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                    doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
-                                    }
+                                }else {
+                                    JKLog.i(TAG, "disGetTaskBean.getData() or disGetTaskBean.getData().getTaskID() is null");
+                                    ECTaskResultResponse response = new ECTaskResultResponse();
+                                    response.setStatus(ECConfig.TASK_Fail);
+                                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                                    response.setDeviceAlias(AliasName);
+
+                                    doSomeThing(response);
                                 }
                             }
 
@@ -154,6 +160,7 @@ public class MyPushIntentService extends UmengMessageService {
     }
 
     private void doSomeThing(ECTaskResultResponse resultResponse) {
+        OthoerUtil.doOfTaskEnd();
         ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -169,7 +176,7 @@ public class MyPushIntentService extends UmengMessageService {
                 } else {
                     OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
                 }
-                OthoerUtil.doOfTaskEnd();
+
 
 
             }
@@ -177,7 +184,6 @@ public class MyPushIntentService extends UmengMessageService {
             @Override
             public void onError(Throwable e) {
                 JKLog.i(TAG, "erro:" + e.getMessage());
-                OthoerUtil.doOfTaskEnd();
                 OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
             }
 
