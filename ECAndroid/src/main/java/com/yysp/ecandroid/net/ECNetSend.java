@@ -1,24 +1,16 @@
 package com.yysp.ecandroid.net;
 
 import android.content.Context;
-import android.view.WindowManager;
 
-import com.jkframework.algorithm.JKEncryption;
-import com.jkframework.algorithm.JKFile;
-import com.jkframework.config.JKPreferences;
 import com.jkframework.net.JKHttpRetrofit;
-import com.jkframework.serialization.JKJson;
-import com.yysp.ecandroid.config.ECSdCardPath;
+import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.data.response.DisSigndoResponse;
-import com.yysp.ecandroid.data.response.ECLoginResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 
 import io.reactivex.Observable;
-import io.rx_cache2.DynamicKey;
-import io.rx_cache2.EvictProvider;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -48,8 +40,7 @@ public class ECNetSend {
     }
 
     public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse, Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
-        wm.setTpDisable(1);//打开屏幕触摸
+        ECConfig.OpenScreenOrder(context);
         return service.taskStatus(resultResponse);
     }
 
