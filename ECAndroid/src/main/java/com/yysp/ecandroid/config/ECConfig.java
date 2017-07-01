@@ -41,10 +41,4 @@ public class ECConfig {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         wm.setTpDisable(1);
     }
-
-    public final static void RebootTheSystem(Context context){
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.reboot();
-    }
-
 }

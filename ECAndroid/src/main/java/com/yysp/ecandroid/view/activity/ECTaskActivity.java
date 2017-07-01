@@ -15,7 +15,6 @@ import com.yysp.ecandroid.view.ECBaseActivity;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -38,8 +37,6 @@ public class ECTaskActivity extends ECBaseActivity {
         }
 //        JKToast.Show("测试服:" + ECConfig.AliasName, 0);
     }
-
-    @ViewById()
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
