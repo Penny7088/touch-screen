@@ -97,7 +97,7 @@ public class ECApplication extends Application {
 
             @Override
             public void onNext(DisBean disSignBean) {
-                JKLog.i("RT", "sign_do" + disSignBean.getCode() + "/" + disSignBean.getMsg());
+                JKLog.i("RT", "taks_sign_do" + disSignBean.getCode() + "/" + disSignBean.getMsg());
             }
 
             @Override

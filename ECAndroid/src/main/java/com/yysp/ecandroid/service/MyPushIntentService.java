@@ -3,6 +3,7 @@ package com.yysp.ecandroid.service;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 
 import com.google.gson.Gson;
@@ -15,8 +16,8 @@ import com.umeng.message.entity.UMessage;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
-import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.bean.DisPushBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
@@ -50,7 +51,7 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int GetWxUserInfo = 503;//不走脚本
     public final static int CreatGroupType = 504;
     public final static int CreatGroupTypeBySmallWx = 505;
-    public final static int GetGroupPeoPleNum = 506;
+    public final static int FindGroupJoinPeo = 506;
     public final static int GetCreatGroupInfo = 507;
     public final static int ChatWithFriend = 508;
     public final static int LookFriendCircle = 509;
@@ -72,14 +73,20 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int ViewFriendNews = 533;
     public final static int AddFriendFromGroup = 534;
     public final static int CleanSystemFile = 535;
+    public final static int SearchGroupAndGetPeoInfo = 536;
 
     @Override
     public void onMessage(Context context, Intent intent) {
         String message = intent.getStringExtra(AgooConstants.MESSAGE_BODY);
         try {
-            UMessage msg = new UMessage(new JSONObject(message));
+            final UMessage msg = new UMessage(new JSONObject(message));
             JKLog.i(TAG, "task_push:" + msg.text);
-            startTask(msg.text);
+            new Thread(){
+                @Override
+                public void run() {
+                    startTask(msg.text);
+                }
+            }.start();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -88,7 +95,7 @@ public class MyPushIntentService extends UmengMessageService {
     private void startTask(final String msg) {
         //开启任务
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
-        if (!accessibilityManager.isEnabled()){
+        if (!accessibilityManager.isEnabled()) {
             final Gson gson = new Gson();
             DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
             JKLog.i(TAG, "辅助未打开 " + "taskId:" + disPushBean.getTaskId());
@@ -98,7 +105,7 @@ public class MyPushIntentService extends UmengMessageService {
             response.setDeviceAlias(AliasName);
 
             doSomeThing(response);
-        }else {
+        } else {
             final Gson gson = new Gson();
             DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
             JKLog.i(TAG, "taskId:" + disPushBean.getTaskId());
@@ -115,15 +122,16 @@ public class MyPushIntentService extends UmengMessageService {
 
                             @Override
                             public void onNext(DisGetTaskBean disGetTaskBean) {
-                                JKLog.i(TAG, "taskBean:" + disGetTaskBean.getMsg());
-                                if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskID() != null) {
-                                    JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskID() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                JKLog.i(TAG, "taskBean:" + disGetTaskBean.getData() + "code:" + disGetTaskBean.getCode());
+                                if (disGetTaskBean.getData() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
+                                    JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                    JKLog.i(TAG, "task_data" + disGetTaskBean.getData());
                                     ECConfig.CloseScreenOrder(MyPushIntentService.this);
                                     JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                     String jsonStr = gson.toJson(disGetTaskBean.getData());
                                     doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
-                                }else {
+                                } else {
                                     JKLog.i(TAG, "disGetTaskBean.getData() or disGetTaskBean.getData().getTaskID() is null");
                                     ECTaskResultResponse response = new ECTaskResultResponse();
                                     response.setStatus(ECConfig.TASK_Fail);
@@ -174,7 +182,6 @@ public class MyPushIntentService extends UmengMessageService {
                 } else {
                     OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
                 }
-
 
 
             }
@@ -237,7 +244,7 @@ public class MyPushIntentService extends UmengMessageService {
             case CreatGroupTypeBySmallWx:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
-            case GetGroupPeoPleNum:
+            case FindGroupJoinPeo:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case GetCreatGroupInfo:
@@ -309,6 +316,12 @@ public class MyPushIntentService extends UmengMessageService {
             case CleanSystemFile:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
+            case SearchGroupAndGetPeoInfo:
+                JKPreferences.SaveSharePersistent("doTasking", true);
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+
+
 
         }
 

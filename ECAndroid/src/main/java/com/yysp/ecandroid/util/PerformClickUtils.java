@@ -35,6 +35,7 @@ public class PerformClickUtils {
         }
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
+            JKLog.i("RT", "findTextAndClick + nodeInfoList = " + nodeInfoList);
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null) {
                     performClick(nodeInfo);
@@ -211,6 +212,16 @@ public class PerformClickUtils {
         return num;
     }
 
+
+    public static String getSubUtilSimple(String soap, String rgex) {
+        Pattern pattern = Pattern.compile(rgex);// 匹配的模式
+        Matcher m = pattern.matcher(soap);
+        while (m.find()) {
+            return m.group(1);
+        }
+        return "";
+    }
+
     /**
      * 在当前页面查找文字内容
      *
@@ -244,7 +255,7 @@ public class PerformClickUtils {
         }
         if (nodeInfo.getChildCount() > 0 && nodeInfo.getChild(0) != null) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
-                if (!nodeInfo.getChild(0).getChild(i).getClassName().equals("") && nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
+                if (nodeInfo.getChild(0).getChild(i).getClassName() != null && nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                     node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                 }

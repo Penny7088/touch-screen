@@ -25,7 +25,6 @@ public class ECTaskActivity extends ECBaseActivity {
      * 页面初始化
      */
     private boolean bInit = false;
-    public String TAG = "saas-api_";
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
 

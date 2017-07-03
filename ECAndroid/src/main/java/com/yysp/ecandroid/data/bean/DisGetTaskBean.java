@@ -1,15 +1,13 @@
 package com.yysp.ecandroid.data.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/4/21.
  */
 
-public class DisGetTaskBean {
-
-
-
+public class DisGetTaskBean implements Serializable{
 
     private int code;
     private DataBean data;
@@ -95,6 +93,13 @@ public class DisGetTaskBean {
         private String targetGroupMessage;
         private String amount;
         private String addFriendMessage;
+        private int taskType;
+        private String accountPassword;
+        private String taskId;
+        private String internalAccount;
+        private List<TargetAccountsBean> targetAccounts;
+
+
 
         public String getGroupName() {
             return groupName;
@@ -144,11 +149,7 @@ public class DisGetTaskBean {
             this.addFriendMessage = addFriendMessage;
         }
 
-        private int taskType;
-        private String accountPassword;
-        private String taskID;
-        private String internalAccount;
-        private List<TargetAccountsBean> targetAccounts;
+
 
         public int getTaskType() {
             return taskType;
@@ -166,12 +167,12 @@ public class DisGetTaskBean {
             this.accountPassword = accountPassword;
         }
 
-        public String getTaskID() {
-            return taskID;
+        public String getTaskId() {
+            return taskId;
         }
 
-        public void setTaskID(String taskID) {
-            this.taskID = taskID;
+        public void setTaskId(String taskId) {
+            this.taskId = taskId;
         }
 
         public String getInternalAccount() {

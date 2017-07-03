@@ -48,7 +48,7 @@ public class LongRunningService extends Service {
                 while (true) {
                     try {
                         readFileStatus(ECSdCardPath.Task_Finish_TXT);
-                        Thread.sleep(10000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -68,7 +68,6 @@ public class LongRunningService extends Service {
 
         String task_status = JKFile.ReadFile(filePath);
         int taskType = JKPreferences.GetSharePersistentInt("taskType");
-        JKLog.i(TAG, "task_status:" + task_status + "**" + taskType);
         response = new ECTaskResultResponse();
         if (task_status.equals(ECConfig.success)) {
             //clear
@@ -76,10 +75,6 @@ public class LongRunningService extends Service {
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
                     postTaskFinish(response);//TODO
-//                    if (!JKFile.ReadFile(ECSdCardPath.ResultTxt).equals("")) {
-//                        //已经是好友了
-//                    } else {
-//                    }
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
                     HelpService.addFromType = 1;
@@ -98,7 +93,7 @@ public class LongRunningService extends Service {
                     //小号直接拉群
                     postTaskFinish(response);
                     break;
-                case MyPushIntentService.GetGroupPeoPleNum:
+                case MyPushIntentService.FindGroupJoinPeo:
                     doOfScript();
                     break;
                 case MyPushIntentService.GetCreatGroupInfo:
@@ -153,7 +148,12 @@ public class LongRunningService extends Service {
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
-                    OthoerUtil.deleContanct(this);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            OthoerUtil.deleContanct(LongRunningService.this);
+                        }
+                    }.start();
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -169,6 +169,7 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.CleanSystemFile:
                     postTaskFinish(response);
                     break;
+
             }
         } else if (task_status.equals(ECConfig.fail)) {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
@@ -192,9 +193,6 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.CreatGroupTypeBySmallWx:
-                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
-                    break;
-                case MyPushIntentService.GetGroupPeoPleNum:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.GetCreatGroupInfo:
@@ -247,7 +245,12 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
-                    OthoerUtil.deleContanct(this);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            OthoerUtil.deleContanct(LongRunningService.this);
+                        }
+                    }.start();
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -260,6 +263,12 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.CleanSystemFile:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+                case MyPushIntentService.SearchGroupAndGetPeoInfo:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+                case MyPushIntentService.FindGroupJoinPeo:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
 
@@ -317,7 +326,6 @@ public class LongRunningService extends Service {
         resultResponse.setStatus(ECConfig.TASK_FINISH);//完成状态
         resultResponse.setDeviceAlias(AliasName);//别名
         JKLog.i(TAG, "id:" + JKPreferences.GetSharePersistentString("taskId") + "/" + AliasName);
-        JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
