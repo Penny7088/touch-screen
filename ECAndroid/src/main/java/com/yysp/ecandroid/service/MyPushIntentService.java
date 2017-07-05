@@ -3,7 +3,6 @@ package com.yysp.ecandroid.service;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 
 import com.google.gson.Gson;
@@ -16,8 +15,8 @@ import com.umeng.message.entity.UMessage;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
-import com.yysp.ecandroid.data.bean.DisPushBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
+import com.yysp.ecandroid.data.bean.DisPushBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
@@ -133,7 +132,7 @@ public class MyPushIntentService extends UmengMessageService {
                                 if (disGetTaskBean.getData() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
                                     JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
                                     JKLog.i(TAG, "task_data" + disGetTaskBean.getData());
-//                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
+                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
                                     JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                     String jsonStr = gson.toJson(disGetTaskBean.getData());
                                     doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
