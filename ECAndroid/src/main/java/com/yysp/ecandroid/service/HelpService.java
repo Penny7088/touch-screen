@@ -370,6 +370,27 @@ public class HelpService extends AccessibilityService {
                             break;
                         case ContactInfoUI:
                             switch (taskType) {
+
+                                case MyPushIntentService.SearchAddFriendType:
+                                    try {
+                                        Thread.sleep(3000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    JKLog.i("RT", "task_501:" + PerformClickUtils.geyTextById(this, wx_name));
+                                    wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                                    wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
+                                    wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
+                                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                                    infoList.add(wxUserBean);
+
+                                    response = new ECTaskResultResponse();
+                                    response.setStatus(ECConfig.TASK_FINISH);
+                                    response.setDeviceAlias(AliasName);
+                                    response.setTaskResult(infoList);
+                                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                                    doOfTaskEnd(response);
+                                    break;
                                 case MyPushIntentService.ViewFriendNews:
                                     JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, vx_name_id));
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
@@ -416,6 +437,17 @@ public class HelpService extends AccessibilityService {
                         case HomeLauncherUI:
                             Intent intent;
                             switch (taskType) {
+                                case MyPushIntentService.SearchAddFriendType:
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    intent = new Intent();
+                                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
+                                    startActivity(intent);
+                                    break;
                                 case MyPushIntentService.GetWxUserInfo:
                                     try {
                                         Thread.sleep(1000);

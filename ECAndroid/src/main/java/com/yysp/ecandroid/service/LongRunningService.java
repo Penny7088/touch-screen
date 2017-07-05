@@ -75,7 +75,19 @@ public class LongRunningService extends Service {
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
-                    postTaskFinish(response);//TODO
+                    String result = JKFile.ReadFile(ECSdCardPath.ResultTxt);
+                    switch (result) {
+                        case "搜索不到":
+                            response.setAmount(0);
+                            postTaskFinish(response);
+                            break;
+                        case "已经是好友":
+                            doOfScript();
+                            break;
+                        default:
+                            postTaskFinish(response);
+                            break;
+                    }
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
                     HelpService.addFromType = 1;

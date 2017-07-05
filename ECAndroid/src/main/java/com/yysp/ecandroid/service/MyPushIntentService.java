@@ -223,6 +223,7 @@ public class MyPushIntentService extends UmengMessageService {
             startActivity(intent);
 
             doTypeTask(taskType, content);
+
         }
     }
 
