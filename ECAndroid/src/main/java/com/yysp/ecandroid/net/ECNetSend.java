@@ -50,6 +50,7 @@ public class ECNetSend {
 
     public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse, Context context) {
         ECConfig.OpenScreenOrder(context);
+        JKFile.WriteFile(ECSdCardPath.NendBF,JKPreferences.GetSharePersistentString("pushData"));
         return service.taskStatus(resultResponse);
     }
 

@@ -18,10 +18,6 @@ import retrofit2.http.POST;
  */
 interface ECNetInterface {
 
-    @FormUrlEncoded
-    @POST("api/api.php")
-    Observable<ECLoginResponse> Login(@Field("version") String tVersion, @Field("vars") String tJson);
-
     //注册发送设备id
     @POST("device/sign.do")
     Observable<DisBean> sign(@Body DisSigndoResponse response);

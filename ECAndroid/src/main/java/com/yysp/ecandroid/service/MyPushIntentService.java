@@ -74,6 +74,13 @@ public class MyPushIntentService extends UmengMessageService {
     public final static int AddFriendFromGroup = 534;
     public final static int CleanSystemFile = 535;
     public final static int SearchGroupAndGetPeoInfo = 536;
+    public final static int PickingUpBottles = 537;
+    public final static int ThrowTheBottle = 538;
+    public final static int AddNearPeople = 539;
+
+
+    List<DisGetTaskBean.DataBean.TargetAccountsBean> list;
+    Gson gson;
 
     @Override
     public void onMessage(Context context, Intent intent) {
@@ -81,7 +88,7 @@ public class MyPushIntentService extends UmengMessageService {
         try {
             final UMessage msg = new UMessage(new JSONObject(message));
             JKLog.i(TAG, "task_push:" + msg.text);
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     startTask(msg.text);
@@ -126,7 +133,7 @@ public class MyPushIntentService extends UmengMessageService {
                                 if (disGetTaskBean.getData() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
                                     JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
                                     JKLog.i(TAG, "task_data" + disGetTaskBean.getData());
-                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
+//                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
                                     JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                     String jsonStr = gson.toJson(disGetTaskBean.getData());
                                     doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
@@ -137,7 +144,6 @@ public class MyPushIntentService extends UmengMessageService {
                                     response.setStatus(ECConfig.TASK_Fail);
                                     response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                                     response.setDeviceAlias(AliasName);
-
                                     doSomeThing(response);
                                 }
                             }
@@ -149,7 +155,6 @@ public class MyPushIntentService extends UmengMessageService {
                                 response.setStatus(ECConfig.TASK_Fail);
                                 response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                                 response.setDeviceAlias(AliasName);
-
                                 doSomeThing(response);
 
                             }
@@ -216,7 +221,7 @@ public class MyPushIntentService extends UmengMessageService {
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
             startActivity(intent);
-            //TODO
+
             doTypeTask(taskType, content);
         }
     }
@@ -227,13 +232,45 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
-                new Thread() {
-                    @Override
-                    public void run() {
-                        AddToContact(MyPushIntentService.this, content);
-                    }
-                }.start();
-                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                gson = new Gson();
+                list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
+                if (list.size() != 0) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            AddToContact(MyPushIntentService.this, content);
+                        }
+                    }.start();
+                    JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                } else {
+                    ECTaskResultResponse response = new ECTaskResultResponse();
+                    response.setReason("下发任务无数据");
+                    response.setStatus(ECConfig.TASK_Fail);
+                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                    response.setDeviceAlias(AliasName);
+                    ECNetSend.taskStatus(response, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(DisBean disBean) {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+                }
+
                 break;
             case GetWxUserInfo:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
@@ -296,13 +333,44 @@ public class MyPushIntentService extends UmengMessageService {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case NeedContactAddFriend:
-                new Thread() {
-                    @Override
-                    public void run() {
-                        AddToContact(MyPushIntentService.this, content);
-                    }
-                }.start();
-                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                gson = new Gson();
+                list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
+                if (list.size() != 0) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            AddToContact(MyPushIntentService.this, content);
+                        }
+                    }.start();
+                    JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                } else {
+                    ECTaskResultResponse response = new ECTaskResultResponse();
+                    response.setReason("下发任务无数据");
+                    response.setStatus(ECConfig.TASK_Fail);
+                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                    response.setDeviceAlias(AliasName);
+                    ECNetSend.taskStatus(response, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(DisBean disBean) {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+                }
                 break;
             case ViewMessage:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
@@ -320,7 +388,15 @@ public class MyPushIntentService extends UmengMessageService {
                 JKPreferences.SaveSharePersistent("doTasking", true);
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
-
+            case PickingUpBottles:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case ThrowTheBottle:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
+            case AddNearPeople:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+                break;
 
 
         }

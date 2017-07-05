@@ -14,6 +14,7 @@ import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.OthoerUtil;
+import com.yysp.ecandroid.util.PerformClickUtils;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -154,6 +155,7 @@ public class LongRunningService extends Service {
                             OthoerUtil.deleContanct(LongRunningService.this);
                         }
                     }.start();
+
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -167,6 +169,15 @@ public class LongRunningService extends Service {
                     doOfScript();
                     break;
                 case MyPushIntentService.CleanSystemFile:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.PickingUpBottles:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.ThrowTheBottle:
+                    postTaskFinish(response);
+                    break;
+                case MyPushIntentService.AddNearPeople:
                     postTaskFinish(response);
                     break;
 
@@ -193,6 +204,9 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.CreatGroupTypeBySmallWx:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+                case MyPushIntentService.FindGroupJoinPeo:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.GetCreatGroupInfo:
@@ -268,9 +282,16 @@ public class LongRunningService extends Service {
                 case MyPushIntentService.SearchGroupAndGetPeoInfo:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
-                case MyPushIntentService.FindGroupJoinPeo:
+                case MyPushIntentService.PickingUpBottles:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
+                case MyPushIntentService.ThrowTheBottle:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+                case MyPushIntentService.AddNearPeople:
+                    postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                    break;
+
 
             }
 
@@ -300,6 +321,7 @@ public class LongRunningService extends Service {
             public void onNext(DisBean disBean) {
                 JKLog.i(TAG, disBean.getMsg() + "/" + disBean.getCode());
                 OthoerUtil.doOfTaskEnd();
+
             }
 
             @Override
