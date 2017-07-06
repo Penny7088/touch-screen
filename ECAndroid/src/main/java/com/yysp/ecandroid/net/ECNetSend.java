@@ -1,25 +1,19 @@
 package com.yysp.ecandroid.net;
 
 import android.content.Context;
-import android.view.WindowManager;
 
-import com.jkframework.algorithm.JKEncryption;
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.net.JKHttpRetrofit;
-import com.jkframework.serialization.JKJson;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.data.response.DisSigndoResponse;
-import com.yysp.ecandroid.data.response.ECLoginResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 
 import io.reactivex.Observable;
-import io.rx_cache2.DynamicKey;
-import io.rx_cache2.EvictProvider;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -29,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ECNetSend {
 
 //    public static final String Host = "http://192.168.1.45:8080/saas-api/";
-    public static final String Host = "http://192.168.1.134:8080/dis-api/";
+    public static final String Host = "http://118.31.51.197:8101/dis-api/";
 
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
