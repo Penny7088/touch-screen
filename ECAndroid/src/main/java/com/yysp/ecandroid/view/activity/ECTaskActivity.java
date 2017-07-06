@@ -34,7 +34,7 @@ public class ECTaskActivity extends ECBaseActivity {
         if (savedInstanceState != null) {
             bInit = savedInstanceState.getBoolean("Init", false);
         }
-//        JKToast.Show("测试服:" + ECConfig.AliasName, 0);
+//        JKToast.Show("预发布:" + ECConfig.AliasName, 0);
     }
 
     @Override

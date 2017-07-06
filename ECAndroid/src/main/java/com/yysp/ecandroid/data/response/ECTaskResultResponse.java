@@ -21,6 +21,17 @@ public class ECTaskResultResponse {
     private int status;
     private String taskId;
     private List<TaskResultBean> taskResult;
+    private Boolean loginFail;
+
+
+    public Boolean getLoginFail() {
+        return loginFail;
+    }
+
+    public void setLoginFail(Boolean loginFail) {
+        this.loginFail = loginFail;
+    }
+
 
     public int getAmount() {
         return amount;
@@ -130,7 +141,7 @@ public class ECTaskResultResponse {
         private String result;
         private int status;
         private String sex;
-        private List<String> chatList;
+        private List<ChatVo> chatList;
 
         public String getSex() {
             return sex;
@@ -224,12 +235,37 @@ public class ECTaskResultResponse {
             this.taskId = taskId;
         }
 
-        public List<String> getChatList() {
+
+        public List<ChatVo> getChatList() {
             return chatList;
         }
 
-        public void setChatList(List<String> chatList) {
+        public void setChatList(List<ChatVo> chatList) {
             this.chatList = chatList;
         }
+
+
+
+        public static class ChatVo {
+            private String name;
+            private String content;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public String getContent() {
+                return content;
+            }
+
+            public void setContent(String content) {
+                this.content = content;
+            }
+        }
     }
+
 }

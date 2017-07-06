@@ -196,6 +196,12 @@ public class LongRunningService extends Service {
             }
         } else if (task_status.equals(ECConfig.fail)) {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
+            if (failReason.equals("登录失败")) {
+                response.setLoginFail(true);
+            }else {
+                response.setLoginFail(false);
+            }
+
             JKLog.i("RT", "task_fail:" + failReason);
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
@@ -314,8 +320,6 @@ public class LongRunningService extends Service {
 
     /**
      * 任务失败
-     *
-     * @param response
      */
     private void postTaskFailReason(ECTaskResultResponse response, String reason, int status) {
         JKPreferences.RemoveSharePersistent("taskType");//删除type以免轮休两次
@@ -333,7 +337,6 @@ public class LongRunningService extends Service {
             public void onNext(DisBean disBean) {
                 JKLog.i(TAG, disBean.getMsg() + "/" + disBean.getCode());
                 OthoerUtil.doOfTaskEnd();
-
             }
 
             @Override

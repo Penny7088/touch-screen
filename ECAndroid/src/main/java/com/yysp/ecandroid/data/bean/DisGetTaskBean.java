@@ -101,6 +101,7 @@ public class DisGetTaskBean implements Serializable{
 
 
 
+
         public String getGroupName() {
             return groupName;
         }

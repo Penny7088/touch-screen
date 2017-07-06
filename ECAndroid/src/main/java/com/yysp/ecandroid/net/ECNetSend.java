@@ -29,8 +29,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ECNetSend {
 
 //    public static final String Host = "http://192.168.1.45:8080/saas-api/";
-    public static final String Host = "http://192.168.1.134:8080/dis-api/";
-
+//    public static final String Host = "http://192.168.1.134:8080/dis-api/";
+    public static final String Host = "http://118.31.51.197:8101/";
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
             .baseUrl(Host)

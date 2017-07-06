@@ -173,6 +173,7 @@ public class PerformClickUtils {
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null && nodeInfo.getText() != null) {
+
                     return nodeInfo.getText().toString();
                 } else {
                     return "";
@@ -181,6 +182,7 @@ public class PerformClickUtils {
         }
         return "";
     }
+
 
     /*
     ContentDescription
@@ -256,7 +258,7 @@ public class PerformClickUtils {
         if (nodeInfo.getChildCount() > 0 && nodeInfo.getChild(0) != null) {
             for (int i = 0; i < nodeInfo.getChild(0).getChildCount(); i++) {
                 if (nodeInfo.getChild(0).getChild(i).getClassName() != null) {
-                    if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")){
+                    if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                         AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                         node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                     }

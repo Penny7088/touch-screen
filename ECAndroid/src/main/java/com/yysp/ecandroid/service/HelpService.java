@@ -23,6 +23,7 @@ import com.yysp.ecandroid.util.PerformClickUtils;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -54,6 +55,7 @@ public class HelpService extends AccessibilityService {
     String no_more_people_id = "com.tencent.mm:id/ae8";
     String gender_id = "com.tencent.mm:id/aeu";
     String groupJoinPeoInfo = "com.tencent.mm:id/im";
+    String groupJoinPeoName = "com.tencent.mm:id/ik";
     String ares_id = "android:id/summary";
     String textId = "com.tencent.mm:id/aze";
     String groupName = "com.tencent.mm:id/aab";
@@ -67,7 +69,7 @@ public class HelpService extends AccessibilityService {
 
 
     List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
-    List<String> chatList = new ArrayList<>();
+    List<ECTaskResultResponse.TaskResultBean.ChatVo> chatList = new ArrayList<>();
     ECTaskResultResponse response;
 
 
@@ -504,16 +506,20 @@ public class HelpService extends AccessibilityService {
                         try {
                             Thread.sleep(2000);
                             String agree_msg = PerformClickUtils.findText(this, agreeText);
-                            JKLog.i(TAG, "task_532_msg:" + agree_msg);
                             if (!agree_msg.equals("")) {
                                 //同意加好友,头像,聊天记录
                                 List<AccessibilityNodeInfo> headList = nodeInfo.findAccessibilityNodeInfosByViewId(userHeadImgId);
                                 List<AccessibilityNodeInfo> nList = nodeInfo.findAccessibilityNodeInfosByViewId(groupJoinPeoInfo);
-
                                 if (nList.size() != 0) {
                                     for (int j = 0; j < nList.size(); j++) {
                                         String info = nList.get(j).getText().toString();
-                                        chatList.add(info);
+                                        String name = headList.get(j).getContentDescription().toString();
+
+                                        ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
+                                        chatVo.setName(name);
+                                        chatVo.setContent(info);
+                                        chatList.add(chatVo);
+
                                         wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                         wxUserBean.setChatList(chatList);
                                         infoList.add(wxUserBean);
