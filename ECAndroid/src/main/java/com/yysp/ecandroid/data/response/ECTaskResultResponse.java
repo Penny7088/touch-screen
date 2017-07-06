@@ -9,8 +9,6 @@ import java.util.List;
 public class ECTaskResultResponse {
 
 
-
-
     private int amount;
     private int currentPage;
     private String deviceAlias;
@@ -132,6 +130,7 @@ public class ECTaskResultResponse {
         private String result;
         private int status;
         private String sex;
+        private List<String> chatList;
 
         public String getSex() {
             return sex;
@@ -223,6 +222,14 @@ public class ECTaskResultResponse {
 
         public void setTaskId(String taskId) {
             this.taskId = taskId;
+        }
+
+        public List<String> getChatList() {
+            return chatList;
+        }
+
+        public void setChatList(List<String> chatList) {
+            this.chatList = chatList;
         }
     }
 }

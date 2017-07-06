@@ -28,10 +28,10 @@ public class ECConfig {
     //别名
     public final static String AliasName= JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
 
-    public final static void CloseScreenOrder(Context context) {//关闭屏幕触摸
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.setTpDisable(0);
-    }
+//    public final static void CloseScreenOrder(Context context) {//关闭屏幕触摸
+//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        wm.setTpDisable(0);
+//    }
 
     public final static void OpenScreenOrder(Context context) {//打开屏幕触摸
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

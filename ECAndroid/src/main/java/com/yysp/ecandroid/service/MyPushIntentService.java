@@ -86,7 +86,6 @@ public class MyPushIntentService extends UmengMessageService {
         String message = intent.getStringExtra(AgooConstants.MESSAGE_BODY);
         try {
             final UMessage msg = new UMessage(new JSONObject(message));
-            JKLog.i(TAG, "task_push:" + msg.text);
             new Thread() {
                 @Override
                 public void run() {
@@ -104,7 +103,6 @@ public class MyPushIntentService extends UmengMessageService {
         if (!accessibilityManager.isEnabled()) {
             final Gson gson = new Gson();
             DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
-            JKLog.i(TAG, "辅助未打开 " + "taskId:" + disPushBean.getTaskId());
             ECTaskResultResponse response = new ECTaskResultResponse();
             response.setStatus(ECConfig.TASK_Fail);
             response.setTaskId(disPushBean.getTaskId());
@@ -114,7 +112,6 @@ public class MyPushIntentService extends UmengMessageService {
         } else {
             final Gson gson = new Gson();
             DisPushBean disPushBean = gson.fromJson(msg, DisPushBean.class);
-            JKLog.i(TAG, "taskId:" + disPushBean.getTaskId());
             String tsId = JKPreferences.GetSharePersistentString("taskId");
             if (!tsId.equals(disPushBean.getTaskId())) {
                 JKPreferences.SaveSharePersistent("taskId", disPushBean.getTaskId());
@@ -128,17 +125,14 @@ public class MyPushIntentService extends UmengMessageService {
 
                             @Override
                             public void onNext(DisGetTaskBean disGetTaskBean) {
-                                JKLog.i(TAG, "taskBean:" + disGetTaskBean.getData() + "code:" + disGetTaskBean.getCode());
                                 if (disGetTaskBean.getData() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
                                     JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
-                                    JKLog.i(TAG, "task_data" + disGetTaskBean.getData());
-                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
+                                    //ECConfig.CloseScreenOrder(MyPushIntentService.this);
                                     JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                     String jsonStr = gson.toJson(disGetTaskBean.getData());
                                     doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
                                 } else {
-                                    JKLog.i(TAG, "disGetTaskBean.getData() or disGetTaskBean.getData().getTaskID() is null");
                                     ECTaskResultResponse response = new ECTaskResultResponse();
                                     response.setStatus(ECConfig.TASK_Fail);
                                     response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
@@ -149,7 +143,6 @@ public class MyPushIntentService extends UmengMessageService {
 
                             @Override
                             public void onError(Throwable e) {
-                                JKLog.i(TAG, "task_APPLY:" + e.getMessage());
                                 ECTaskResultResponse response = new ECTaskResultResponse();
                                 response.setStatus(ECConfig.TASK_Fail);
                                 response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
@@ -179,8 +172,6 @@ public class MyPushIntentService extends UmengMessageService {
 
             @Override
             public void onNext(DisBean disBean) {
-                JKLog.i(TAG, "task" + disBean.getCode() + "/." +
-                        disBean.getMsg());
                 if (disBean.getCode() == 200) {
                     JKLog.i(TAG, "item_taskStatus:success");
                 } else {

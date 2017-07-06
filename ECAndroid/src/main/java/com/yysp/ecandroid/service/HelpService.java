@@ -67,6 +67,7 @@ public class HelpService extends AccessibilityService {
 
 
     List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
+    List<String> chatList = new ArrayList<>();
     ECTaskResultResponse response;
 
 
@@ -111,6 +112,7 @@ public class HelpService extends AccessibilityService {
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
+
                 String ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
                 JKLog.i("RT", "do_task:" + taskType + "/" + isTasking);
@@ -173,15 +175,11 @@ public class HelpService extends AccessibilityService {
                                     }
                                     break;
                                 case MyPushIntentService.ViewMessage:
-                                    //TODO
                                     new Thread() {
                                         @Override
                                         public void run() {
                                             if (fromType == 1) {
                                                 doViewMessageTask(getRootInActiveWindow());
-                                            } else {
-                                                JKLog.i(TAG, "task_type:" + fromType);
-                                                PerformClickUtils.performHome(HelpService.this);
                                             }
                                         }
                                     }.start();
@@ -496,21 +494,45 @@ public class HelpService extends AccessibilityService {
             JKLog.i("RT", "task_532:" + noRead.size());
             if (noRead.size() != 0) {
                 if (list.size() != 0) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     for (int i = 0; i < list.size(); i++) {
-                        sleepAndClickId(2000, noReadId);
+                        sleepAndClickId(1000, noReadId);
                         try {
                             Thread.sleep(2000);
                             String agree_msg = PerformClickUtils.findText(this, agreeText);
+                            JKLog.i(TAG, "task_532_msg:" + agree_msg);
                             if (!agree_msg.equals("")) {
-                                JKLog.i("RT", "task_532:同意为好友");
+                                //同意加好友,头像,聊天记录
                                 List<AccessibilityNodeInfo> headList = nodeInfo.findAccessibilityNodeInfosByViewId(userHeadImgId);
+                                List<AccessibilityNodeInfo> nList = nodeInfo.findAccessibilityNodeInfosByViewId(groupJoinPeoInfo);
+
+                                if (nList.size() != 0) {
+                                    for (int j = 0; j < nList.size(); j++) {
+                                        String info = nList.get(j).getText().toString();
+                                        chatList.add(info);
+                                        wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                                        wxUserBean.setChatList(chatList);
+                                        infoList.add(wxUserBean);
+                                    }
+                                }
+
+                                Thread.sleep(5000);
                                 if (headList.size() != 0) {
                                     PerformClickUtils.performClick(headList.get(0));
                                     Thread.sleep(3000);
 
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                                    wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_remark));
-                                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
+                                    if (!PerformClickUtils.geyTextById(this, vx_name_id).equals("")) {
+                                        wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
+                                    } else {
+                                        wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_remark));
+                                    }
+
+                                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                                     infoList.add(wxUserBean);
@@ -529,40 +551,38 @@ public class HelpService extends AccessibilityService {
                             e.printStackTrace();
                         }
                     }
+                    //TODO 打印下
+                    JKLog.i(TAG, "task_532_chatList:" + infoList.size());
                     AccessibilityNodeInfo nodeInfos = getRootInActiveWindow();
                     swipeAndHome(nodeInfos);
                 } else {
                     fromType = 1;
                     JKLog.i("RT", "task_532:滑动到底部了!");
-                    ECTaskResultResponse response = new ECTaskResultResponse();
-                    response.setStatus(ECConfig.TASK_FINISH);
-                    response.setDeviceAlias(AliasName);
-                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-                    doOfTaskEnd(response);
+                    postResult();
                 }
 
             } else {
                 if (infoList.size() != 0) {
                     JKLog.i("RT", "task_532:读完未读消息了!!!");
-                    ECTaskResultResponse response = new ECTaskResultResponse();
-                    response.setStatus(ECConfig.TASK_FINISH);
-                    response.setDeviceAlias(AliasName);
-                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-                    doOfTaskEnd(response);
+                    postResult();
                 } else {
                     JKLog.i("RT", "task_532:没有未读消息!!!");
-                    ECTaskResultResponse response = new ECTaskResultResponse();
-                    response.setReason("没有未读消息");
-                    response.setStatus(ECConfig.TASK_FINISH);
-                    response.setDeviceAlias(AliasName);
-                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-                    doOfTaskEnd(response);
+                    postResult();
                 }
 
             }
         }
 
 
+    }
+
+    private void postResult() {
+        ECTaskResultResponse response = new ECTaskResultResponse();
+        response.setStatus(ECConfig.TASK_FINISH);
+        response.setDeviceAlias(AliasName);
+        response.setTaskResult(infoList);
+        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+        doOfTaskEnd(response);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -1109,6 +1129,7 @@ public class HelpService extends AccessibilityService {
 
 
     private void doOfTaskEnd(ECTaskResultResponse resultResponse) {
+        chatList.clear();
         ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
