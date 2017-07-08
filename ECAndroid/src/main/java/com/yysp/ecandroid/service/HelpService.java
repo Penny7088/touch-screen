@@ -1146,12 +1146,12 @@ public class HelpService extends AccessibilityService {
             @Override
             public void onNext(DisBean disBean) {
                 JKLog.i(TAG, "task" + disBean.getMsg() + "**" + disBean.getCode());
-                if (disBean.getCode() == 200) {
-                    JKLog.i(TAG, "item_taskStatus:success");
-                    PerformClickUtils.performHome(HelpService.this);//任务完成进入home
-                } else {
-                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
-                }
+//                if (disBean.getCode() == 200) {
+//                    JKLog.i(TAG, "item_taskStatus:success");
+//                } else {
+//                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg() + "disBeanCode:" + disBean.getCode());
+//                }
+                PerformClickUtils.performHome(HelpService.this);//任务完成进入home
                 OthoerUtil.doOfTaskEnd();
                 infoList.clear();
             }
