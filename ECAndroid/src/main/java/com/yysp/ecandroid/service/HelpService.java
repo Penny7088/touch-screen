@@ -9,12 +9,9 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
-import com.jkframework.control.JKToast;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
-import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
@@ -23,7 +20,6 @@ import com.yysp.ecandroid.util.PerformClickUtils;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -102,20 +98,25 @@ public class HelpService extends AccessibilityService {
     public static final String ContactInfoUI = "com.tencent.mm.plugin.profile.ui.ContactInfoUI";
     public static final String GroupMsgUI = "com.tencent.mm.ui.chatting.En_5b8fbb1e";
     public static int CountType;
+    public static String ActivityName = "";
+    public static int WaitCount = 0;
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (!mActivityListenerThread.isAlive()){
+            mActivityListenerThread.start();
+        }
         int event_type = event.getEventType();
         switch (event_type) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
-
-                String ActivityName = event.getClassName().toString();
+                WaitCount = 0;
+                ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
                 JKLog.i("RT", "do_task:" + taskType + "/" + isTasking);
                 //对应页面对应事件
@@ -1198,4 +1199,31 @@ public class HelpService extends AccessibilityService {
         }
 
     }
+
+    protected Thread mActivityListenerThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while (true){
+                try {
+                    if (ActivityName.indexOf("com.tencent.mm") != -1){
+                        WaitCount++;
+                    }
+                    if (WaitCount > 60){
+                        WaitCount = 0;
+                        ECTaskResultResponse response = new ECTaskResultResponse();
+                        response.setStatus(ECConfig.TASK_Fail);
+                        response.setDeviceAlias(AliasName);
+                        response.setReason("在该界面卡死：" + ActivityName);
+                        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                        doOfTaskEnd(response);
+                    }
+                    Thread.sleep(10000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    });
 }
