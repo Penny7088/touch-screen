@@ -125,21 +125,14 @@ public class MyPushIntentService extends UmengMessageService {
 
                             @Override
                             public void onNext(DisGetTaskBean disGetTaskBean) {
-                                if (disGetTaskBean.getData() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
-                                    JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
-                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
-                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-                                    String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                    doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
-
-                                if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskId()!= null) {
-                                    if (!disGetTaskBean.getData().getTaskId().equals("")){
+                                if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskId() != null) {
+                                    if (!disGetTaskBean.getData().getTaskId().equals("")) {
                                         JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
                                         ECConfig.CloseScreenOrder(MyPushIntentService.this);
                                         JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                         String jsonStr = gson.toJson(disGetTaskBean.getData());
                                         doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
-                                    }else {
+                                    } else {
                                         ECTaskResultResponse response = new ECTaskResultResponse();
                                         response.setStatus(ECConfig.TASK_Fail);
                                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
