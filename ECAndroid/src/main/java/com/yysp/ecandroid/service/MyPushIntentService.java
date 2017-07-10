@@ -38,13 +38,16 @@ import io.reactivex.schedulers.Schedulers;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.yysp.ecandroid.config.ECConfig.AliasName;
 
+/**
+ * Created by Administrator on 2017/4/17.
+ */
 
 public class MyPushIntentService extends UmengMessageService {
     String TAG = "RT";
     //taskType
     public final static int SearchAddFriendType = 501;
     public final static int ContactGetFriendInfo = 502;
-    public final static int GetWxUserInfo = 503;
+    public final static int GetWxUserInfo = 503;//不走脚本
     public final static int CreatGroupType = 504;
     public final static int CreatGroupTypeBySmallWx = 505;
     public final static int FindGroupJoinPeo = 506;
@@ -122,21 +125,28 @@ public class MyPushIntentService extends UmengMessageService {
 
                             @Override
                             public void onNext(DisGetTaskBean disGetTaskBean) {
-                                if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskId() != null) {
-                                    if (!disGetTaskBean.getData().getTaskId().equals("")) {
+                                if (disGetTaskBean.getData() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
+                                    JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                    ECConfig.CloseScreenOrder(MyPushIntentService.this);
+                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                    String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                    doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+
+                                if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskId()!= null) {
+                                    if (!disGetTaskBean.getData().getTaskId().equals("")){
                                         JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
-                                        //ECConfig.CloseScreenOrder(MyPushIntentService.this);
+                                        ECConfig.CloseScreenOrder(MyPushIntentService.this);
                                         JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                         String jsonStr = gson.toJson(disGetTaskBean.getData());
                                         doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
-                                    } else {
+                                    }else {
                                         ECTaskResultResponse response = new ECTaskResultResponse();
                                         response.setStatus(ECConfig.TASK_Fail);
                                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                                         response.setDeviceAlias(AliasName);
                                         doSomeThing(response);
                                     }
-                                }else {
+                                } else {
                                     ECTaskResultResponse response = new ECTaskResultResponse();
                                     response.setStatus(ECConfig.TASK_Fail);
                                     response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
@@ -181,6 +191,8 @@ public class MyPushIntentService extends UmengMessageService {
                 } else {
                     OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
                 }
+
+
             }
 
             @Override
@@ -193,6 +205,7 @@ public class MyPushIntentService extends UmengMessageService {
             public void onComplete() {
             }
         });
+
     }
 
 
