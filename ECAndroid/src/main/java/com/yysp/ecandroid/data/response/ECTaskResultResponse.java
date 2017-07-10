@@ -21,7 +21,7 @@ public class ECTaskResultResponse {
     private int status;
     private String taskId;
     private List<TaskResultBean> taskResult;
-    private Boolean loginFail;
+    private Boolean loginFail = false;
 
 
     public Boolean getLoginFail() {
@@ -243,7 +243,6 @@ public class ECTaskResultResponse {
         public void setChatList(List<ChatVo> chatList) {
             this.chatList = chatList;
         }
-
 
 
         public static class ChatVo {

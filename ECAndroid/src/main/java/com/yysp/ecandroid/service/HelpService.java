@@ -380,6 +380,7 @@ public class HelpService extends AccessibilityService {
                                     JKLog.i("RT", "task_501:" + PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                     wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
+                                    wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                                     infoList.add(wxUserBean);
@@ -519,7 +520,7 @@ public class HelpService extends AccessibilityService {
                                         chatVo.setName(name);
                                         chatVo.setContent(info);
                                         chatList.add(chatVo);
-
+                                        JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
                                         wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                         wxUserBean.setChatList(chatList);
                                         infoList.add(wxUserBean);
@@ -558,7 +559,7 @@ public class HelpService extends AccessibilityService {
                         }
                     }
                     //TODO 打印下
-                    JKLog.i(TAG, "task_532_chatList:" + infoList.size());
+                    JKLog.i(TAG, "task_532_chatList:" + chatList.size());
                     AccessibilityNodeInfo nodeInfos = getRootInActiveWindow();
                     swipeAndHome(nodeInfos);
                 } else {
@@ -586,6 +587,7 @@ public class HelpService extends AccessibilityService {
         ECTaskResultResponse response = new ECTaskResultResponse();
         response.setStatus(ECConfig.TASK_FINISH);
         response.setDeviceAlias(AliasName);
+        JKLog.i(TAG, "task_532:list:" + infoList);
         response.setTaskResult(infoList);
         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
         doOfTaskEnd(response);

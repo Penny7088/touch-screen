@@ -85,6 +85,7 @@ public class LongRunningService extends Service {
                             doOfScript();
                             break;
                         default:
+                            response.setAmount(1);
                             postTaskFinish(response);
                             break;
                     }
@@ -198,7 +199,7 @@ public class LongRunningService extends Service {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
             if (failReason.equals("登录失败")) {
                 response.setLoginFail(true);
-            }else {
+            } else {
                 response.setLoginFail(false);
             }
 
