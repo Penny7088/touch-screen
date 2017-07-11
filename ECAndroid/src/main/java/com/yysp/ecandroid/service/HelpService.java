@@ -51,7 +51,6 @@ public class HelpService extends AccessibilityService {
     String no_more_people_id = "com.tencent.mm:id/ae8";
     String gender_id = "com.tencent.mm:id/aeu";
     String groupJoinPeoInfo = "com.tencent.mm:id/im";
-    String groupJoinPeoName = "com.tencent.mm:id/ik";
     String ares_id = "android:id/summary";
     String textId = "com.tencent.mm:id/aze";
     String groupName = "com.tencent.mm:id/aab";
@@ -67,7 +66,6 @@ public class HelpService extends AccessibilityService {
     List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
     List<ECTaskResultResponse.TaskResultBean.ChatVo> chatList;
     ECTaskResultResponse response;
-
 
     //任务是否进行开关
     public boolean isTasking;
@@ -586,11 +584,10 @@ public class HelpService extends AccessibilityService {
     }
 
     private void postResult() {
-        JKLog.i(TAG, "task_532_chatList:" + chatList.size());
+
         ECTaskResultResponse response = new ECTaskResultResponse();
         response.setStatus(ECConfig.TASK_FINISH);
         response.setDeviceAlias(AliasName);
-        JKLog.i(TAG, "task_532:list:" + infoList);
         response.setTaskResult(infoList);
         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
         doOfTaskEnd(response);
