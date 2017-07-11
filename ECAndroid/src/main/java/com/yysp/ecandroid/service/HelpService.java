@@ -65,7 +65,7 @@ public class HelpService extends AccessibilityService {
 
 
     List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
-    List<ECTaskResultResponse.TaskResultBean.ChatVo> chatList = new ArrayList<>();
+    List<ECTaskResultResponse.TaskResultBean.ChatVo> chatList;
     ECTaskResultResponse response;
 
 
@@ -106,7 +106,7 @@ public class HelpService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (!mActivityListenerThread.isAlive()){
+        if (!mActivityListenerThread.isAlive()) {
             mActivityListenerThread.start();
         }
         int event_type = event.getEventType();
@@ -504,7 +504,7 @@ public class HelpService extends AccessibilityService {
                         e.printStackTrace();
                     }
                     for (int i = 0; i < list.size(); i++) {
-                        sleepAndClickId(1000, noReadId);
+                        sleepAndClickId(2000, noReadId);
                         try {
                             Thread.sleep(2000);
                             String agree_msg = PerformClickUtils.findText(this, agreeText);
@@ -520,6 +520,8 @@ public class HelpService extends AccessibilityService {
                                         ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
                                         chatVo.setName(name);
                                         chatVo.setContent(info);
+
+                                        chatList = new ArrayList<>();
                                         chatList.add(chatVo);
                                         JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
                                         wxUserBean = new ECTaskResultResponse.TaskResultBean();
@@ -560,7 +562,6 @@ public class HelpService extends AccessibilityService {
                         }
                     }
                     //TODO 打印下
-                    JKLog.i(TAG, "task_532_chatList:" + chatList.size());
                     AccessibilityNodeInfo nodeInfos = getRootInActiveWindow();
                     swipeAndHome(nodeInfos);
                 } else {
@@ -585,6 +586,7 @@ public class HelpService extends AccessibilityService {
     }
 
     private void postResult() {
+        JKLog.i(TAG, "task_532_chatList:" + chatList.size());
         ECTaskResultResponse response = new ECTaskResultResponse();
         response.setStatus(ECConfig.TASK_FINISH);
         response.setDeviceAlias(AliasName);
@@ -1138,7 +1140,8 @@ public class HelpService extends AccessibilityService {
 
 
     private void doOfTaskEnd(ECTaskResultResponse resultResponse) {
-        chatList.clear();
+
+
         ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -1147,22 +1150,17 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onNext(DisBean disBean) {
-                JKLog.i(TAG, "task" + disBean.getMsg() + "**" + disBean.getCode());
-//                if (disBean.getCode() == 200) {
-//                    JKLog.i(TAG, "item_taskStatus:success");
-//                } else {
-//                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg() + "disBeanCode:" + disBean.getCode());
-//                }
                 PerformClickUtils.performHome(HelpService.this);//任务完成进入home
                 OthoerUtil.doOfTaskEnd();
-                infoList.clear();
+                clearList();
             }
+
 
             @Override
             public void onError(Throwable e) {
-                JKLog.i(TAG, "erro:" + e.getMessage());
                 OthoerUtil.doOfTaskEnd();
                 OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
+                clearList();
             }
 
             @Override
@@ -1174,6 +1172,18 @@ public class HelpService extends AccessibilityService {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 清理list
+     */
+    private void clearList() {
+        if (infoList != null) {
+            infoList.clear();
+        }
+        if (chatList != null) {
+            chatList.clear();
         }
     }
 
@@ -1205,12 +1215,12 @@ public class HelpService extends AccessibilityService {
     protected Thread mActivityListenerThread = new Thread(new Runnable() {
         @Override
         public void run() {
-            while (true){
+            while (true) {
                 try {
-                    if (ActivityName.indexOf("com.tencent.mm") != -1){
+                    if (ActivityName.indexOf("com.tencent.mm") != -1) {
                         WaitCount++;
                     }
-                    if (WaitCount > 60){
+                    if (WaitCount > 60) {
                         WaitCount = 0;
                         ECTaskResultResponse response = new ECTaskResultResponse();
                         response.setStatus(ECConfig.TASK_Fail);
