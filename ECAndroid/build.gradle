@@ -14,8 +14,8 @@ android {
         applicationId "com.yysp.ecandroid"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1014
-        versionName "0.0.14"
+        versionCode 1016
+        versionName "0.0.16"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
