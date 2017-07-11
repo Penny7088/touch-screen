@@ -511,7 +511,7 @@ public class HelpService extends AccessibilityService {
                                 List<AccessibilityNodeInfo> headList = nodeInfo.findAccessibilityNodeInfosByViewId(userHeadImgId);
                                 List<AccessibilityNodeInfo> nList = nodeInfo.findAccessibilityNodeInfosByViewId(groupJoinPeoInfo);
                                 if (nList.size() != 0) {
-                                    for (int j = 0; j < nList.size(); j++) {
+                                    for (int j = 0; j < headList.size(); j++) {
                                         String info = nList.get(j).getText().toString();
                                         String name = headList.get(j).getContentDescription().toString();
 
