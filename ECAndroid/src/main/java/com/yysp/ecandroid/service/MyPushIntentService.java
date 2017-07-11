@@ -411,9 +411,11 @@ public class MyPushIntentService extends UmengMessageService {
         List<String> phoneList = new ArrayList<>();
         JKLog.i(TAG, "phone_size:" + list.size());
         for (int i = 0; i < list.size(); i++) {
-            ContactUtil.addContact(context, list.get(i).getMobile());
-            JKLog.i(TAG, "phone:" + list.get(i).getMobile());
-            phoneList.add(list.get(i).getMobile());
+            if (ContactUtil.addContact(context, list.get(i).getMobile())) {
+                JKLog.i(TAG, "phone:" + list.get(i).getMobile());
+                phoneList.add(list.get(i).getMobile());
+            }
+
         }
         JKPreferences.SaveSharePersistent("phoneList", (ArrayList<String>) phoneList);
     }
