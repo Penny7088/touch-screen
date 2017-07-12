@@ -18,7 +18,7 @@ public class ECConfig {
     //任务失败
     public final static int TASK_Fail = 605;
     //搜索频繁
-    public final static int TASK_searMoreErro = 60;
+    public final static int TASK_searMoreErro = 606;
     //成功
     public final static String success="成功";
     //失败

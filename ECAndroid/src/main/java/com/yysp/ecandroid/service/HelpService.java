@@ -510,21 +510,17 @@ public class HelpService extends AccessibilityService {
                                 //同意加好友,头像,聊天记录
                                 List<AccessibilityNodeInfo> headList = nodeInfo.findAccessibilityNodeInfosByViewId(userHeadImgId);
                                 List<AccessibilityNodeInfo> nList = nodeInfo.findAccessibilityNodeInfosByViewId(groupJoinPeoInfo);
+                                chatList = new ArrayList<>();
+                                wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                 if (nList.size() != 0) {
                                     for (int j = 0; j < headList.size(); j++) {
                                         String info = nList.get(j).getText().toString();
                                         String name = headList.get(j).getContentDescription().toString();
-
                                         ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
                                         chatVo.setName(name);
                                         chatVo.setContent(info);
-
-                                        chatList = new ArrayList<>();
                                         chatList.add(chatVo);
                                         JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
-                                        wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                                        wxUserBean.setChatList(chatList);
-                                        infoList.add(wxUserBean);
                                     }
                                 }
 
@@ -533,7 +529,6 @@ public class HelpService extends AccessibilityService {
                                     PerformClickUtils.performClick(headList.get(0));
                                     Thread.sleep(3000);
 
-                                    wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                     if (!PerformClickUtils.geyTextById(this, vx_name_id).equals("")) {
                                         wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
                                     } else {
@@ -543,6 +538,7 @@ public class HelpService extends AccessibilityService {
                                     wxUserBean.setNickname(PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                                    wxUserBean.setChatList(chatList);
                                     infoList.add(wxUserBean);
 
                                     Thread.sleep(2000);

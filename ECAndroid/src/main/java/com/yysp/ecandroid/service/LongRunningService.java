@@ -207,10 +207,17 @@ public class LongRunningService extends Service {
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
-                    if (failReason.equals("搜索频繁")) {
-                        postTaskFailReason(response, failReason, ECConfig.TASK_searMoreErro);
-                    } else {
-                        postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+
+                    switch (failReason) {
+                        case "搜索频繁":
+                            postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                            break;
+                        case "被搜索好友异常":
+                            postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                            break;
+                        default:
+                            postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
+                            break;
                     }
                     break;
                 case MyPushIntentService.ContactGetFriendInfo:
