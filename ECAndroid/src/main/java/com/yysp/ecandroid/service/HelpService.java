@@ -429,7 +429,7 @@ public class HelpService extends AccessibilityService {
                                     }
                                     JKLog.i("RT", "task_536:" + PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                                    wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
+                                    wxUserBean.setNickname(PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                                     infoList.add(wxUserBean);
