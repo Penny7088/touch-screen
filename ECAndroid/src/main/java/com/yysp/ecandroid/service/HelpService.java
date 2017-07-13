@@ -378,14 +378,22 @@ public class HelpService extends AccessibilityService {
                                     }
                                     JKLog.i("RT", "task_501:" + PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
+
                                     wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
-                                    wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
+
+                                    if (!PerformClickUtils.geyTextById(this, vx_name_id).equals("")) {
+                                        wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_name_id));
+                                    } else {
+                                        wxUserBean.setAccount(PerformClickUtils.geyTextById(this, vx_remark));
+                                    }
+
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                                     infoList.add(wxUserBean);
 
                                     response = new ECTaskResultResponse();
                                     response.setStatus(ECConfig.TASK_FINISH);
+                                    response.setAmount(1);
                                     response.setDeviceAlias(AliasName);
                                     response.setTaskResult(infoList);
                                     response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
