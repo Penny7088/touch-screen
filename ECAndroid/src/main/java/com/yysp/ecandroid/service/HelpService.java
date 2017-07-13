@@ -3,6 +3,7 @@ package com.yysp.ecandroid.service;
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -521,9 +522,18 @@ public class HelpService extends AccessibilityService {
                                 chatList = new ArrayList<>();
                                 wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                 if (nList.size() != 0) {
+                                    int Offset = 0;
                                     for (int j = 0; j < headList.size(); j++) {
-                                        String info = nList.get(j).getText().toString();
+                                        Rect headRect = headList.get(j).getBoundsInScreen();
+                                        Rect ListRect = nList.get(j).getBoundsInScreen();
+                                        while (headRect.top != ListRect.top){
+                                            Offset++;
+                                            headRect = headList.get(j).getBoundsInScreen();
+                                            ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                        }
+                                        String info = nList.get(j + Offset).getText().toString();
                                         String name = headList.get(j).getContentDescription().toString();
+
                                         ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
                                         chatVo.setName(name);
                                         chatVo.setContent(info);
