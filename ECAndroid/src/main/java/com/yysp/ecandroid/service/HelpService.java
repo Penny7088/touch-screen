@@ -407,12 +407,12 @@ public class HelpService extends AccessibilityService {
                                     JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, vx_name_id));
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                     String vx = PerformClickUtils.geyTextById(this, vx_name_id);
-                                   if (!vx.equals("")){
-                                       String x[] = vx.split(":");
-                                       if (x.length > 1) {
-                                           wxUserBean.setAccount(x[1]);
-                                       }
-                                   }
+                                    if (!vx.equals("")) {
+                                        String x[] = vx.split(":");
+                                        if (x.length > 1) {
+                                            wxUserBean.setAccount(x[1]);
+                                        }
+                                    }
 
                                     wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
@@ -1030,9 +1030,12 @@ public class HelpService extends AccessibilityService {
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                     String user = list.get(i).getText().toString();
                     JKLog.i(TAG, "task_item:" + user);
-                    wxUserBean.setNickname(user);
-                    infoList.add(wxUserBean);
-                    Thread.sleep(2000);
+                    if (!user.equals("微信团队")&&!user.equals("文件传输助手")) {
+                        wxUserBean.setNickname(user);
+                        infoList.add(wxUserBean);
+                        Thread.sleep(2000);
+                    }
+
                 }
                 page++;
             }
