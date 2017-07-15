@@ -122,7 +122,7 @@ public class HelpService extends AccessibilityService {
                 if (isTasking) {
                     switch (ActivityName) {
                         case AppUpdaterUI:
-                            sleepAndClickText(2000,"取消");
+                            sleepAndClickText(2000, "取消");
                             break;
                         case LauncherUI://启动页面
                             switch (taskType) {
@@ -407,10 +407,13 @@ public class HelpService extends AccessibilityService {
                                     JKLog.i("RT", "task_533:" + PerformClickUtils.geyTextById(this, vx_name_id));
                                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                                     String vx = PerformClickUtils.geyTextById(this, vx_name_id);
-                                    String x[] = vx.split(":");
-                                    if (x.length != 0) {
-                                        wxUserBean.setAccount(x[1]);
-                                    }
+                                   if (!vx.equals("")){
+                                       String x[] = vx.split(":");
+                                       if (x.length > 1) {
+                                           wxUserBean.setAccount(x[1]);
+                                       }
+                                   }
+
                                     wxUserBean.setMobile(PerformClickUtils.geyTextById(this, wx_name));
                                     wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
                                     wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
@@ -1027,10 +1030,7 @@ public class HelpService extends AccessibilityService {
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                     String user = list.get(i).getText().toString();
                     JKLog.i(TAG, "task_item:" + user);
-                    wxUserBean.setRemark(list.get(i).getText().toString());
                     wxUserBean.setNickname(user);
-                    wxUserBean.setAccount(user);
-//                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
                     infoList.add(wxUserBean);
                     Thread.sleep(2000);
                 }
@@ -1052,7 +1052,7 @@ public class HelpService extends AccessibilityService {
                 //重复调用判断
                 getWxUserInfo();
             }
-        }else {
+        } else {
             ECTaskResultResponse response = new ECTaskResultResponse();
             response.setStatus(ECConfig.TASK_Fail);
             response.setDeviceAlias(AliasName);
