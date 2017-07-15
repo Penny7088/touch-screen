@@ -96,6 +96,8 @@ public class HelpService extends AccessibilityService {
     //详情界面
     public static final String ContactInfoUI = "com.tencent.mm.plugin.profile.ui.ContactInfoUI";
     public static final String GroupMsgUI = "com.tencent.mm.ui.chatting.En_5b8fbb1e";
+    //升级页
+    public static final String AppUpdaterUI = "com.tencent.mm.sandbox.updater.AppUpdaterUI";
     public static int CountType;
     public static String ActivityName = "";
     public static int WaitCount = 0;
@@ -121,6 +123,9 @@ public class HelpService extends AccessibilityService {
                 //对应页面对应事件
                 if (isTasking) {
                     switch (ActivityName) {
+                        case AppUpdaterUI:
+                            sleepAndClickText(2000,"取消");
+                            break;
                         case LauncherUI://启动页面
                             switch (taskType) {
                                 case MyPushIntentService.ContactGetFriendInfo:
@@ -526,7 +531,7 @@ public class HelpService extends AccessibilityService {
                                     for (int j = 0; j < headList.size(); j++) {
                                         Rect headRect = headList.get(j).getBoundsInScreen();
                                         Rect ListRect = nList.get(j).getBoundsInScreen();
-                                        while (headRect.top != ListRect.top){
+                                        while (headRect.top != ListRect.top) {
                                             Offset++;
                                             headRect = headList.get(j).getBoundsInScreen();
                                             ListRect = nList.get(j + Offset).getBoundsInScreen();
@@ -1009,44 +1014,52 @@ public class HelpService extends AccessibilityService {
         String text = PerformClickUtils.geyTextById(this, no_more_people_id);
         JKLog.i(TAG, "task_503:" + text);
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(wx_user_id);
+        if (nodeInfo != null) {
+            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(wx_user_id);
 
-        if (list.size() != 0) {
-            int j;
-            if (page == 1) {
-                j = 0;
+            if (list.size() != 0) {
+                int j;
+                if (page == 1) {
+                    j = 0;
+                } else {
+                    j = 1;
+                }
+                for (int i = j; i < list.size(); i++) {
+                    //获取微信名
+                    wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                    String user = list.get(i).getText().toString();
+                    JKLog.i(TAG, "task_item:" + user);
+                    wxUserBean.setRemark(list.get(i).getText().toString());
+                    wxUserBean.setNickname(user);
+                    wxUserBean.setAccount(user);
+//                    wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
+                    infoList.add(wxUserBean);
+                    Thread.sleep(2000);
+                }
+                page++;
+            }
+            Thread.sleep(2000);
+            PerformClickUtils.performSwipe(nodeInfo);
+            Thread.sleep(5000);
+            if (!text.equals("")) {
+                JKLog.i(TAG, "task_503:滑到底部了" + infoList.size());
+                //任务执行完善后工作
+                ECTaskResultResponse response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setDeviceAlias(AliasName);
+                response.setTaskResult(infoList);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                doOfTaskEnd(response);
             } else {
-                j = 1;
+                //重复调用判断
+                getWxUserInfo();
             }
-            for (int i = j; i < list.size(); i++) {
-                //获取微信名
-                wxUserBean = new ECTaskResultResponse.TaskResultBean();
-                String user = list.get(i).getText().toString();
-                JKLog.i(TAG, "task_item:" + user);
-                wxUserBean.setRemark(list.get(i).getText().toString());
-                wxUserBean.setNickname(PerformClickUtils.geyTextById(this, vx_name_id));
-                wxUserBean.setArea(PerformClickUtils.geyTextById(this, ares_id));
-                wxUserBean.setSex(PerformClickUtils.getContentDescriptionById(this, gender_id));
-                infoList.add(wxUserBean);
-                Thread.sleep(2000);
-            }
-            page++;
-        }
-        Thread.sleep(1000);
-        PerformClickUtils.performSwipe(nodeInfo);
-        Thread.sleep(1000);
-        if (!text.equals("")) {
-            JKLog.i(TAG, "task_503:滑到底部了" + infoList.size());
-            //任务执行完善后工作
+        }else {
             ECTaskResultResponse response = new ECTaskResultResponse();
-            response.setStatus(ECConfig.TASK_FINISH);
+            response.setStatus(ECConfig.TASK_Fail);
             response.setDeviceAlias(AliasName);
-            response.setTaskResult(infoList);
             response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
             doOfTaskEnd(response);
-        } else {
-            //重复调用判断
-            getWxUserInfo();
         }
     }
 
@@ -1054,7 +1067,6 @@ public class HelpService extends AccessibilityService {
     public void onInterrupt() {
 
     }
-
 
     //处理通讯录加好友listview
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)

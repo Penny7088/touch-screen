@@ -142,21 +142,7 @@ public class PerformClickUtils {
         }
     }
 
-    //模拟Home事件
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static void performAction(AccessibilityService service) {
-        if (service == null) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            service.performGlobalAction(AccessibilityNodeInfo.ACTION_PASTE);
-        }
-    }
+
 
     /**
      * text
