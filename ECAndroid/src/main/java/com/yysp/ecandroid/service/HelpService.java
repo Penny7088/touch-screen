@@ -100,8 +100,6 @@ public class HelpService extends AccessibilityService {
     public static final String AppUpdaterUI = "com.tencent.mm.sandbox.updater.AppUpdaterUI";
     public static int CountType;
     public static String ActivityName = "";
-    public static int WaitCount = 0;
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -116,7 +114,7 @@ public class HelpService extends AccessibilityService {
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
-                WaitCount = 0;
+                PerformClickUtils.WaitCount = 0;
                 ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
                 JKLog.i("RT", "do_task:" + taskType + "/" + isTasking);
@@ -1241,10 +1239,10 @@ public class HelpService extends AccessibilityService {
             while (true) {
                 try {
                     if (ActivityName.indexOf("com.tencent.mm") != -1) {
-                        WaitCount++;
+                        PerformClickUtils.WaitCount++;
                     }
-                    if (WaitCount > 60) {
-                        WaitCount = 0;
+                    if (PerformClickUtils.WaitCount > 60) {
+                        PerformClickUtils.WaitCount = 0;
                         ECTaskResultResponse response = new ECTaskResultResponse();
                         response.setStatus(ECConfig.TASK_Fail);
                         response.setDeviceAlias(AliasName);
