@@ -15,18 +15,19 @@ import com.yysp.ecandroid.config.ECVersion;
 import com.jkframework.config.JKVersion;
 import com.jkframework.debug.JKDebug;
 import com.yysp.ecandroid.data.bean.DisBean;
-import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.service.LongRunningService;
 import com.yysp.ecandroid.service.MyPushIntentService;
 import com.yysp.ecandroid.util.OthoerUtil;
 
+import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.yysp.ecandroid.config.ECConfig.AliasName;
+
 
 public class ECApplication extends Application {
 
@@ -42,7 +43,11 @@ public class ECApplication extends Application {
         OthoerUtil.CreatNeedFile();
         OthoerUtil.doOfTaskEnd();
 
-        /*内存泄漏检测*/
+        //jpush
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(ECApplication.this);
+        JPushInterface.setAlias(this,0,AliasName);
+
 
         /*初始化*/
         boolean bInit = JKVersion.CheckVersion();
@@ -51,9 +56,7 @@ public class ECApplication extends Application {
             JKVersion.SaveVersion();
         }
 
-        /*腾讯bugly*/
-//        if (!BuildConfig.DEBUG)
-//            QQBugly.GetInstance();
+
 
          /* 友盟推送sdk*/
         final PushAgent mPushAgent = PushAgent.getInstance(this);
