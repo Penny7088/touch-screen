@@ -20,7 +20,6 @@ import com.yysp.ecandroid.service.LongRunningService;
 import com.yysp.ecandroid.service.MyPushIntentService;
 import com.yysp.ecandroid.util.OthoerUtil;
 
-import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -43,10 +42,7 @@ public class ECApplication extends Application {
         OthoerUtil.CreatNeedFile();
         OthoerUtil.doOfTaskEnd();
 
-        //jpush
-        JPushInterface.setDebugMode(false);
-        JPushInterface.init(ECApplication.this);
-        JPushInterface.setAlias(this,0,AliasName);
+
 
 
         /*初始化*/

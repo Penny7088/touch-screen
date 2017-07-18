@@ -6,6 +6,8 @@ import android.provider.Settings;
 import android.view.accessibility.AccessibilityManager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.control.JKToast;
@@ -94,10 +96,10 @@ public class MyPushIntentService extends UmengMessageService {
                     if (message != null && message.equals("sheguo123")) {
                         JKToast.Show(message, 1);
                     } else {
-                        if (JsonUtil.isBadJson(message)) {
+                        try {
                             startTask(message);
-                        } else {
-                            JKLog.i("RT", "erro:" + message);
+                        } catch (JsonParseException e) {
+                            JKLog.i("RT", "YOUMENG" + e.getLocalizedMessage());
                         }
                     }
 
