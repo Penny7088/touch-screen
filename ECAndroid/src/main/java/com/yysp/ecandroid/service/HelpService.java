@@ -493,6 +493,12 @@ public class HelpService extends AccessibilityService {
                             break;
 
                     }
+                }else{
+                    switch (ActivityName) {
+                        case AppUpdaterUI:
+                            sleepAndClickText(2000, "取消");
+                            break;
+                    }
                 }
 
         }
