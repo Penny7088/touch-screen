@@ -1002,7 +1002,6 @@ public class HelpService extends AccessibilityService {
                 doOfTaskEnd(response);
                 fromType = 0;
             }
-            Log.i(TAG, "task_s:" + list.size() + "/" + lastName);
         }
     }
 

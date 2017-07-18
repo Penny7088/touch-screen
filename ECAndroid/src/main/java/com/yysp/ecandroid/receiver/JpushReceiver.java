@@ -19,8 +19,8 @@ import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.bean.DisPushBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
-import com.yysp.ecandroid.service.MyPushIntentService;
 import com.yysp.ecandroid.util.ContactUtil;
+import com.yysp.ecandroid.util.JsonUtil;
 import com.yysp.ecandroid.util.OthoerUtil;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
@@ -79,7 +79,16 @@ public class JpushReceiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
         if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
             String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-            startTask(message, context);
+            JKLog.i(TAG, "JPush:" + message);
+            if (message != null && message.equals("sheguo123")) {
+                JKToast.Show(message, 1);
+            } else {
+                if (JsonUtil.isBadJson(message)) {
+                    startTask(message, context);
+                } else {
+                    JKLog.i("RT", "erro:" + message);
+                }
+            }
         }
     }
 

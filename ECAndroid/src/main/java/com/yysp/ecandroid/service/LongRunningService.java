@@ -45,7 +45,6 @@ public class LongRunningService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //todo 执行定时任务
                 while (true) {
                     try {
                         readFileStatus(ECSdCardPath.Task_Finish_TXT);
