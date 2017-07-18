@@ -44,7 +44,7 @@ public class ECApplication extends Application {
         OthoerUtil.doOfTaskEnd();
 
         //jpush
-        JPushInterface.setDebugMode(false);
+        JPushInterface.setDebugMode(true);
         JPushInterface.init(ECApplication.this);
         JPushInterface.setAlias(this,0,AliasName);
 

@@ -142,6 +142,14 @@
                 <category android:name="com.yysp.ecandroid" />
             </intent-filter>
 
+            <!-- User defined.  For test only  用户自定义接收消息器,3.0.7开始支持,目前新tag/alias接口设置结果会在该广播接收器对应的方法中回调-->
+            <receiver android:name="com.yysp.ecandroid.receiver.MyJPushMessageReceiver">
+                <intent-filter>
+                    <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+                    <category android:name="com.yysp.ecandroid"></category>
+                </intent-filter>
+            </receiver>
+
         </receiver>
         <!-- -->
         <activity
