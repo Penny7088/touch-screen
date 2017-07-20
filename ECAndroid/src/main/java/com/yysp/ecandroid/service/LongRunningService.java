@@ -208,7 +208,9 @@ public class LongRunningService extends Service {
                         response.setAmount(2);//封号
                         break;
                     case "3":
-                        response.setAmount(3);//未知异常
+                        response.setAmount(3);//界面卡死
+                    case "4":
+                        response.setAmount(4);//未知异常
                         break;
                 }
             } else {
@@ -218,7 +220,6 @@ public class LongRunningService extends Service {
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
-
                     switch (failReason) {
                         case "搜索频繁":
                             postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
