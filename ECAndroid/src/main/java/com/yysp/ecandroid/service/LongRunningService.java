@@ -198,10 +198,22 @@ public class LongRunningService extends Service {
             String failReason = JKFile.ReadFile(ECSdCardPath.Task_Fail_TXT);
             if (failReason.equals("登录失败")) {
                 response.setLoginFail(true);
+                //登录失败具体结果
+                String result = JKFile.ReadFile(ECSdCardPath.ResultTxt);
+                switch (result) {
+                    case "1":
+                        response.setAmount(1);//密码错误
+                        break;
+                    case "2":
+                        response.setAmount(2);//封号
+                        break;
+                    case "3":
+                        response.setAmount(3);//未知异常
+                        break;
+                }
             } else {
                 response.setLoginFail(false);
             }
-
             JKLog.i("RT", "task_fail:" + failReason);
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
@@ -263,7 +275,7 @@ public class LongRunningService extends Service {
                     break;
                 case MyPushIntentService.DetectionTask:
                     String detectionTaskTxt = JKFile.ReadFile(ECSdCardPath.DETECTION_TASK_Finish_TXT);
-                    postTaskFailReason(response, failReason + "|" + detectionTaskTxt, ECConfig.TASK_Fail);
+                    postTaskFailReason(response, detectionTaskTxt, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.FriendNumInfo:
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);

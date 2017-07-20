@@ -1029,12 +1029,11 @@ public class HelpService extends AccessibilityService {
                     wxUserBean = new ECTaskResultResponse.TaskResultBean();
                     String user = list.get(i).getText().toString();
                     JKLog.i(TAG, "task_item:" + user);
-                    if (!user.equals("微信团队")&&!user.equals("文件传输助手")) {
+                    if (!user.equals("微信团队") && !user.equals("文件传输助手")) {
                         wxUserBean.setNickname(user);
                         infoList.add(wxUserBean);
                         Thread.sleep(2000);
                     }
-
                 }
                 page++;
             }
