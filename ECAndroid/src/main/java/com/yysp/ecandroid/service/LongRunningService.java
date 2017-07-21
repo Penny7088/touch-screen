@@ -209,8 +209,12 @@ public class LongRunningService extends Service {
                         break;
                     case "3":
                         response.setAmount(3);//界面卡死
+                        break;
                     case "4":
                         response.setAmount(4);//未知异常
+                        break;
+                    default:
+                        response.setAmount(0);
                         break;
                 }
             } else {
