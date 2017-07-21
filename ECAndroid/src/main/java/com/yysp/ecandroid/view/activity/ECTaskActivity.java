@@ -63,11 +63,8 @@ public class ECTaskActivity extends ECBaseActivity {
         ECConfig.OpenScreenOrder(this);
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
         if (!accessibilityManager.isEnabled()) {
-            ECTaskResultResponse response = new ECTaskResultResponse();
-            response.setStatus(ECConfig.TASK_Fail);
-            response.setDeviceAlias(AliasName);
-//            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-            doOfTaskEnd(response);
+            OthoerUtil.doOfTaskEnd();
+            OthoerUtil.AddErrorMsgUtil(AliasName + "   辅助未打开");
             new MaterialDialog.Builder(this).content("请打开空容器辅助功能!").positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
