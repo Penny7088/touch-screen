@@ -27,6 +27,9 @@ public class ECConfig {
     //别名
     public final static String AliasName= JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
 
+    //心跳时间
+    public static int hbTimer = 30;
+
     public final static void CloseScreenOrder(Context context) {//关闭屏幕触摸
 //        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 //        wm.setTpDisable(0);

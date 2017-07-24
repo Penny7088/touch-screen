@@ -369,7 +369,11 @@ public class HelpService extends AccessibilityService {
                             }
                             break;
                         case DialogUI:
-                            PerformClickUtils.performBack(this);
+                            if (!PerformClickUtils.findText(this,"更新").equals("")){
+                                sleepAndClickText(2000, "取消");
+                            }else {
+                                PerformClickUtils.performBack(this);
+                            }
                             break;
                         case ContactInfoUI:
                             switch (taskType) {
@@ -497,6 +501,11 @@ public class HelpService extends AccessibilityService {
                     switch (ActivityName) {
                         case AppUpdaterUI:
                             sleepAndClickText(2000, "取消");
+                            break;
+                        case DialogUI:
+                            if (!PerformClickUtils.findText(this,"更新").equals("")){
+                                sleepAndClickText(2000, "取消");
+                            }
                             break;
                     }
                 }

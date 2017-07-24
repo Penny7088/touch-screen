@@ -18,7 +18,6 @@ public class DisGetTaskBean implements Serializable{
     private String addFriendMessage;
     private int amount;
 
-
     public String getGroupName() {
         return groupName;
     }
@@ -98,7 +97,7 @@ public class DisGetTaskBean implements Serializable{
         private String taskId;
         private String internalAccount;
         private List<TargetAccountsBean> targetAccounts;
-
+        private int hbTimer;
 
 
 
@@ -166,6 +165,14 @@ public class DisGetTaskBean implements Serializable{
 
         public void setAccountPassword(String accountPassword) {
             this.accountPassword = accountPassword;
+        }
+
+        public int gethbTimer() {
+            return hbTimer;
+        }
+
+        public void sethbTimer(int hbTimer) {
+            this.hbTimer = hbTimer;
         }
 
         public String getTaskId() {
