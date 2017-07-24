@@ -24,7 +24,8 @@ public class ECNetSend {
 
 //    public static final String Host = "http://192.168.1.45:8080/saas-api/";
 //    public static final String Host = "http://192.168.1.134:8080/dis-api/";
-    public static final String Host = "http://118.31.51.197:8101/";
+//    public static final String Host = "http://118.31.51.197:8101/";
+    public static final String Host = "http://192.168.1.134:8081";
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
             .baseUrl(Host)
@@ -36,6 +37,10 @@ public class ECNetSend {
     public static Observable<DisBean> signUid(String deviceAlias, String machineCode) {
         DisSigndoResponse signdoResponse = new DisSigndoResponse(deviceAlias, machineCode);
         return service.sign(signdoResponse);
+    }
+
+    public static Observable<DisGetTaskBean> searchToDoJobByDevice(String deviceAlias) {
+        return service.searchToDoJobByDevice(deviceAlias);
     }
 
     public static Observable<DisGetTaskBean> taskApply(String taskId, String deviceAlias) {

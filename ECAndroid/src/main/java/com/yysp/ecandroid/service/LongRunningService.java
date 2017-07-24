@@ -84,9 +84,16 @@ public class LongRunningService extends Service {
         return null;
     }
 
+    public LongRunningService() {
+    }
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+    }
+
     @Override
     public int onStartCommand(final Intent intent, int flags, final int startId) {
-//        mIMThread.start();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -100,7 +107,21 @@ public class LongRunningService extends Service {
                 }
             }
         }).start();
-        return super.onStartCommand(intent, flags, startId);
+
+        if (!mIMThread.isAlive()){
+            mIMThread.start();
+        }
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy(){
+        if(mIMThread != null){
+            mIMThread.stop();
+            mIMThread.destroy();
+            mIMThread = null;
+        }
+        super.onDestroy();
     }
 
 
@@ -483,57 +504,60 @@ public class LongRunningService extends Service {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(1000*30);
+                    Thread.sleep(1000*ECConfig.hbTimer);
                     String tsId = JKPreferences.GetSharePersistentString("taskId");
                     if (tsId.equals("")){
                         final Gson gson = new Gson();
-//                    ECNetSend.taskApply(disPushBean.getTaskId(), AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-//                            new Observer<DisGetTaskBean>() {
-//                                @Override
-//                                public void onSubscribe(Disposable d) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onNext(DisGetTaskBean disGetTaskBean) {
-//                                    if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskId() != null) {
-//                                        if (!disGetTaskBean.getData().getTaskId().equals("")) {
-//                                            JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
-//                                            ECConfig.CloseScreenOrder(LongRunningService.this);
-//                                            JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-//                                            String jsonStr = gson.toJson(disGetTaskBean.getData());
-//                                            doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
-//                                        } else {
+                    ECNetSend.searchToDoJobByDevice(AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                            new Observer<DisGetTaskBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(DisGetTaskBean disGetTaskBean) {
+                                    JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
+                                    if (disGetTaskBean.getData() != null && disGetTaskBean.getData().gethbTimer() > 0) {
+                                        ECConfig.hbTimer = disGetTaskBean.getData().gethbTimer();
+                                        if (disGetTaskBean.getData().getTaskId() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
+                                            JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                            ECConfig.CloseScreenOrder(LongRunningService.this);
+                                            JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
+                                            JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                            String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                            doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                        } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
 //                                            response.setStatus(ECConfig.TASK_Fail);
 //                                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                            response.setDeviceAlias(AliasName);
 //                                            doSomeThing(response);
-//                                        }
-//                                    } else {
+                                        }
+                                    } else {
 //                                        ECTaskResultResponse response = new ECTaskResultResponse();
 //                                        response.setStatus(ECConfig.TASK_Fail);
 //                                        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                        response.setDeviceAlias(AliasName);
 //                                        doSomeThing(response);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onError(Throwable e) {
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
 //                                    ECTaskResultResponse response = new ECTaskResultResponse();
 //                                    response.setStatus(ECConfig.TASK_Fail);
 //                                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                    response.setDeviceAlias(AliasName);
 //                                    doSomeThing(response);
-//
-//                                }
-//
-//                                @Override
-//                                public void onComplete() {
-//                                }
-//                            }
-//                    );
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                }
+                            }
+                    );
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -3,13 +3,8 @@ package com.yysp.ecandroid.config;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
-import android.view.WindowManager;
 
-import com.google.gson.Gson;
 import com.jkframework.config.JKSystem;
-import com.yysp.ecandroid.data.bean.DisGetTaskBean;
-
-import java.util.List;
 
 public class ECConfig {
 
@@ -32,14 +27,17 @@ public class ECConfig {
     //别名
     public final static String AliasName= JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
 
+    //心跳时间
+    public static int hbTimer = 30;
+
     public final static void CloseScreenOrder(Context context) {//关闭屏幕触摸
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.setTpDisable(0);
+//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        wm.setTpDisable(0);
     }
 
     public final static void OpenScreenOrder(Context context) {//打开屏幕触摸
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.setTpDisable(1);
+//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        wm.setTpDisable(1);
     }
     //任务编号
     public final static int SearchAddFriendType = 501;
