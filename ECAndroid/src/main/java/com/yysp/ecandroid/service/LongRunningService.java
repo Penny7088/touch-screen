@@ -506,9 +506,8 @@ public class LongRunningService extends Service {
                 try {
                     Thread.sleep(1000*ECConfig.hbTimer);
                     String tsId = JKPreferences.GetSharePersistentString("taskId");
-                    if (tsId.equals("")){
-                        final Gson gson = new Gson();
-                    ECNetSend.searchToDoJobByDevice(AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                    final Gson gson = new Gson();
+                    ECNetSend.searchToDoJobByDevice(tsId, AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                             new Observer<DisGetTaskBean>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
@@ -558,7 +557,6 @@ public class LongRunningService extends Service {
                                 }
                             }
                     );
-                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

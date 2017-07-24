@@ -38,8 +38,8 @@ public class ECNetSend {
         return service.sign(signdoResponse);
     }
 
-    public static Observable<DisGetTaskBean> searchToDoJobByDevice(String deviceAlias) {
-        return service.searchToDoJobByDevice(deviceAlias);
+    public static Observable<DisGetTaskBean> searchToDoJobByDevice(String taskId, String deviceAlias) {
+        return service.searchToDoJobByDevice(taskId, deviceAlias);
     }
 
     public static Observable<DisGetTaskBean> taskApply(String taskId, String deviceAlias) {
