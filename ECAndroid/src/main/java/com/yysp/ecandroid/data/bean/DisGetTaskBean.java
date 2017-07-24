@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Administrator on 2017/4/21.
  */
 
-public class DisGetTaskBean implements Serializable{
+public class DisGetTaskBean implements Serializable {
 
     private int code;
     private DataBean data;
@@ -84,7 +84,6 @@ public class DisGetTaskBean implements Serializable{
     }
 
 
-
     public static class DataBean {
 
         private String groupName;
@@ -97,11 +96,16 @@ public class DisGetTaskBean implements Serializable{
         private String accountPassword;
         private String taskId;
         private String internalAccount;
+        private int timeOut;
         private List<TargetAccountsBean> targetAccounts;
 
+        public int getTimeOut() {
+            return timeOut;
+        }
 
-
-
+        public void setTimeOut(int timeOut) {
+            this.timeOut = timeOut;
+        }
         public String getGroupName() {
             return groupName;
         }
@@ -149,7 +153,6 @@ public class DisGetTaskBean implements Serializable{
         public void setAddFriendMessage(String addFriendMessage) {
             this.addFriendMessage = addFriendMessage;
         }
-
 
 
         public int getTaskType() {
