@@ -554,7 +554,7 @@ public class HelpService extends AccessibilityService {
                                                 ListRect = nList.get(j + Offset).getBoundsInScreen();
                                             }else
                                             {
-                                                break;;
+                                                break;
                                             }
                                         }
 

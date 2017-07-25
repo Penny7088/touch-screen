@@ -24,7 +24,7 @@ interface ECNetInterface {
     //发送心跳任务确认请求
     @FormUrlEncoded
     @POST("/task/searchToDoJobByDevice.do")
-    Observable<DisGetTaskBean> searchToDoJobByDevice(@Field("taskId") String taskId, @Field("deviceAlias") String deviceAlias);
+    Observable<DisGetTaskBean> searchToDoJobByDevice(@Field("taskId") String taskId, @Field("machineCode") String deviceAlias);
 
     //发送任务确认请求
     @FormUrlEncoded

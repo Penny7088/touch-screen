@@ -88,9 +88,13 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> dialogConfirm = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text2);
         if (!dialogWait.isEmpty() && !dialogConfirm.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : dialogWait) {
-                if (nodeInfo != null && text1.equals(nodeInfo.getText())) {
-                    performClick(nodeInfo);
-                    break;
+                if (nodeInfo != null) {
+                    if (nodeInfo.getText() != null){
+                        if (text1.equals(nodeInfo.getText())){
+                            performClick(nodeInfo);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -156,9 +160,12 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null && nodeInfo.getText() != null) {
-
-                    return nodeInfo.getText().toString();
+                if (nodeInfo != null) {
+                    if (nodeInfo.getText() != null){
+                        return nodeInfo.getText().toString();
+                    }else{
+                        return "";
+                    }
                 } else {
                     return "";
                 }
@@ -224,8 +231,12 @@ public class PerformClickUtils {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(text)) {
-                    return nodeInfo.getText().toString();
+                if (nodeInfo != null) {
+                    if (nodeInfo.getText() != null){
+                        if (nodeInfo.getText().toString().equals(text)){
+                            return nodeInfo.getText().toString();
+                        }
+                    }
                 }
             }
         }

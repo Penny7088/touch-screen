@@ -516,22 +516,24 @@ public class LongRunningService extends Service {
 
                                 @Override
                                 public void onNext(DisGetTaskBean disGetTaskBean) {
-                                    JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
-                                    if (disGetTaskBean.getData() != null && disGetTaskBean.getData().gethbTimer() > 0) {
-                                        ECConfig.hbTimer = disGetTaskBean.getData().gethbTimer();
-                                        if (disGetTaskBean.getData().getTaskId() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
-                                            JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
-                                            ECConfig.CloseScreenOrder(LongRunningService.this);
-                                            JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
-                                            JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-                                            String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                            doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
-                                        } else {
+                                    if (disGetTaskBean.getData() != null) {
+                                        JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
+                                        if (disGetTaskBean.getData().gethbTimer() > 0){
+                                            ECConfig.hbTimer = disGetTaskBean.getData().gethbTimer();
+                                            if (disGetTaskBean.getData().getTaskId() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
+                                                JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                                ECConfig.CloseScreenOrder(LongRunningService.this);
+                                                JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
+                                                JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                                String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                            } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
 //                                            response.setStatus(ECConfig.TASK_Fail);
 //                                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                            response.setDeviceAlias(AliasName);
 //                                            doSomeThing(response);
+                                            }
                                         }
                                     } else {
 //                                        ECTaskResultResponse response = new ECTaskResultResponse();
