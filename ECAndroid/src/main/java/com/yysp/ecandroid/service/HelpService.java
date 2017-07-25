@@ -549,17 +549,25 @@ public class HelpService extends AccessibilityService {
                                         Rect ListRect = nList.get(j).getBoundsInScreen();
                                         while (headRect.top != ListRect.top) {
                                             Offset++;
-                                            headRect = headList.get(j).getBoundsInScreen();
-                                            ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                            if(j + Offset < nList.size()) {
+                                                headRect = headList.get(j).getBoundsInScreen();
+                                                ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                            }else
+                                            {
+                                                break;;
+                                            }
                                         }
-                                        String info = nList.get(j + Offset).getText().toString();
-                                        String name = headList.get(j).getContentDescription().toString();
 
-                                        ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
-                                        chatVo.setName(name);
-                                        chatVo.setContent(info);
-                                        chatList.add(chatVo);
-                                        JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
+                                        if(j + Offset < nList.size()){
+                                            String info = nList.get(j + Offset).getText().toString();
+                                            String name = headList.get(j).getContentDescription().toString();
+                                            ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
+                                            chatVo.setName(name);
+                                            chatVo.setContent(info);
+                                            chatList.add(chatVo);
+
+                                            JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
+                                        }
                                     }
                                 }
 
