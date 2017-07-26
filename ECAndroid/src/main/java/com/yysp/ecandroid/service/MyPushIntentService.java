@@ -6,11 +6,13 @@ import android.provider.Settings;
 import android.view.accessibility.AccessibilityManager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.control.JKToast;
 import com.jkframework.debug.JKLog;
 import com.umeng.message.UmengMessageService;
+import com.umeng.message.entity.UMessage;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
@@ -21,6 +23,10 @@ import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.OthoerUtil;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
+
+import org.android.agoo.common.AgooConstants;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;

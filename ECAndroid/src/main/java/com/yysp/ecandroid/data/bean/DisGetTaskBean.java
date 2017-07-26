@@ -96,6 +96,7 @@ public class DisGetTaskBean implements Serializable {
         private String taskId;
         private String internalAccount;
         private int timeOut;
+        private int stopTask;
         private List<TargetAccountsBean> targetAccounts;
         private int hbTimer;
 
@@ -106,6 +107,7 @@ public class DisGetTaskBean implements Serializable {
         public void setTimeOut(int timeOut) {
             this.timeOut = timeOut;
         }
+
         public String getGroupName() {
             return groupName;
         }
@@ -136,6 +138,14 @@ public class DisGetTaskBean implements Serializable {
 
         public void setTargetGroupMessage(String targetGroupMessage) {
             this.targetGroupMessage = targetGroupMessage;
+        }
+
+        public int getStopTask() {
+            return stopTask;
+        }
+
+        public void setStopTask(int stopTask) {
+            this.stopTask = stopTask;
         }
 
         public String getAmount() {

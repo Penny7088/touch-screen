@@ -40,6 +40,7 @@ import static com.yysp.ecandroid.config.ECConfig.AliasName;
  */
 
 public class LongRunningService extends Service {
+    public final static int BreakTask = 500;
     public final static int SearchAddFriendType = 501;
     public final static int ContactGetFriendInfo = 502;
     public final static int GetWxUserInfo = 503;//不走脚本
@@ -72,6 +73,8 @@ public class LongRunningService extends Service {
     public final static int ThrowTheBottle = 538;
     public final static int AddNearPeople = 539;
 
+    String breakTaskId;
+
     List<DisGetTaskBean.DataBean.TargetAccountsBean> list;
     Gson gson;
 
@@ -88,7 +91,7 @@ public class LongRunningService extends Service {
     }
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
     }
 
@@ -108,15 +111,15 @@ public class LongRunningService extends Service {
             }
         }).start();
 
-        if (!mIMThread.isAlive()){
+        if (!mIMThread.isAlive()) {
             mIMThread.start();
         }
         return START_STICKY;
     }
 
     @Override
-    public void onDestroy(){
-        if(mIMThread != null){
+    public void onDestroy() {
+        if (mIMThread != null) {
             mIMThread.stop();
             mIMThread.destroy();
             mIMThread = null;
@@ -504,7 +507,7 @@ public class LongRunningService extends Service {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(1000*ECConfig.hbTimer);
+                    Thread.sleep(1000 * ECConfig.hbTimer);
                     String tsId = JKPreferences.GetSharePersistentString("taskId");
                     final Gson gson = new Gson();
                     ECNetSend.searchToDoJobByDevice(tsId, AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
@@ -518,15 +521,22 @@ public class LongRunningService extends Service {
                                 public void onNext(DisGetTaskBean disGetTaskBean) {
                                     if (disGetTaskBean.getData() != null) {
                                         JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
-                                        if (disGetTaskBean.getData().gethbTimer() > 0){
+                                        if (disGetTaskBean.getData().gethbTimer() > 0) {
                                             ECConfig.hbTimer = disGetTaskBean.getData().gethbTimer();
                                             if (disGetTaskBean.getData().getTaskId() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
                                                 JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
                                                 ECConfig.CloseScreenOrder(LongRunningService.this);
-                                                JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
-                                                JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+
+                                                int taskType = disGetTaskBean.getData().getTaskType();
+                                                if (taskType != 500) {
+                                                    JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
+                                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+                                                } else {
+                                                    breakTaskId = disGetTaskBean.getData().getTaskId();
+                                                }
                                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
                                                 doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+
                                             } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
 //                                            response.setStatus(ECConfig.TASK_Fail);
@@ -568,7 +578,9 @@ public class LongRunningService extends Service {
 
     private void doTaskWithId(int taskType, String content) {
         JKLog.i(TAG, "data:" + content);
-        JKPreferences.SaveSharePersistent("pushData", content);//备份
+        if (taskType != 500) {
+            JKPreferences.SaveSharePersistent("pushData", content);//备份
+        }
         Intent intent;
         //判断辅助服务是否开启
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
@@ -608,6 +620,35 @@ public class LongRunningService extends Service {
 
     private void doTypeTask(int taskType, final String content) {
         switch (taskType) {
+            case BreakTask:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+
+                response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setTaskId(breakTaskId);
+                response.setDeviceAlias(AliasName);
+                ECNetSend.taskStatus(response, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DisBean disBean) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+                break;
             case SearchAddFriendType:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;

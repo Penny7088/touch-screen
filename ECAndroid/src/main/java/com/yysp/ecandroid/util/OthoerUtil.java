@@ -78,6 +78,7 @@ public class OthoerUtil {
             if (!JKFile.IsFile(ECSdCardPath.ResultTxt)) {
                 JKFile.creatFileTxt(ECSdCardPath.ResultTxt);
             }
+
         }
     }
 
