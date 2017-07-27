@@ -534,6 +534,7 @@ public class LongRunningService extends Service {
                                                     JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
                                                 } else {
                                                     breakTaskId = disGetTaskBean.getData().getTaskId();
+                                                    JKPreferences.SaveSharePersistent("breakTask", true);
                                                 }
                                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
                                                 doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);

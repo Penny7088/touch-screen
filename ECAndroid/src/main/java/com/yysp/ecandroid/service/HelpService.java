@@ -43,6 +43,7 @@ public class HelpService extends AccessibilityService {
     public static int addFromType = 1;
     int getFromType = -1;
     boolean isNeedSwipe = false;
+    boolean isNeedBreakTask;
 
     //控件id
     String vx_name_id = "com.tencent.mm:id/aeq";
@@ -114,6 +115,15 @@ public class HelpService extends AccessibilityService {
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
+                //任务立即停止
+                isNeedBreakTask = JKPreferences.GetSharePersistentBoolean("breakTask");
+                if (isNeedBreakTask) {
+                    ECTaskResultResponse response = new ECTaskResultResponse();
+                    response.setStatus(ECConfig.TASK_FINISH);
+                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                    response.setDeviceAlias(AliasName);
+                    doOfTaskEnd(response);
+                }
                 PerformClickUtils.WaitCount = 0;
                 ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
@@ -369,9 +379,9 @@ public class HelpService extends AccessibilityService {
                             }
                             break;
                         case DialogUI:
-                            if (!PerformClickUtils.findText(this,"更新").equals("")){
+                            if (!PerformClickUtils.findText(this, "更新").equals("")) {
                                 sleepAndClickText(2000, "取消");
-                            }else {
+                            } else {
                                 PerformClickUtils.performBack(this);
                             }
                             break;
@@ -497,13 +507,13 @@ public class HelpService extends AccessibilityService {
                             break;
 
                     }
-                }else{
+                } else {
                     switch (ActivityName) {
                         case AppUpdaterUI:
                             sleepAndClickText(2000, "取消");
                             break;
                         case DialogUI:
-                            if (!PerformClickUtils.findText(this,"更新").equals("")){
+                            if (!PerformClickUtils.findText(this, "更新").equals("")) {
                                 sleepAndClickText(2000, "取消");
                             }
                             break;
@@ -549,16 +559,15 @@ public class HelpService extends AccessibilityService {
                                         Rect ListRect = nList.get(j).getBoundsInScreen();
                                         while (headRect.top != ListRect.top) {
                                             Offset++;
-                                            if(j + Offset < nList.size()) {
+                                            if (j + Offset < nList.size()) {
                                                 headRect = headList.get(j).getBoundsInScreen();
                                                 ListRect = nList.get(j + Offset).getBoundsInScreen();
-                                            }else
-                                            {
+                                            } else {
                                                 break;
                                             }
                                         }
 
-                                        if(j + Offset < nList.size()){
+                                        if (j + Offset < nList.size()) {
                                             String info = nList.get(j + Offset).getText().toString();
                                             String name = headList.get(j).getContentDescription().toString();
                                             ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();

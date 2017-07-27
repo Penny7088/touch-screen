@@ -47,6 +47,7 @@ public class OthoerUtil {
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");
         JKPreferences.RemoveSharePersistent("pushData");
+        JKPreferences.RemoveSharePersistent("breakTask");
     }
 
 
