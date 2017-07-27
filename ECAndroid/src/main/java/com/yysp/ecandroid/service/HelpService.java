@@ -555,17 +555,19 @@ public class HelpService extends AccessibilityService {
                                 if (nList.size() != 0) {
                                     int Offset = 0;
                                     for (int j = 0; j < headList.size(); j++) {
-                                        Rect headRect = headList.get(j).getBoundsInScreen();
-                                        Rect ListRect = nList.get(j).getBoundsInScreen();
-                                        while (headRect.top != ListRect.top) {
-                                            Offset++;
-                                            if (j + Offset < nList.size()) {
-                                                headRect = headList.get(j).getBoundsInScreen();
-                                                ListRect = nList.get(j + Offset).getBoundsInScreen();
-                                            } else {
-                                                break;
+                                        if (j + Offset < nList.size()){
+                                            Rect headRect = headList.get(j).getBoundsInScreen();
+                                            Rect ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                            while (headRect.top != ListRect.top) {
+                                                Offset++;
+                                                if(j + Offset < nList.size()) {
+                                                    headRect = headList.get(j).getBoundsInScreen();
+                                                    ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                                }else
+                                                {
+                                                    break;
+                                                }
                                             }
-                                        }
 
                                         if (j + Offset < nList.size()) {
                                             String info = nList.get(j + Offset).getText().toString();
