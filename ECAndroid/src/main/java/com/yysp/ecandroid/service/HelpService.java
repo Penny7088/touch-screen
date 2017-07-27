@@ -555,29 +555,29 @@ public class HelpService extends AccessibilityService {
                                 if (nList.size() != 0) {
                                     int Offset = 0;
                                     for (int j = 0; j < headList.size(); j++) {
-                                        if (j + Offset < nList.size()){
+                                        if (j + Offset < nList.size()) {
                                             Rect headRect = headList.get(j).getBoundsInScreen();
                                             Rect ListRect = nList.get(j + Offset).getBoundsInScreen();
                                             while (headRect.top != ListRect.top) {
                                                 Offset++;
-                                                if(j + Offset < nList.size()) {
+                                                if (j + Offset < nList.size()) {
                                                     headRect = headList.get(j).getBoundsInScreen();
                                                     ListRect = nList.get(j + Offset).getBoundsInScreen();
-                                                }else
-                                                {
+                                                } else {
                                                     break;
                                                 }
                                             }
 
-                                        if (j + Offset < nList.size()) {
-                                            String info = nList.get(j + Offset).getText().toString();
-                                            String name = headList.get(j).getContentDescription().toString();
-                                            ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
-                                            chatVo.setName(name);
-                                            chatVo.setContent(info);
-                                            chatList.add(chatVo);
+                                            if (j + Offset < nList.size()) {
+                                                String info = nList.get(j + Offset).getText().toString();
+                                                String name = headList.get(j).getContentDescription().toString();
+                                                ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
+                                                chatVo.setName(name);
+                                                chatVo.setContent(info);
+                                                chatList.add(chatVo);
 
-                                            JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
+                                                JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
+                                            }
                                         }
                                     }
                                 }
