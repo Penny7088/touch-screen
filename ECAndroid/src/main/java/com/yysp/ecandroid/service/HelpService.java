@@ -1226,6 +1226,7 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onError(Throwable e) {
+                PerformClickUtils.performHome(HelpService.this);//任务完成进入home
                 OthoerUtil.doOfTaskEnd();
                 OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
                 clearList();
@@ -1285,7 +1286,7 @@ public class HelpService extends AccessibilityService {
         public void run() {
             while (true) {
                 try {
-                    if (ActivityName.indexOf("com.tencent.mm") != -1) {
+                    if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
                         PerformClickUtils.WaitCount++;
                     }
                     if (PerformClickUtils.WaitCount > 60) {
