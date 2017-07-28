@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
@@ -384,6 +386,16 @@ public class HelpService extends AccessibilityService {
                             } else {
                                 PerformClickUtils.performBack(this);
                             }
+
+                            String infoText = PerformClickUtils.geyTextById(this, "com.tencent.mm:id/bu5");
+                            if (infoText.substring(0, 6).equals("您的微信账号于")) {
+                                JKLog.i(TAG, "task_:抢号登陆");
+                                PerformClickUtils.findViewIdAndClick(this, "com.tencent.mm:id/bu5");
+                                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, JKPreferences.GetSharePersistentString("pushData"));
+                                JKPreferences.RemoveSharePersistent("taskType");
+                                JKPreferences.RemoveSharePersistent("doTasking");
+                            }
+
                             break;
                         case ContactInfoUI:
                             switch (taskType) {

@@ -592,13 +592,7 @@ public class LongRunningService extends Service {
             startActivity(intent);
             JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
         } else {
-            intent = new Intent();
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
-            startActivity(intent);
-
             doTypeTask(taskType, content);
-
         }
     }
 
