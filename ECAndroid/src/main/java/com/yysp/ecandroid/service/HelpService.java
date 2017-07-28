@@ -1215,6 +1215,7 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onError(Throwable e) {
+                PerformClickUtils.performHome(HelpService.this);//任务完成进入home
                 OthoerUtil.doOfTaskEnd();
                 OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
                 clearList();
