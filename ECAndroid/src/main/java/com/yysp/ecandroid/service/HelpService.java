@@ -1275,6 +1275,7 @@ public class HelpService extends AccessibilityService {
         public void run() {
             while (true) {
                 try {
+                    JKLog.i(TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + PerformClickUtils.WaitCount);
                     if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
                         PerformClickUtils.WaitCount++;
                     }
