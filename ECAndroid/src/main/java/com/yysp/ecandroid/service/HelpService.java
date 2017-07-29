@@ -1154,12 +1154,7 @@ public class HelpService extends AccessibilityService {
             } else {
                 isNeedSwipe = false;
                 addFromType = 1;
-                new Thread() {
-                    @Override
-                    public void run() {
-                        OthoerUtil.deleContanct(HelpService.this);//删除通讯录
-                    }
-                }.start();
+
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
                 response.setDeviceAlias(AliasName);
@@ -1176,12 +1171,6 @@ public class HelpService extends AccessibilityService {
             if (CountType >= 2) {
                 isNeedSwipe = false;
                 addFromType = 1;
-                new Thread() {
-                    @Override
-                    public void run() {
-                        OthoerUtil.deleContanct(HelpService.this);//删除通讯录
-                    }
-                }.start();
 
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_Fail);

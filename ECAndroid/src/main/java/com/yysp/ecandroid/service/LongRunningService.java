@@ -229,13 +229,6 @@ public class LongRunningService extends Service {
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            OthoerUtil.deleContanct(LongRunningService.this);
-                        }
-                    }.start();
-
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -369,12 +362,6 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            OthoerUtil.deleContanct(LongRunningService.this);
-                        }
-                    }.start();
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -649,12 +636,15 @@ public class LongRunningService extends Service {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
+                //TODO 清空一次通讯录
+
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
                     new Thread() {
                         @Override
                         public void run() {
+                            ContactUtil.clearContact(LongRunningService.this);
                             AddToContact(LongRunningService.this, content);
                         }
                     }.start();
@@ -753,12 +743,6 @@ public class LongRunningService extends Service {
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            AddToContact(LongRunningService.this, content);
-                        }
-                    }.start();
                     JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 } else {
                     ECTaskResultResponse response = new ECTaskResultResponse();

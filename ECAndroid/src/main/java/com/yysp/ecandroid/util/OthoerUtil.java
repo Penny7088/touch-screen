@@ -110,18 +110,18 @@ public class OthoerUtil {
     }
 
 
-    public static void deleContanct(Context context) {
-        //删除通讯录
-        ArrayList<String> list = JKPreferences.GetSharePersistentArrayString("phoneList");
-        for (String phone : list) {
-            try {
-                ContactUtil.deleteContact(context, phone);
-                JKLog.i("RT", "del:" + phone);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public static void deleContanct(Context context) {
+//        //删除通讯录
+//        ArrayList<String> list = JKPreferences.GetSharePersistentArrayString("phoneList");
+//        for (String phone : list) {
+//            try {
+//                ContactUtil.deleteContact(context, phone);
+//                JKLog.i("RT", "del:" + phone);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 
 }
