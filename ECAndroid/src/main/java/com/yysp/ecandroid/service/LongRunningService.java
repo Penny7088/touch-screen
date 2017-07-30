@@ -73,7 +73,6 @@ public class LongRunningService extends Service {
     public final static int ThrowTheBottle = 538;
     public final static int AddNearPeople = 539;
 
-    String breakTaskId;
 
     List<DisGetTaskBean.DataBean.TargetAccountsBean> list;
     Gson gson;
@@ -515,15 +514,11 @@ public class LongRunningService extends Service {
                                                 JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
                                                 ECConfig.CloseScreenOrder(LongRunningService.this);
 
-                                                int taskType = disGetTaskBean.getData().getTaskType();
-                                                if (taskType != 500) {
-                                                    JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
-                                                    JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-                                                } else {
-                                                    breakTaskId = disGetTaskBean.getData().getTaskId();
-                                                    JKPreferences.SaveSharePersistent("breakTask", true);
-                                                }
+                                                JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
+                                                JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+
                                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
+
                                                 doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
                                             } else {
@@ -608,7 +603,7 @@ public class LongRunningService extends Service {
 
                 response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
-                response.setTaskId(breakTaskId);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                 response.setDeviceAlias(AliasName);
                 ECNetSend.taskStatus(response, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
                     @Override
@@ -618,7 +613,7 @@ public class LongRunningService extends Service {
 
                     @Override
                     public void onNext(DisBean disBean) {
-
+                        OthoerUtil.doOfTaskEnd();
                     }
 
                     @Override
@@ -637,14 +632,13 @@ public class LongRunningService extends Service {
                 break;
             case ContactGetFriendInfo:
                 //TODO 清空一次通讯录
-
+                ContactUtil.clearContact(LongRunningService.this);
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
                     new Thread() {
                         @Override
                         public void run() {
-                            ContactUtil.clearContact(LongRunningService.this);
                             AddToContact(LongRunningService.this, content);
                         }
                     }.start();
@@ -798,7 +792,6 @@ public class LongRunningService extends Service {
             case AddNearPeople:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
-
 
         }
 

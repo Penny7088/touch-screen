@@ -73,7 +73,6 @@ public class ECApplication extends Application {
         mPushAgent.addAlias(AliasName, ECConfig.AliasType, new UTrack.ICallBack() {
             @Override
             public void onMessage(boolean b, String s) {
-                JKLog.i("RT", "uid:" + AliasName);
                 postUid(AliasName, AliasName);
             }
         });
@@ -112,7 +111,6 @@ public class ECApplication extends Application {
         });
 
     }
-
 
     @Override
     protected void attachBaseContext(final Context base) {
