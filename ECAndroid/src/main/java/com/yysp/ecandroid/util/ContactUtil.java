@@ -83,19 +83,19 @@ public class ContactUtil {
 
                         //根据姓名求id
                         Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
-
-                        Cursor cursor1 = cr.query(uri, new String[]{ContactsContract.Contacts.Data._ID}, "display_name=?", new String[]{name}, null);
-                        if (cursor1 != null) {
-                            if (cursor1.moveToFirst()) {
-                                int id = cursor1.getInt(0);
-                                //根据id删除data中的相应数据
-                                cr.delete(uri, "display_name=?", new String[]{name});
-                                uri = Uri.parse("content://com.android.contacts/data");
-                                cr.delete(uri, "raw_contact_id=?", new String[]{id + ""});
+                        if (uri != null) {
+                            Cursor cursor1 = cr.query(uri, new String[]{ContactsContract.Contacts.Data._ID}, "display_name=?", new String[]{name}, null);
+                            if (cursor1 != null) {
+                                if (cursor1.moveToFirst()) {
+                                    int id = cursor1.getInt(0);
+                                    //根据id删除data中的相应数据
+                                    cr.delete(uri, "display_name=?", new String[]{name});
+                                    uri = Uri.parse("content://com.android.contacts/data");
+                                    cr.delete(uri, "raw_contact_id=?", new String[]{id + ""});
+                                }
+                                cursor1.close();
                             }
-                            cursor1.close();
                         }
-
                     }
                 }
                 cursor.close();

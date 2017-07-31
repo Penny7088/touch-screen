@@ -3,6 +3,7 @@ package com.yysp.ecandroid.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -79,6 +80,8 @@ public class LongRunningService extends Service {
 
     ECTaskResultResponse response;
     String TAG = "RT";
+    public static int recLen = 0;//计时
+
 
     @Nullable
     @Override
@@ -505,7 +508,7 @@ public class LongRunningService extends Service {
                                 }
 
                                 @Override
-                                public void onNext(DisGetTaskBean disGetTaskBean) {
+                                public void onNext(final DisGetTaskBean disGetTaskBean) {
                                     if (disGetTaskBean.getData() != null) {
                                         JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
                                         if (disGetTaskBean.getData().gethbTimer() > 0) {
@@ -518,8 +521,7 @@ public class LongRunningService extends Service {
                                                 JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
 
                                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
-
-                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr, disGetTaskBean.getData().getTimeOut());
 
                                             } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
@@ -529,7 +531,9 @@ public class LongRunningService extends Service {
 //                                            doSomeThing(response);
                                             }
                                         }
-                                    } else {
+                                    } else
+
+                                    {
 //                                        ECTaskResultResponse response = new ECTaskResultResponse();
 //                                        response.setStatus(ECConfig.TASK_Fail);
 //                                        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
@@ -560,7 +564,7 @@ public class LongRunningService extends Service {
         }
     });
 
-    private void doTaskWithId(int taskType, String content) {
+    private void doTaskWithId(int taskType, String content, final int timeOut) {
         JKLog.i(TAG, "data:" + content);
         if (taskType != 500) {
             JKPreferences.SaveSharePersistent("pushData", content);//备份
@@ -575,6 +579,30 @@ public class LongRunningService extends Service {
             JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
         } else {
             doTypeTask(taskType, content);
+            //任务计时器
+            if (!content.equals("")) {
+                final Handler handler = new Handler();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        recLen++;
+                        JKLog.i("RT", "task_times:" + recLen);
+                        if (recLen < timeOut) {
+                            handler.postDelayed(this, 1000);
+                        } else {
+                            //任务停止
+                            String stopTask = "{\n" +
+                                    "\"taskType\": 500\n" +
+                                    "  }";
+                            //写文件到脚本停止任务
+                            JKFile.WriteFile(ECSdCardPath.Task_List_TXT, stopTask);
+                            recLen = 0;
+                        }
+                    }
+                };
+                handler.postDelayed(runnable, 0);
+            }
+
         }
     }
 
@@ -794,38 +822,6 @@ public class LongRunningService extends Service {
                 break;
 
         }
-
-    }
-
-    private void doSomeThing(ECTaskResultResponse resultResponse) {
-        OthoerUtil.doOfTaskEnd();
-        ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(DisBean disBean) {
-                if (disBean.getCode() == 200) {
-                    JKLog.i(TAG, "item_taskStatus:success");
-                } else {
-                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
-                }
-
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                JKLog.i(TAG, "erro:" + e.getMessage());
-                OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
 
     }
 }

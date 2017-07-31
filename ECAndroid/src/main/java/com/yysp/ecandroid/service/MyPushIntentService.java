@@ -2,6 +2,7 @@ package com.yysp.ecandroid.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.accessibility.AccessibilityManager;
 
@@ -81,6 +82,7 @@ public class MyPushIntentService extends UmengMessageService {
 
     List<DisGetTaskBean.DataBean.TargetAccountsBean> list;
     Gson gson;
+
 
     @Override
     public void onMessage(Context context, Intent intent) {
@@ -431,4 +433,8 @@ public class MyPushIntentService extends UmengMessageService {
         }
         JKPreferences.SaveSharePersistent("phoneList", (ArrayList<String>) phoneList);
     }
+
+
+
+
 }
