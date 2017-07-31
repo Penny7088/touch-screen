@@ -3,7 +3,6 @@ package com.yysp.ecandroid.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -73,6 +72,7 @@ public class LongRunningService extends Service {
     public final static int PickingUpBottles = 537;
     public final static int ThrowTheBottle = 538;
     public final static int AddNearPeople = 539;
+    public static String m_content = "";
 
 
     List<DisGetTaskBean.DataBean.TargetAccountsBean> list;
@@ -508,7 +508,7 @@ public class LongRunningService extends Service {
                                 }
 
                                 @Override
-                                public void onNext(final DisGetTaskBean disGetTaskBean) {
+                                public void onNext(DisGetTaskBean disGetTaskBean) {
                                     if (disGetTaskBean.getData() != null) {
                                         JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
                                         if (disGetTaskBean.getData().gethbTimer() > 0) {
@@ -564,7 +564,15 @@ public class LongRunningService extends Service {
         }
     });
 
-    private void doTaskWithId(int taskType, String content, final int timeOut) {
+    protected Thread mContactThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            ContactUtil.clearContact(LongRunningService.this);
+            AddToContact(LongRunningService.this, m_content);
+        }
+    });
+
+    private void doTaskWithId(int taskType, String content) {
         JKLog.i(TAG, "data:" + content);
         if (taskType != 500) {
             JKPreferences.SaveSharePersistent("pushData", content);//备份
@@ -660,16 +668,13 @@ public class LongRunningService extends Service {
                 break;
             case ContactGetFriendInfo:
                 //TODO 清空一次通讯录
-                ContactUtil.clearContact(LongRunningService.this);
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            AddToContact(LongRunningService.this, content);
-                        }
-                    }.start();
+                    m_content = content;
+                    if (!mContactThread.isAlive()) {
+                        new Thread(mContactThread).start();
+                    }
                     JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 } else {
                     ECTaskResultResponse response = new ECTaskResultResponse();
