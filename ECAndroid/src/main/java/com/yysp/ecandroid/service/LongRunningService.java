@@ -25,6 +25,7 @@ import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -521,7 +522,7 @@ public class LongRunningService extends Service {
                                                 JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
 
                                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr, disGetTaskBean.getData().getTimeOut());
+                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
 
                                             } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
@@ -589,26 +590,7 @@ public class LongRunningService extends Service {
             doTypeTask(taskType, content);
             //任务计时器
             if (!content.equals("")) {
-                final Handler handler = new Handler();
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        recLen++;
-                        JKLog.i("RT", "task_times:" + recLen);
-                        if (recLen < timeOut) {
-                            handler.postDelayed(this, 1000);
-                        } else {
-                            //任务停止
-                            String stopTask = "{\n" +
-                                    "\"taskType\": 500\n" +
-                                    "  }";
-                            //写文件到脚本停止任务
-                            JKFile.WriteFile(ECSdCardPath.Task_List_TXT, stopTask);
-                            recLen = 0;
-                        }
-                    }
-                };
-                handler.postDelayed(runnable, 0);
+
             }
 
         }
