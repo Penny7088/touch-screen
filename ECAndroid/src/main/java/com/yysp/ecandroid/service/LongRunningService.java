@@ -3,6 +3,7 @@ package com.yysp.ecandroid.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -81,8 +82,7 @@ public class LongRunningService extends Service {
 
     ECTaskResultResponse response;
     String TAG = "RT";
-    public static int recLen = 0;//计时
-
+    CountDownTimer countDownTimer;
 
     @Nullable
     @Override
@@ -522,7 +522,7 @@ public class LongRunningService extends Service {
                                                 JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
 
                                                 String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
+                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr, disGetTaskBean.getData().getTimeOut());
 
                                             } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
@@ -573,7 +573,8 @@ public class LongRunningService extends Service {
         }
     });
 
-    private void doTaskWithId(int taskType, String content) {
+
+    private void doTaskWithId(int taskType, String content, int timeOut) {
         JKLog.i(TAG, "data:" + content);
         if (taskType != 500) {
             JKPreferences.SaveSharePersistent("pushData", content);//备份
@@ -589,9 +590,20 @@ public class LongRunningService extends Service {
         } else {
             doTypeTask(taskType, content);
             //任务计时器
-            if (!content.equals("")) {
+            CountDownTimer countDownTimer = new CountDownTimer(timeOut * 1000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    JKLog.i("RT", "task_time" + millisUntilFinished);
+                }
 
-            }
+                @Override
+                public void onFinish() {
+//                    String taskStop = " {\"taskType\": 500}";
+//                    JKFile.WriteFile(ECSdCardPath.Task_List_TXT, taskStop);
+//                    JKLog.i("RT", "task_time: 任务结束");
+                }
+            };
+            countDownTimer.start();
 
         }
     }
