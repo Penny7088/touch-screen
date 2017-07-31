@@ -21,7 +21,6 @@ import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.OthoerUtil;
-import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -632,13 +631,13 @@ public class LongRunningService extends Service {
                 break;
             case ContactGetFriendInfo:
                 //TODO 清空一次通讯录
-                ContactUtil.clearContact(LongRunningService.this);
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
                     new Thread() {
                         @Override
                         public void run() {
+                            ContactUtil.clearContact(LongRunningService.this);
                             AddToContact(LongRunningService.this, content);
                         }
                     }.start();
