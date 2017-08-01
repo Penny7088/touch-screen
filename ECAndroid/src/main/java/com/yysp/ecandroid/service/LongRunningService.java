@@ -589,7 +589,6 @@ public class LongRunningService extends Service {
         } else {
             doTypeTask(taskType, content);
             JKLog.i("RT", "task_timer:" + content);
-           ;
         }
     }
 
