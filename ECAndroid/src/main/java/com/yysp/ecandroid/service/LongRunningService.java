@@ -22,11 +22,9 @@ import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.OthoerUtil;
-import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -284,7 +282,7 @@ public class LongRunningService extends Service {
             } else {
                 response.setLoginFail(false);
             }
-            JKLog.i("RT", "task_fail:" + failReason);
+            JKLog.i("RT", "task_fail:" + failReason + "/" + taskType);
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
@@ -344,6 +342,7 @@ public class LongRunningService extends Service {
                     break;
                 case MyPushIntentService.DetectionTask:
                     String detectionTaskTxt = JKFile.ReadFile(ECSdCardPath.DETECTION_TASK_Finish_TXT);
+                    JKLog.i("RT", "task_516" + detectionTaskTxt);
                     postTaskFailReason(response, detectionTaskTxt, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.FriendNumInfo:
@@ -417,7 +416,7 @@ public class LongRunningService extends Service {
 
             @Override
             public void onNext(DisBean disBean) {
-                JKLog.i(TAG, disBean.getMsg() + "/" + disBean.getCode());
+                JKLog.i(TAG, "task_" + disBean.getMsg() + "/" + disBean.getCode());
                 OthoerUtil.doOfTaskEnd();
             }
 
@@ -589,22 +588,8 @@ public class LongRunningService extends Service {
             JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
         } else {
             doTypeTask(taskType, content);
-            //任务计时器
-            CountDownTimer countDownTimer = new CountDownTimer(timeOut * 1000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    JKLog.i("RT", "task_time" + millisUntilFinished);
-                }
-
-                @Override
-                public void onFinish() {
-//                    String taskStop = " {\"taskType\": 500}";
-//                    JKFile.WriteFile(ECSdCardPath.Task_List_TXT, taskStop);
-//                    JKLog.i("RT", "task_time: 任务结束");
-                }
-            };
-            countDownTimer.start();
-
+            JKLog.i("RT", "task_timer:" + content);
+           ;
         }
     }
 
