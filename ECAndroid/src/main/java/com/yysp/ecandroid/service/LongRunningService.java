@@ -72,8 +72,6 @@ public class LongRunningService extends Service {
     public final static int PickingUpBottles = 537;
     public final static int ThrowTheBottle = 538;
     public final static int AddNearPeople = 539;
-    public static String m_content = "";
-
 
     List<DisGetTaskBean.DataBean.TargetAccountsBean> list;
     Gson gson;
@@ -564,15 +562,6 @@ public class LongRunningService extends Service {
         }
     });
 
-    protected Thread mContactThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            ContactUtil.clearContact(LongRunningService.this);
-            AddToContact(LongRunningService.this, m_content);
-        }
-    });
-
-
     private void doTaskWithId(int taskType, String content, int timeOut) {
         JKLog.i(TAG, "data:" + content);
         if (taskType != 500) {
@@ -649,9 +638,13 @@ public class LongRunningService extends Service {
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
-                    m_content = content;
-                    if (!mContactThread.isAlive()) {
-                        new Thread(mContactThread).start();
+                    try {
+                        ContactUtil.clearContact(LongRunningService.this);
+                        Thread.sleep(10*1000);
+                        AddToContact(LongRunningService.this, content);
+                        Thread.sleep(10*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 } else {
