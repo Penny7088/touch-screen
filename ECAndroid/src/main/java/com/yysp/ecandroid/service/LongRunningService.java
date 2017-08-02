@@ -643,10 +643,11 @@ public class LongRunningService extends Service {
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
                     try {
+                        Thread.sleep(20 * 1000);
                         ContactUtil.clearContact(LongRunningService.this);
-                        Thread.sleep(10 * 1000);
+                        Thread.sleep(30 * 1000);
                         AddToContact(LongRunningService.this, content);
-                        Thread.sleep(10 * 1000);
+                        Thread.sleep(20 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
