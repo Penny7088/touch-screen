@@ -273,6 +273,10 @@ public class LongRunningService extends Service {
                     case "4":
                         response.setAmount(4);//未知异常
                         break;
+                    case "5":
+                        response.setAmount(5);
+                        response.setReason("抢号登陆");
+                        break;
                     default:
                         response.setAmount(0);
                         break;
@@ -640,9 +644,9 @@ public class LongRunningService extends Service {
                 if (list.size() != 0) {
                     try {
                         ContactUtil.clearContact(LongRunningService.this);
-                        Thread.sleep(10*1000);
+                        Thread.sleep(10 * 1000);
                         AddToContact(LongRunningService.this, content);
-                        Thread.sleep(10*1000);
+                        Thread.sleep(10 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

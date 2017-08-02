@@ -22,9 +22,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ECNetSend {
 
-//    public static final String Host = "http://192.168.1.45:8080/saas-api/";
-//    public static final String Host = "http://192.168.1.134:8080";
-    public static final String Host = "http://118.31.51.197:8101/";
+    //    public static final String Host = "http://192.168.1.45:8080/saas-api/";
+    public static final String Host = "http://192.168.1.134:8080";
+    //    public static final String Host = "http://118.31.51.197:8101/";
 
     public static Retrofit retrofit = JKHttpRetrofit.GetRetrofitBuilder()
             .baseUrl(Host)
@@ -48,8 +48,8 @@ public class ECNetSend {
 
     public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse, Context context) {
         ECConfig.OpenScreenOrder(context);
-        if (!resultResponse.getLoginFail()){
-            JKFile.WriteFile(ECSdCardPath.NendBF,JKPreferences.GetSharePersistentString("pushData"));
+        if (!resultResponse.getLoginFail()) {
+            JKFile.WriteFile(ECSdCardPath.NendBF, JKPreferences.GetSharePersistentString("pushData"));
         }
         return service.taskStatus(resultResponse);
     }
