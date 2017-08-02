@@ -228,6 +228,20 @@ public class LongRunningService extends Service {
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
+                    String erroPhone = JKFile.ReadFile(ECSdCardPath.ErroPhones);
+                    JKLog.i(TAG, "task_527:" + erroPhone);
+                    if (!erroPhone.equals("")){
+                        String[] phoneArry = erroPhone.split(",");
+                        List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
+                        ECTaskResultResponse.TaskResultBean wxUserBean = null;
+                        for (int i = 0; i < phoneArry.length; i++) {
+                            wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                            wxUserBean.setMobile(phoneArry[i]);
+                            JKLog.i(TAG, "task_527s:" + phoneArry[i]);
+                        }
+                        infoList.add(wxUserBean);
+                        response.setTaskResult(infoList);
+                    }
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ViewMessage:

@@ -42,6 +42,7 @@ public class OthoerUtil {
         JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
         JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT, "");
         JKFile.WriteFile(ECSdCardPath.ResultTxt, "");
+        JKFile.WriteFile(ECSdCardPath.ErroPhones, "");
 
         JKPreferences.RemoveSharePersistent("doTasking");
         JKPreferences.RemoveSharePersistent("taskType");
@@ -78,6 +79,9 @@ public class OthoerUtil {
             }
             if (!JKFile.IsFile(ECSdCardPath.ResultTxt)) {
                 JKFile.creatFileTxt(ECSdCardPath.ResultTxt);
+            }
+            if (!JKFile.IsFile(ECSdCardPath.ErroPhones)) {
+                JKFile.creatFileTxt(ECSdCardPath.ErroPhones);
             }
 
         }

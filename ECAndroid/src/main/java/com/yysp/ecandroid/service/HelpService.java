@@ -167,6 +167,7 @@ public class HelpService extends AccessibilityService {
                                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                                         response.setDeviceAlias(AliasName);
                                         response.setAmount(Integer.parseInt(friendNum));
+                                        JKLog.i("RT", "task_friends_num:" + Integer.parseInt(friendNum));
                                         doOfTaskEnd(response);
                                     }
                                     break;
@@ -264,7 +265,6 @@ public class HelpService extends AccessibilityService {
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
-
                                     break;
                                 case MyPushIntentService.AddFriendFromGroup:
                                     //群加友
@@ -587,7 +587,6 @@ public class HelpService extends AccessibilityService {
                                                 chatVo.setName(name);
                                                 chatVo.setContent(info);
                                                 chatList.add(chatVo);
-
                                                 JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
                                             }
                                         }
