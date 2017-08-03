@@ -56,12 +56,12 @@
         <!-- 友盟推送sdk -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="58f42b2d07fe650ea00022e2">
+            android:value="${UMENG_APPKEY}">
         </meta-data>
 
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
-            android:value="ef0938b87444249d49da73d3e830bb07">
+            android:value="${UMENG_MESSAGE_SECRET}">
         </meta-data>
 
 
