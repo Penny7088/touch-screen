@@ -30,6 +30,9 @@ public class ECConfig {
     //心跳时间
     public static int hbTimer = 30;
 
+    //卡死超时时间
+    public static int WaitCount = 0;
+
     public final static void CloseScreenOrder(Context context) {//关闭屏幕触摸
 //        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 //        wm.setTpDisable(0);

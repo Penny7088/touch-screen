@@ -3,17 +3,12 @@ package com.yysp.ecandroid.util;
 import android.content.Context;
 import android.content.Intent;
 
-import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
-import com.jkframework.debug.JKLog;
-import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.net.ECNetSend;
+import com.yysp.ecandroid.service.HelpService;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -37,56 +32,11 @@ public class OthoerUtil {
 
 
     public static void doOfTaskEnd() {
-        JKFile.WriteFile(ECSdCardPath.Task_List_TXT, "");
-        JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
-        JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
-        JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT, "");
-        JKFile.WriteFile(ECSdCardPath.ResultTxt, "");
-        JKFile.WriteFile(ECSdCardPath.ErroPhones, "");
-
-        JKPreferences.RemoveSharePersistent("doTasking");
+        HelpService.isTasking = false;
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");
         JKPreferences.RemoveSharePersistent("pushData");
-        JKPreferences.RemoveSharePersistent("breakTask");
     }
-
-
-    public static void CreatNeedFile() {
-        if (JKFile.IsSDCardAvailable()) {
-            if (JKFile.IsExists(ECSdCardPath.SD_CARD_PATH)) {
-
-            } else {
-                //不存在则创建path文件夹
-                JKFile.CreateDir(ECSdCardPath.SD_CARD_PATH);
-            }
-
-            //任务完成文件
-            if (!JKFile.IsFile(ECSdCardPath.Task_Finish_TXT)) {
-                JKFile.creatFileTxt(ECSdCardPath.Task_Finish_TXT);
-            }
-            if (!JKFile.IsFile(ECSdCardPath.Task_List_TXT)) {
-                JKFile.creatFileTxt(ECSdCardPath.Task_List_TXT);
-            }
-            if (!JKFile.IsFile(ECSdCardPath.Task_Fail_TXT)) {
-                JKFile.creatFileTxt(ECSdCardPath.Task_Fail_TXT);
-            }
-            if (!JKFile.IsFile(ECSdCardPath.DETECTION_TASK_Finish_TXT)) {
-                JKFile.creatFileTxt(ECSdCardPath.DETECTION_TASK_Finish_TXT);
-            }
-            if (!JKFile.IsFile(ECSdCardPath.NendBF)) {
-                JKFile.creatFileTxt(ECSdCardPath.NendBF);
-            }
-            if (!JKFile.IsFile(ECSdCardPath.ResultTxt)) {
-                JKFile.creatFileTxt(ECSdCardPath.ResultTxt);
-            }
-            if (!JKFile.IsFile(ECSdCardPath.ErroPhones)) {
-                JKFile.creatFileTxt(ECSdCardPath.ErroPhones);
-            }
-
-        }
-    }
-
 
     public static void AddErrorMsgUtil(String msg) {
         AddErrorMsgResponse errorMsgResponse = new AddErrorMsgResponse(msg);

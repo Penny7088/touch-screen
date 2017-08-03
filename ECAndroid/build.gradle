@@ -32,22 +32,6 @@ android {
         }
     }
 
-    signingConfigs {
-        debug {
-            storeFile file('../jksign.keystore')
-            storePassword "15802736416"
-            keyAlias "dayiplatform"
-            keyPassword "dayiplatform"
-        }
-
-        release {
-            storeFile file('../jksign.keystore')
-            storePassword "15802736416"
-            keyAlias "dayiplatform"
-            keyPassword "dayiplatform"
-        }
-    }
-
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -55,7 +39,6 @@ android {
             minifyEnabled false
         }
         release {
-            signingConfig signingConfigs.release
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
@@ -81,8 +64,7 @@ android {
     productFlavors {
         offical {
             applicationId "com.yysp.ecandroid"
-            manifestPlaceholders = [APPNAME     : "执行", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677",
-                                    UMENG_APPKEY: "58f42b2d07fe650ea00022e2", UMENG_MESSAGE_SECRET: "ef0938b87444249d49da73d3e830bb07"
+            manifestPlaceholders = [APPNAME     : "执行", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677"
             ]
         }
         beta {
@@ -103,6 +85,5 @@ dependencies {
     annotationProcessor 'org.androidannotations:androidannotations:4.3.0'
     compile 'org.androidannotations:androidannotations-api:4.3.0'
     compile 'com.afollestad.material-dialogs:core:0.9.4.4'
-    compile project(':PushSDK')
     provided files('libs/framework.jar')
 }
