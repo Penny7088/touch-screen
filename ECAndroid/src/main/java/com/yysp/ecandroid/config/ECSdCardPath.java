@@ -20,4 +20,6 @@ public class ECSdCardPath {
     public final static String NendBF = SD_CARD_PATH + "NeedBf.txt";
     //备注
     public final static String ResultTxt = SD_CARD_PATH + "result.txt";
+    //隐私手机号文件
+    public final static String ErroPhones = SD_CARD_PATH + "ErroPhones.txt";
 }

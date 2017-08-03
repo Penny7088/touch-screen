@@ -42,11 +42,13 @@ public class OthoerUtil {
         JKFile.WriteFile(ECSdCardPath.Task_Fail_TXT, "");
         JKFile.WriteFile(ECSdCardPath.DETECTION_TASK_Finish_TXT, "");
         JKFile.WriteFile(ECSdCardPath.ResultTxt, "");
+        JKFile.WriteFile(ECSdCardPath.ErroPhones, "");
 
         JKPreferences.RemoveSharePersistent("doTasking");
         JKPreferences.RemoveSharePersistent("taskType");
         JKPreferences.RemoveSharePersistent("taskId");
         JKPreferences.RemoveSharePersistent("pushData");
+        JKPreferences.RemoveSharePersistent("breakTask");
     }
 
 
@@ -78,6 +80,10 @@ public class OthoerUtil {
             if (!JKFile.IsFile(ECSdCardPath.ResultTxt)) {
                 JKFile.creatFileTxt(ECSdCardPath.ResultTxt);
             }
+            if (!JKFile.IsFile(ECSdCardPath.ErroPhones)) {
+                JKFile.creatFileTxt(ECSdCardPath.ErroPhones);
+            }
+
         }
     }
 
@@ -108,18 +114,18 @@ public class OthoerUtil {
     }
 
 
-    public static void deleContanct(Context context) {
-        //删除通讯录
-        ArrayList<String> list = JKPreferences.GetSharePersistentArrayString("phoneList");
-        for (String phone : list) {
-            try {
-                ContactUtil.deleteContact(context, phone);
-                JKLog.i("RT", "del:" + phone);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public static void deleContanct(Context context) {
+//        //删除通讯录
+//        ArrayList<String> list = JKPreferences.GetSharePersistentArrayString("phoneList");
+//        for (String phone : list) {
+//            try {
+//                ContactUtil.deleteContact(context, phone);
+//                JKLog.i("RT", "del:" + phone);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 
 }

@@ -60,6 +60,52 @@ public class ContactUtil {
         }
     }
 
+    /**
+     * 清空系统通信录数据
+     */
+    public static void clearContact(Context context) {
+        ContentResolver cr = context.getContentResolver();
+        if (cr != null) {
+            // 查询contacts表的所有记录
+            Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
+                    null, null, null);
+            // 如果记录不为空
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    // 游标初始指向查询结果的第一条记录的上方，执行moveToNext函数会判断
+                    // 下一条记录是否存在，如果存在，指向下一条记录。否则，返回false。
+                    while (cursor.moveToNext()) {
+
+
+                        String name = cursor.getString(cursor
+                                .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+
+                        //根据姓名求id
+                        Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
+                        if (uri != null && name != null) {
+                            if(!name.equals("")){
+                                Cursor cursor1 = cr.query(uri, new String[]{ContactsContract.Contacts.Data._ID}, "display_name=?", new String[]{name}, null);
+                                if (cursor1 != null) {
+                                    if (cursor1.moveToFirst()) {
+                                        int id = cursor1.getInt(0);
+                                        //根据id删除data中的相应数据
+                                        cr.delete(uri, "display_name=?", new String[]{name});
+                                        uri = Uri.parse("content://com.android.contacts/data");
+                                        cr.delete(uri, "raw_contact_id=?", new String[]{id + ""});
+                                    }
+                                    cursor1.close();
+                                }
+                            }
+                        }
+                    }
+                }
+                cursor.close();
+            }
+
+        }
+    }
+
 
 }
 

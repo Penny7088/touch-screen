@@ -5,7 +5,4 @@ package com.yysp.ecandroid.config;
  */
 
 public class EcWeiXinUI {
-
-
-
 }

@@ -3,6 +3,7 @@ package com.yysp.ecandroid.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -21,7 +22,6 @@ import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.OthoerUtil;
-import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,7 @@ import static com.yysp.ecandroid.config.ECConfig.AliasName;
  */
 
 public class LongRunningService extends Service {
+    public final static int BreakTask = 500;
     public final static int SearchAddFriendType = 501;
     public final static int ContactGetFriendInfo = 502;
     public final static int GetWxUserInfo = 503;//不走脚本
@@ -77,6 +78,7 @@ public class LongRunningService extends Service {
 
     ECTaskResultResponse response;
     String TAG = "RT";
+    CountDownTimer countDownTimer;
 
     @Nullable
     @Override
@@ -84,9 +86,16 @@ public class LongRunningService extends Service {
         return null;
     }
 
+    public LongRunningService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
     @Override
     public int onStartCommand(final Intent intent, int flags, final int startId) {
-//        mIMThread.start();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -100,7 +109,21 @@ public class LongRunningService extends Service {
                 }
             }
         }).start();
-        return super.onStartCommand(intent, flags, startId);
+
+        if (!mIMThread.isAlive()) {
+            mIMThread.start();
+        }
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mIMThread != null) {
+            mIMThread.stop();
+            mIMThread.destroy();
+            mIMThread = null;
+        }
+        super.onDestroy();
     }
 
 
@@ -205,13 +228,20 @@ public class LongRunningService extends Service {
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            OthoerUtil.deleContanct(LongRunningService.this);
+                    String erroPhone = JKFile.ReadFile(ECSdCardPath.ErroPhones);
+                    JKLog.i(TAG, "task_527:" + erroPhone);
+                    if (!erroPhone.equals("")){
+                        String[] phoneArry = erroPhone.split(",");
+                        List<ECTaskResultResponse.TaskResultBean> infoList = new ArrayList<>();
+                        ECTaskResultResponse.TaskResultBean wxUserBean = null;
+                        for (int i = 0; i < phoneArry.length; i++) {
+                            wxUserBean = new ECTaskResultResponse.TaskResultBean();
+                            wxUserBean.setMobile(phoneArry[i]);
+                            JKLog.i(TAG, "task_527s:" + phoneArry[i]);
                         }
-                    }.start();
-
+                        infoList.add(wxUserBean);
+                        response.setTaskResult(infoList);
+                    }
                     postTaskFinish(response);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -257,6 +287,10 @@ public class LongRunningService extends Service {
                     case "4":
                         response.setAmount(4);//未知异常
                         break;
+                    case "5":
+                        response.setAmount(5);
+                        response.setReason("抢号登陆");
+                        break;
                     default:
                         response.setAmount(0);
                         break;
@@ -264,7 +298,7 @@ public class LongRunningService extends Service {
             } else {
                 response.setLoginFail(false);
             }
-            JKLog.i("RT", "task_fail:" + failReason);
+            JKLog.i("RT", "task_fail:" + failReason + "/" + taskType);
             JKFile.WriteFile(ECSdCardPath.Task_Finish_TXT, "");
             switch (taskType) {
                 case MyPushIntentService.SearchAddFriendType:
@@ -324,6 +358,7 @@ public class LongRunningService extends Service {
                     break;
                 case MyPushIntentService.DetectionTask:
                     String detectionTaskTxt = JKFile.ReadFile(ECSdCardPath.DETECTION_TASK_Finish_TXT);
+                    JKLog.i("RT", "task_516" + detectionTaskTxt);
                     postTaskFailReason(response, detectionTaskTxt, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.FriendNumInfo:
@@ -345,12 +380,6 @@ public class LongRunningService extends Service {
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.NeedContactAddFriend:
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            OthoerUtil.deleContanct(LongRunningService.this);
-                        }
-                    }.start();
                     postTaskFailReason(response, failReason, ECConfig.TASK_Fail);
                     break;
                 case MyPushIntentService.ViewMessage:
@@ -403,7 +432,7 @@ public class LongRunningService extends Service {
 
             @Override
             public void onNext(DisBean disBean) {
-                JKLog.i(TAG, disBean.getMsg() + "/" + disBean.getCode());
+                JKLog.i(TAG, "task_" + disBean.getMsg() + "/" + disBean.getCode());
                 OthoerUtil.doOfTaskEnd();
             }
 
@@ -483,58 +512,67 @@ public class LongRunningService extends Service {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(1000*30);
+                    Thread.sleep(1000 * ECConfig.hbTimer);
                     String tsId = JKPreferences.GetSharePersistentString("taskId");
-                    if (tsId.equals("")){
-                        final Gson gson = new Gson();
-//                    ECNetSend.taskApply(disPushBean.getTaskId(), AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-//                            new Observer<DisGetTaskBean>() {
-//                                @Override
-//                                public void onSubscribe(Disposable d) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onNext(DisGetTaskBean disGetTaskBean) {
-//                                    if (disGetTaskBean.getData() != null && disGetTaskBean.getData().getTaskId() != null) {
-//                                        if (!disGetTaskBean.getData().getTaskId().equals("")) {
-//                                            JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
-//                                            ECConfig.CloseScreenOrder(LongRunningService.this);
-//                                            JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-//                                            String jsonStr = gson.toJson(disGetTaskBean.getData());
-//                                            doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr);
-//                                        } else {
+                    final Gson gson = new Gson();
+                    JKLog.i(TAG, "tsId:" + tsId + "  AliasName: " + AliasName);
+                    ECNetSend.searchToDoJobByDevice(tsId, AliasName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                            new Observer<DisGetTaskBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(DisGetTaskBean disGetTaskBean) {
+                                    if (disGetTaskBean.getData() != null) {
+                                        JKLog.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().gethbTimer());
+                                        if (disGetTaskBean.getData().gethbTimer() > 0) {
+                                            ECConfig.hbTimer = disGetTaskBean.getData().gethbTimer();
+                                            if (disGetTaskBean.getData().getTaskId() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
+                                                JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
+                                                ECConfig.CloseScreenOrder(LongRunningService.this);
+
+                                                JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
+                                                JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
+
+                                                String jsonStr = gson.toJson(disGetTaskBean.getData());
+                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr, disGetTaskBean.getData().getTimeOut());
+
+                                            } else {
 //                                            ECTaskResultResponse response = new ECTaskResultResponse();
 //                                            response.setStatus(ECConfig.TASK_Fail);
 //                                            response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                            response.setDeviceAlias(AliasName);
 //                                            doSomeThing(response);
-//                                        }
-//                                    } else {
+                                            }
+                                        }
+                                    } else
+
+                                    {
 //                                        ECTaskResultResponse response = new ECTaskResultResponse();
 //                                        response.setStatus(ECConfig.TASK_Fail);
 //                                        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                        response.setDeviceAlias(AliasName);
 //                                        doSomeThing(response);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onError(Throwable e) {
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
 //                                    ECTaskResultResponse response = new ECTaskResultResponse();
 //                                    response.setStatus(ECConfig.TASK_Fail);
 //                                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
 //                                    response.setDeviceAlias(AliasName);
 //                                    doSomeThing(response);
-//
-//                                }
-//
-//                                @Override
-//                                public void onComplete() {
-//                                }
-//                            }
-//                    );
-                    }
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                }
+                            }
+                    );
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -542,9 +580,11 @@ public class LongRunningService extends Service {
         }
     });
 
-    private void doTaskWithId(int taskType, String content) {
+    private void doTaskWithId(int taskType, String content, int timeOut) {
         JKLog.i(TAG, "data:" + content);
-        JKPreferences.SaveSharePersistent("pushData", content);//备份
+        if (taskType != 500) {
+            JKPreferences.SaveSharePersistent("pushData", content);//备份
+        }
         Intent intent;
         //判断辅助服务是否开启
         AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
@@ -554,13 +594,8 @@ public class LongRunningService extends Service {
             startActivity(intent);
             JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
         } else {
-            intent = new Intent();
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            intent.setClassName(ECTaskActivity.MM, ECTaskActivity.LauncherUI);
-            startActivity(intent);
-
             doTypeTask(taskType, content);
-
+            JKLog.i("RT", "task_timer:" + content);
         }
     }
 
@@ -584,19 +619,52 @@ public class LongRunningService extends Service {
 
     private void doTypeTask(int taskType, final String content) {
         switch (taskType) {
+            case BreakTask:
+                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
+
+                response = new ECTaskResultResponse();
+                response.setStatus(ECConfig.TASK_FINISH);
+                response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                response.setDeviceAlias(AliasName);
+                ECNetSend.taskStatus(response, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DisBean disBean) {
+                        OthoerUtil.doOfTaskEnd();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+                break;
             case SearchAddFriendType:
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
             case ContactGetFriendInfo:
+                //TODO 清空一次通讯录
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            AddToContact(LongRunningService.this, content);
-                        }
-                    }.start();
+                    try {
+                        Thread.sleep(20 * 1000);
+                        ContactUtil.clearContact(LongRunningService.this);
+                        Thread.sleep(30 * 1000);
+                        AddToContact(LongRunningService.this, content);
+                        Thread.sleep(20 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 } else {
                     ECTaskResultResponse response = new ECTaskResultResponse();
@@ -692,12 +760,6 @@ public class LongRunningService extends Service {
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            AddToContact(LongRunningService.this, content);
-                        }
-                    }.start();
                     JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 } else {
                     ECTaskResultResponse response = new ECTaskResultResponse();
@@ -754,40 +816,7 @@ public class LongRunningService extends Service {
                 JKFile.WriteFile(ECSdCardPath.Task_List_TXT, content);
                 break;
 
-
         }
-
-    }
-
-    private void doSomeThing(ECTaskResultResponse resultResponse) {
-        OthoerUtil.doOfTaskEnd();
-        ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(DisBean disBean) {
-                if (disBean.getCode() == 200) {
-                    JKLog.i(TAG, "item_taskStatus:success");
-                } else {
-                    OthoerUtil.AddErrorMsgUtil("taskStatus:" + disBean.getMsg());
-                }
-
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                JKLog.i(TAG, "erro:" + e.getMessage());
-                OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
 
     }
 }

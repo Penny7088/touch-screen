@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.jkframework.algorithm.JKFile;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.ECSdCardPath;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.net.ECNetSend;
@@ -43,6 +45,7 @@ public class HelpService extends AccessibilityService {
     public static int addFromType = 1;
     int getFromType = -1;
     boolean isNeedSwipe = false;
+    boolean isNeedBreakTask;
 
     //控件id
     String vx_name_id = "com.tencent.mm:id/aeq";
@@ -114,6 +117,15 @@ public class HelpService extends AccessibilityService {
 
                 isTasking = JKPreferences.GetSharePersistentBoolean("doTasking");
                 taskType = JKPreferences.GetSharePersistentInt("taskType");
+                //任务立即停止
+                isNeedBreakTask = JKPreferences.GetSharePersistentBoolean("breakTask");
+                if (isNeedBreakTask) {
+                    ECTaskResultResponse response = new ECTaskResultResponse();
+                    response.setStatus(ECConfig.TASK_FINISH);
+                    response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                    response.setDeviceAlias(AliasName);
+                    doOfTaskEnd(response);
+                }
                 PerformClickUtils.WaitCount = 0;
                 ActivityName = event.getClassName().toString();
                 JKLog.i("RT", "task_activity:" + ActivityName);
@@ -155,6 +167,7 @@ public class HelpService extends AccessibilityService {
                                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                                         response.setDeviceAlias(AliasName);
                                         response.setAmount(Integer.parseInt(friendNum));
+                                        JKLog.i("RT", "task_friends_num:" + Integer.parseInt(friendNum));
                                         doOfTaskEnd(response);
                                     }
                                     break;
@@ -252,7 +265,6 @@ public class HelpService extends AccessibilityService {
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
-
                                     break;
                                 case MyPushIntentService.AddFriendFromGroup:
                                     //群加友
@@ -369,7 +381,21 @@ public class HelpService extends AccessibilityService {
                             }
                             break;
                         case DialogUI:
-                            PerformClickUtils.performBack(this);
+                            if (!PerformClickUtils.findText(this, "更新").equals("")) {
+                                sleepAndClickText(2000, "取消");
+                            } else {
+                                PerformClickUtils.performBack(this);
+                            }
+
+                            String infoText = PerformClickUtils.geyTextById(this, "com.tencent.mm:id/bu5");
+                            if (infoText.substring(0, 6).equals("您的微信账号于")) {
+                                JKLog.i(TAG, "task_:抢号登陆");
+                                PerformClickUtils.findViewIdAndClick(this, "com.tencent.mm:id/bu5");
+                                JKFile.WriteFile(ECSdCardPath.Task_List_TXT, JKPreferences.GetSharePersistentString("pushData"));
+                                JKPreferences.RemoveSharePersistent("taskType");
+                                JKPreferences.RemoveSharePersistent("doTasking");
+                            }
+
                             break;
                         case ContactInfoUI:
                             switch (taskType) {
@@ -493,10 +519,15 @@ public class HelpService extends AccessibilityService {
                             break;
 
                     }
-                }else{
+                } else {
                     switch (ActivityName) {
                         case AppUpdaterUI:
                             sleepAndClickText(2000, "取消");
+                            break;
+                        case DialogUI:
+                            if (!PerformClickUtils.findText(this, "更新").equals("")) {
+                                sleepAndClickText(2000, "取消");
+                            }
                             break;
                     }
                 }
@@ -536,21 +567,29 @@ public class HelpService extends AccessibilityService {
                                 if (nList.size() != 0) {
                                     int Offset = 0;
                                     for (int j = 0; j < headList.size(); j++) {
-                                        Rect headRect = headList.get(j).getBoundsInScreen();
-                                        Rect ListRect = nList.get(j).getBoundsInScreen();
-                                        while (headRect.top != ListRect.top) {
-                                            Offset++;
-                                            headRect = headList.get(j).getBoundsInScreen();
-                                            ListRect = nList.get(j + Offset).getBoundsInScreen();
-                                        }
-                                        String info = nList.get(j + Offset).getText().toString();
-                                        String name = headList.get(j).getContentDescription().toString();
+                                        if (j + Offset < nList.size()) {
+                                            Rect headRect = headList.get(j).getBoundsInScreen();
+                                            Rect ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                            while (headRect.top != ListRect.top) {
+                                                Offset++;
+                                                if (j + Offset < nList.size()) {
+                                                    headRect = headList.get(j).getBoundsInScreen();
+                                                    ListRect = nList.get(j + Offset).getBoundsInScreen();
+                                                } else {
+                                                    break;
+                                                }
+                                            }
 
-                                        ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
-                                        chatVo.setName(name);
-                                        chatVo.setContent(info);
-                                        chatList.add(chatVo);
-                                        JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
+                                            if (j + Offset < nList.size()) {
+                                                String info = nList.get(j + Offset).getText().toString();
+                                                String name = headList.get(j).getContentDescription().toString();
+                                                ECTaskResultResponse.TaskResultBean.ChatVo chatVo = new ECTaskResultResponse.TaskResultBean.ChatVo();
+                                                chatVo.setName(name);
+                                                chatVo.setContent(info);
+                                                chatList.add(chatVo);
+                                                JKLog.i(TAG, "task_532_chat:" + name + "/" + info);
+                                            }
+                                        }
                                     }
                                 }
 
@@ -1114,12 +1153,7 @@ public class HelpService extends AccessibilityService {
             } else {
                 isNeedSwipe = false;
                 addFromType = 1;
-                new Thread() {
-                    @Override
-                    public void run() {
-                        OthoerUtil.deleContanct(HelpService.this);//删除通讯录
-                    }
-                }.start();
+
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
                 response.setDeviceAlias(AliasName);
@@ -1136,12 +1170,6 @@ public class HelpService extends AccessibilityService {
             if (CountType >= 2) {
                 isNeedSwipe = false;
                 addFromType = 1;
-                new Thread() {
-                    @Override
-                    public void run() {
-                        OthoerUtil.deleContanct(HelpService.this);//删除通讯录
-                    }
-                }.start();
 
                 ECTaskResultResponse response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_Fail);
@@ -1186,6 +1214,7 @@ public class HelpService extends AccessibilityService {
 
             @Override
             public void onError(Throwable e) {
+                PerformClickUtils.performHome(HelpService.this);//任务完成进入home
                 OthoerUtil.doOfTaskEnd();
                 OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
                 clearList();
@@ -1245,7 +1274,8 @@ public class HelpService extends AccessibilityService {
         public void run() {
             while (true) {
                 try {
-                    if (ActivityName.indexOf("com.tencent.mm") != -1) {
+                    JKLog.i(TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + PerformClickUtils.WaitCount);
+                    if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
                         PerformClickUtils.WaitCount++;
                     }
                     if (PerformClickUtils.WaitCount > 60) {

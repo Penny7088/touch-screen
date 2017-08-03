@@ -1,10 +1,9 @@
 package com.yysp.ecandroid.net;
 
-import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
+import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.data.response.DisSigndoResponse;
-import com.yysp.ecandroid.data.response.ECLoginResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 
 import io.reactivex.Observable;
@@ -21,6 +20,11 @@ interface ECNetInterface {
     //注册发送设备id
     @POST("device/sign.do")
     Observable<DisBean> sign(@Body DisSigndoResponse response);
+
+    //发送心跳任务确认请求
+    @FormUrlEncoded
+    @POST("/task/searchToDoJobByDevice.do")
+    Observable<DisGetTaskBean> searchToDoJobByDevice(@Field("taskId") String taskId, @Field("machineCode") String deviceAlias);
 
     //发送任务确认请求
     @FormUrlEncoded
