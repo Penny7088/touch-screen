@@ -9,16 +9,9 @@ import android.view.accessibility.AccessibilityEvent;
 import com.jkframework.config.JKPreferences;
 import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
-import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
-import com.yysp.ecandroid.net.ECNetSend;
-import com.yysp.ecandroid.util.OthoerUtil;
+import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.PerformClickUtils;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.yysp.ecandroid.config.ECConfig.AliasName;
 
@@ -31,18 +24,20 @@ public class HelpService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (ContactUtil.mHelpServic == null){
+            ContactUtil.mHelpServic = this;
+        }
         if (!mActivityListenerThread.isAlive()) {
             mActivityListenerThread.start();
         }
         int event_type = event.getEventType();
         switch (event_type) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                OthoerUtil.ActivityName = event.getClassName().toString();
-                JKLog.i("RT", "task_activity:" + OthoerUtil.ActivityName + "  taskType:" + OthoerUtil.taskType + "/" + OthoerUtil.isTasking);
+                ContactUtil.ActivityName = event.getClassName().toString();
+                JKLog.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
 
-                OthoerUtil.TaskId = JKPreferences.GetSharePersistentString("taskId");
-                if (!OthoerUtil.isTasking && !OthoerUtil.TaskId.equals("")){
+                if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")){
 //                    isTasking = true;
 //                    taskType = JKPreferences.GetSharePersistentInt("taskType");
 //                    Gson gson = new Gson();
@@ -57,88 +52,15 @@ public class HelpService extends AccessibilityService {
 
     }
 
-//    /*
-//     登陆任务微信号
-//     */
-//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-//    private void StarWx(){
-//        JKLog.i("RT", "task_activity:" + ActivityName);
-//        switch (ActivityName){
-//            case EcWeiXinUI.LauncherUI:
-//                PerformClickUtils.findTextAndClick(this, "登陆");
-//                break;
-//            default :
-//                OthoerUtil.launcherWx(this);
-//                break;
-//        }
-//    }
 
 
-    private void doOfTaskEnd(ECTaskResultResponse resultResponse) {
-
-
-        ECNetSend.taskStatus(resultResponse, this).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(DisBean disBean) {
-                PerformClickUtils.performHome(HelpService.this);//任务完成进入home
-                OthoerUtil.doOfTaskEnd();
-            }
-
-
-            @Override
-            public void onError(Throwable e) {
-                PerformClickUtils.performHome(HelpService.this);//任务完成进入home
-                OthoerUtil.doOfTaskEnd();
-                OthoerUtil.AddErrorMsgUtil("taskStatus" + e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void sleepAndClickText(long time, String text) {
-        try {
-            Thread.sleep(time);
-            PerformClickUtils.findTextAndClick(this, text);
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private void sleepAndClickId(long time, String text) {
-
-        try {
-            Thread.sleep(time);
-            PerformClickUtils.findViewIdAndClick(this, text);
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     protected Thread mActivityListenerThread = new Thread(new Runnable() {
         @Override
         public void run() {
             while (true) {
                 try {
-                    JKLog.i(OthoerUtil.TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + ECConfig.WaitCount);
+                    JKLog.i(ContactUtil.TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + ECConfig.WaitCount);
                     if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
                         ECConfig.WaitCount++;
                     }
@@ -147,9 +69,9 @@ public class HelpService extends AccessibilityService {
                         ECTaskResultResponse response = new ECTaskResultResponse();
                         response.setStatus(ECConfig.TASK_Fail);
                         response.setDeviceAlias(AliasName);
-                        response.setReason("在该界面卡死：" + OthoerUtil.ActivityName);
+                        response.setReason("在该界面卡死：" + ContactUtil.ActivityName);
                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
-                        doOfTaskEnd(response);
+                        ContactUtil.doOfTaskEnd(response, HelpService.this);
                     }
                     Thread.sleep(10000);
 

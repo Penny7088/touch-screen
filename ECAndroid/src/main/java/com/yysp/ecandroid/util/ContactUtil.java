@@ -8,12 +8,79 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import com.google.gson.Gson;
+import com.jkframework.config.JKPreferences;
+import com.jkframework.debug.JKLog;
+import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
+import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
+import com.yysp.ecandroid.data.response.ECTaskResultResponse;
+import com.yysp.ecandroid.net.ECNetSend;
+import com.yysp.ecandroid.service.HelpService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by Administrator on 2017/4/18.
  */
 
 public class ContactUtil {
+    public final static int BreakTask = 500;
+    public final static int SearchAddFriendType = 501;
+    public final static int ContactGetFriendInfo = 502;
+    public final static int GetWxUserInfo = 503;//不走脚本
+    public final static int CreatGroupType = 504;
+    public final static int CreatGroupTypeBySmallWx = 505;
+    public final static int FindGroupJoinPeo = 506;
+    public final static int GetCreatGroupInfo = 507;
+    public final static int ChatWithFriend = 508;
+    public final static int LookFriendCircle = 509;
+    public final static int VoiceWithFriend = 510;
+    public final static int VideoWithFriend = 511;
+    public final static int Forwarding = 512;//转发
+    public final static int SendFriendCircle = 513;
+    public final static int Clicklike = 514;
+    public final static int Comment = 515;
+    public final static int DetectionTask = 516;
+    public final static int FriendNumInfo = 517;
+    public final static int AgressAddInGroupMsg = 518;
+    public final static int GoOutGroup = 519;
+    public final static int KickOutGroup = 520;
+    public final static int DeleFriend = 521;
+    public final static int AgressAddFriend = 525;
+    public final static int AddContact = 526;//不走脚本
+    public final static int NeedContactAddFriend = 527;
+    public final static int ViewMessage = 532;//不走脚本
+    public final static int ViewFriendNews = 533;
+    public final static int AddFriendFromGroup = 534;
+    public final static int CleanSystemFile = 535;
+    public final static int SearchGroupAndGetPeoInfo = 536;
+    public final static int PickingUpBottles = 537;
+    public final static int ThrowTheBottle = 538;
+    public final static int AddNearPeople = 539;
+    public final static int ReadWriteMessage = 540;//不走脚本
+
+
+    public static int noReadCount;
+
+    public final static String TAG = "RT";
+
+    public static HelpService mHelpServic = null;
+
+    //任务是否进行开关
+    public static boolean isTasking = false;
+    public static String ActivityName = "";
+    public static int taskType;
+    public static String TaskId = "";
+    public static DisGetTaskBean TaskBean;
+
     //单个添加好友
     public static Boolean addContact(Context context, String phoneNumber) {
         ContentValues values = new ContentValues();
@@ -106,6 +173,82 @@ public class ContactUtil {
         }
     }
 
+    /*
+    通过服务端发送的json将手机号加入通讯录
+     */
+    public static void AddToContact(Context context, String custom) {
+        Gson gson = new Gson();
+        List<DisGetTaskBean.DataBean.TargetAccountsBean> list = gson.fromJson(custom, DisGetTaskBean.DataBean.class).getTargetAccounts();
+        List<String> phoneList = new ArrayList<>();
+        JKLog.i(TAG, "phone_size:" + list.size());
+        for (int i = 0; i < list.size(); i++) {
+            if (ContactUtil.addContact(context, list.get(i).getMobile())) {
+                JKLog.i(TAG, "phone:" + list.get(i).getMobile());
+                phoneList.add(list.get(i).getMobile());
+            }
 
+        }
+        JKPreferences.SaveSharePersistent("phoneList", (ArrayList<String>) phoneList);
+    }
+
+    public static void doOfTaskEnd(ECTaskResultResponse resultResponse, Context context) {
+
+
+        ECNetSend.taskStatus(resultResponse, context).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(DisBean disBean) {
+                PerformClickUtils.performHome(mHelpServic);//任务完成进入home
+                isTasking = false;
+            }
+
+
+            @Override
+            public void onError(Throwable e) {
+                PerformClickUtils.performHome(mHelpServic);//任务完成进入home
+                isTasking = false;
+                AddErrorMsgUtil("taskStatus" + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void AddErrorMsgUtil(String msg) {
+        AddErrorMsgResponse errorMsgResponse = new AddErrorMsgResponse(msg);
+        ECNetSend.addErrorMsg(errorMsgResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(DisBean disBean) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
 }
 

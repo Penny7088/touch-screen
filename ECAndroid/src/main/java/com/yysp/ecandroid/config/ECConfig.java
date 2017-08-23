@@ -7,11 +7,6 @@ import android.telephony.TelephonyManager;
 import com.jkframework.config.JKSystem;
 
 public class ECConfig {
-
-    /**
-     * 消息平台反射类
-     */
-    public final static String MESSAGE_CENTER = "com.yysp.ecandroid.test.ECReflect";
     //任务结束
     public final static int TASK_FINISH = 604;
     //任务失败
@@ -22,8 +17,7 @@ public class ECConfig {
     public final static String success = "成功";
     //失败
     public final static String fail = "失败";
-    //别名type
-    public final static String AliasType = "uid";
+
     //别名
     public final static String AliasName = JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
 

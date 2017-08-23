@@ -68,6 +68,29 @@ public class PerformClickUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void sleepAndClickText(long time, String text) {
+        try {
+            Thread.sleep(time);
+            PerformClickUtils.findTextAndClick(ContactUtil.mHelpServic, text);
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void sleepAndClickId(long time, String text) {
+
+        try {
+            Thread.sleep(time);
+            PerformClickUtils.findViewIdAndClick(ContactUtil.mHelpServic, text);
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * 在当前页面查找对话框文字内容并点击
