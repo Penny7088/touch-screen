@@ -24,13 +24,8 @@ import static com.yysp.ecandroid.config.ECConfig.AliasName;
 
 @RequiresApi(api = Build.VERSION_CODES.DONUT)
 public class HelpService extends AccessibilityService {
-    String TAG = "RT";
-    int taskType;
 
-    //任务是否进行开关
-    public static boolean isTasking;
 
-    public static String ActivityName = "";
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -42,11 +37,17 @@ public class HelpService extends AccessibilityService {
         int event_type = event.getEventType();
         switch (event_type) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                ActivityName = event.getClassName().toString();
-                JKLog.i("RT", "task_activity:" + ActivityName + "  taskType:" + taskType + "/" + isTasking);
+                OthoerUtil.ActivityName = event.getClassName().toString();
+                JKLog.i("RT", "task_activity:" + OthoerUtil.ActivityName + "  taskType:" + OthoerUtil.taskType + "/" + OthoerUtil.isTasking);
                 ECConfig.WaitCount = 0;
-                if (isTasking){
-                    taskType = JKPreferences.GetSharePersistentInt("taskType");
+
+                OthoerUtil.TaskId = JKPreferences.GetSharePersistentString("taskId");
+                if (!OthoerUtil.isTasking && !OthoerUtil.TaskId.equals("")){
+//                    isTasking = true;
+//                    taskType = JKPreferences.GetSharePersistentInt("taskType");
+//                    Gson gson = new Gson();
+//                    TaskBean = gson.fromJson(JKPreferences.GetSharePersistentString("pushData"),DisGetTaskBean.class);
+//                    StarWx();
                 }
         }
     }
@@ -56,13 +57,21 @@ public class HelpService extends AccessibilityService {
 
     }
 
-    /*
-     登陆任务微信号
-     */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private void StarWx(){
-
-    }
+//    /*
+//     登陆任务微信号
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+//    private void StarWx(){
+//        JKLog.i("RT", "task_activity:" + ActivityName);
+//        switch (ActivityName){
+//            case EcWeiXinUI.LauncherUI:
+//                PerformClickUtils.findTextAndClick(this, "登陆");
+//                break;
+//            default :
+//                OthoerUtil.launcherWx(this);
+//                break;
+//        }
+//    }
 
 
     private void doOfTaskEnd(ECTaskResultResponse resultResponse) {
@@ -129,7 +138,7 @@ public class HelpService extends AccessibilityService {
         public void run() {
             while (true) {
                 try {
-                    JKLog.i(TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + ECConfig.WaitCount);
+                    JKLog.i(OthoerUtil.TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + ECConfig.WaitCount);
                     if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
                         ECConfig.WaitCount++;
                     }
@@ -138,7 +147,7 @@ public class HelpService extends AccessibilityService {
                         ECTaskResultResponse response = new ECTaskResultResponse();
                         response.setStatus(ECConfig.TASK_Fail);
                         response.setDeviceAlias(AliasName);
-                        response.setReason("在该界面卡死：" + ActivityName);
+                        response.setReason("在该界面卡死：" + OthoerUtil.ActivityName);
                         response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
                         doOfTaskEnd(response);
                     }

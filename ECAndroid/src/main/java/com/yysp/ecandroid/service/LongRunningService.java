@@ -103,13 +103,8 @@ public class LongRunningService extends Service {
                                             if (disGetTaskBean.getData().getTaskId() != null && !disGetTaskBean.getData().getTaskId().equals("")) {
                                                 JKLog.i(TAG, "dis:" + disGetTaskBean.getData().getTaskId() + "'*'" + disGetTaskBean.getData().getTaskType());
                                                 ECConfig.CloseScreenOrder(LongRunningService.this);
-
-                                                JKPreferences.SaveSharePersistent("taskId", disGetTaskBean.getData().getTaskId());
-                                                JKPreferences.SaveSharePersistent("taskType", disGetTaskBean.getData().getTaskType());
-
-                                                String jsonStr = gson.toJson(disGetTaskBean.getData());
-                                                doTaskWithId(disGetTaskBean.getData().getTaskType(), jsonStr, disGetTaskBean.getData().getTimeOut());
-
+                                                String jsonStr = gson.toJson(disGetTaskBean);
+                                                doTaskWithId(jsonStr);
                                             }
                                         }
                                     }
@@ -131,10 +126,15 @@ public class LongRunningService extends Service {
         }
     });
 
-    private void doTaskWithId(int taskType, String content, int timeOut) {
-        JKLog.i(TAG, "data:" + content);
+    private void doTaskWithId(String jsonStr) {
+        JKLog.i(TAG, "data:" + jsonStr);
+        Gson gson = new Gson();
+        DisGetTaskBean TaskBean = gson.fromJson(jsonStr,DisGetTaskBean.class);
+        int taskType = TaskBean.getData().getTaskType();
         if (taskType != 500) {
-            JKPreferences.SaveSharePersistent("pushData", content);//备份
+            JKPreferences.SaveSharePersistent("taskId", TaskBean.getData().getTaskId());
+            JKPreferences.SaveSharePersistent("taskType", TaskBean.getData().getTaskType());
+            JKPreferences.SaveSharePersistent("pushData", jsonStr);//备份
 
             Intent intent;
             //判断辅助服务是否开启
@@ -145,11 +145,11 @@ public class LongRunningService extends Service {
                 startActivity(intent);
                 JKToast.Show("找到空容器辅助功能，然后开启服务即可", 0);
             } else {
-                doTypeTask(taskType, content);
-                JKLog.i("RT", "task_timer:" + content);
+                doTypeTask(taskType, jsonStr);
+                JKLog.i("RT", "task_timer:" + jsonStr);
             }
         }else{
-            doTypeTask(taskType, content);
+            doTypeTask(taskType, jsonStr);
         }
     }
 
@@ -174,7 +174,7 @@ public class LongRunningService extends Service {
     private void doTypeTask(int taskType, final String content) {
         switch (taskType) {
             case ECTaskType.BreakTask:
-                HelpService.isTasking = false;
+                OthoerUtil.isTasking = false;
                 response = new ECTaskResultResponse();
                 response.setStatus(ECConfig.TASK_FINISH);
                 response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
@@ -202,7 +202,6 @@ public class LongRunningService extends Service {
                 });
                 break;
             case ECTaskType.SearchAddFriendType:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.ContactGetFriendInfo:
@@ -219,7 +218,6 @@ public class LongRunningService extends Service {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    HelpService.isTasking = true;
                     OthoerUtil.launcherWx(this);
                 } else {
                     ECTaskResultResponse response = new ECTaskResultResponse();
@@ -252,90 +250,69 @@ public class LongRunningService extends Service {
 
                 break;
             case ECTaskType.GetWxUserInfo:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.CreatGroupType:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.CreatGroupTypeBySmallWx:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.FindGroupJoinPeo:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.GetCreatGroupInfo:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.ChatWithFriend:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.LookFriendCircle:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.VoiceWithFriend:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.VideoWithFriend:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.Forwarding:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.SendFriendCircle:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.Clicklike:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.Comment:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.DetectionTask:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.FriendNumInfo:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.AgressAddInGroupMsg:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.GoOutGroup:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.KickOutGroup:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.DeleFriend:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.AgressAddFriend:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.NeedContactAddFriend:
                 gson = new Gson();
                 list = gson.fromJson(content, DisGetTaskBean.DataBean.class).getTargetAccounts();
                 if (list.size() != 0) {
-                    HelpService.isTasking = true;
                     OthoerUtil.launcherWx(this);
                 } else {
                     ECTaskResultResponse response = new ECTaskResultResponse();
@@ -367,35 +344,27 @@ public class LongRunningService extends Service {
                 }
                 break;
             case ECTaskType.ViewMessage:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.ViewFriendNews:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.AddFriendFromGroup:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.CleanSystemFile:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.SearchGroupAndGetPeoInfo:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.PickingUpBottles:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.ThrowTheBottle:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
             case ECTaskType.AddNearPeople:
-                HelpService.isTasking = true;
                 OthoerUtil.launcherWx(this);
                 break;
 

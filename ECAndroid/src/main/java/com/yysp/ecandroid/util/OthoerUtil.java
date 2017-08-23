@@ -3,11 +3,10 @@ package com.yysp.ecandroid.util;
 import android.content.Context;
 import android.content.Intent;
 
-import com.jkframework.config.JKPreferences;
 import com.yysp.ecandroid.data.bean.DisBean;
+import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.net.ECNetSend;
-import com.yysp.ecandroid.service.HelpService;
 import com.yysp.ecandroid.view.activity.ECTaskActivity;
 
 import io.reactivex.Observer;
@@ -23,6 +22,15 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class OthoerUtil {
 
+    public static final String TAG = "RT";
+
+    //任务是否进行开关
+    public static boolean isTasking = false;
+    public static String ActivityName = "";
+    public static int taskType;
+    public static String TaskId = "";
+    public static DisGetTaskBean TaskBean;
+
     public static void launcherWx(Context context) {
         Intent intent = new Intent();
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -32,10 +40,10 @@ public class OthoerUtil {
 
 
     public static void doOfTaskEnd() {
-        HelpService.isTasking = false;
-        JKPreferences.RemoveSharePersistent("taskType");
-        JKPreferences.RemoveSharePersistent("taskId");
-        JKPreferences.RemoveSharePersistent("pushData");
+        isTasking = false;
+//        JKPreferences.RemoveSharePersistent("taskType");
+//        JKPreferences.RemoveSharePersistent("taskId");
+//        JKPreferences.RemoveSharePersistent("pushData");
     }
 
     public static void AddErrorMsgUtil(String msg) {

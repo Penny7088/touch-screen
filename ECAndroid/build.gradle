@@ -7,11 +7,16 @@ apply plugin: 'bugly'
 //}
 
 android {
+    signingConfigs {
+        yyspsigned {
+            keyAlias 'key0'
+            keyPassword 'yysp2017'
+            storeFile file('F:/work/client/yyspsigned.jks')
+            storePassword 'yysp2017'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion rootProject.ext.buildToolsVersion
-
-
-
     defaultConfig {
         applicationId "com.yysp.ecandroid"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -31,7 +36,6 @@ android {
             }
         }
     }
-
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -45,7 +49,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     packagingOptions {
         exclude 'proguard-project.txt'
         exclude 'project.properties'
@@ -56,15 +59,13 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
-
     dexOptions {
         preDexLibraries = false
     }
-
     productFlavors {
         offical {
             applicationId "com.yysp.ecandroid"
-            manifestPlaceholders = [APPNAME     : "执行", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677"
+            manifestPlaceholders = [APPNAME: "执行", CHANNEL_NAME: "offical", QQBUGLY_ID: "236c0c1677"
             ]
         }
         beta {
@@ -72,8 +73,6 @@ android {
             manifestPlaceholders = [APPNAME: "空容器测试apk", CHANNEL_NAME: "beta", QQBUGLY_ID: "236c0c1677"]
         }
     }
-
-
 }
 
 
