@@ -37,7 +37,6 @@
 
         <service android:name=".service.LongRunningService" />
         <!-- 友盟自定义消息service-->
-        <service android:name=".service.MyPushIntentService" />
         <!--辅助service-->
         <service
             android:name=".service.HelpService"
@@ -51,19 +50,5 @@
                 android:resource="@xml/help" />
 
         </service>
-
-
-        <!-- 友盟推送sdk -->
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="${UMENG_APPKEY}">
-        </meta-data>
-
-        <meta-data
-            android:name="UMENG_MESSAGE_SECRET"
-            android:value="${UMENG_MESSAGE_SECRET}">
-        </meta-data>
-
-
     </application>
 </manifest>

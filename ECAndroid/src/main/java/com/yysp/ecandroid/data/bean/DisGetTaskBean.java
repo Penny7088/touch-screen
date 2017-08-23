@@ -10,13 +10,22 @@ import java.util.List;
 public class DisGetTaskBean implements Serializable {
 
     private int code;
-    private DataBean data;
+    private List<DataBean> data;
     private String msg;
     private int bizCode;
     private String groupName;
     private String content;
     private String addFriendMessage;
     private int amount;
+    private int TaskIndex;
+
+    public int getTaskIndex() {
+        return TaskIndex;
+    }
+
+    public void setTaskIndex(int TaskIndex) {
+        this.TaskIndex = TaskIndex;
+    }
 
     public String getGroupName() {
         return groupName;
@@ -58,11 +67,11 @@ public class DisGetTaskBean implements Serializable {
         this.code = code;
     }
 
-    public DataBean getData() {
+    public List<DataBean> getData() {
         return data;
     }
 
-    public void setData(DataBean data) {
+    public void setData(List<DataBean> data) {
         this.data = data;
     }
 

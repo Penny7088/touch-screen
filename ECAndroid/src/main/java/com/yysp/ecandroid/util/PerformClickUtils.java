@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.jkframework.debug.JKLog;
+import com.yysp.ecandroid.config.ECConfig;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,8 +18,6 @@ import java.util.regex.Pattern;
  */
 
 public class PerformClickUtils {
-
-    public static int WaitCount = 0;
     /**
      * 在当前页面查找文字内容并点击
      *
@@ -69,6 +68,29 @@ public class PerformClickUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void sleepAndClickText(long time, String text) {
+        try {
+            Thread.sleep(time);
+            PerformClickUtils.findTextAndClick(ContactUtil.mHelpServic, text);
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void sleepAndClickId(long time, String text) {
+
+        try {
+            Thread.sleep(time);
+            PerformClickUtils.findViewIdAndClick(ContactUtil.mHelpServic, text);
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * 在当前页面查找对话框文字内容并点击
@@ -256,7 +278,7 @@ public class PerformClickUtils {
                     if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                         AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                         node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                        WaitCount = 0;
+                        ECConfig.WaitCount = 0;
                     }
                 }
             }
@@ -273,7 +295,7 @@ public class PerformClickUtils {
                 if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.ListView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                     node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-                    WaitCount = 0;
+                    ECConfig.WaitCount = 0;
                 }
             }
         }
@@ -291,7 +313,7 @@ public class PerformClickUtils {
                 if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.GridView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                     node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                    WaitCount = 0;
+                    ECConfig.WaitCount = 0;
                 }
             }
         }
@@ -308,7 +330,7 @@ public class PerformClickUtils {
                 if (nodeInfo.getChild(0).getChild(i).getClassName().equals("android.widget.GridView")) {
                     AccessibilityNodeInfo node_lsv = nodeInfo.getChild(0).getChild(i);
                     node_lsv.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-                    WaitCount = 0;
+                    ECConfig.WaitCount = 0;
                 }
             }
         }
