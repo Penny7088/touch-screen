@@ -46,7 +46,7 @@ public class SPUtils {
      */
     public static void putBoolean(Context context, String key, boolean value) {
         SharedPreferences prefe = context.getSharedPreferences(PREFERNCE_FILE_NAME, 0);
-        prefe.edit().putBoolean(key, value).commit();
+        prefe.edit().putBoolean(key, value).apply();
     }
     /**
      * 存String方法
@@ -56,7 +56,7 @@ public class SPUtils {
      */
     public static void putString(Context context, String key, String value){
         SharedPreferences prefe = context.getSharedPreferences(PREFERNCE_FILE_NAME, 0);
-        prefe.edit().putString(key, value).commit();
+        prefe.edit().putString(key, value).apply();
     }
     /**
      * 取String方法
@@ -78,7 +78,7 @@ public class SPUtils {
      */
     public static void putInt(Context context, String key, int value){
         SharedPreferences prefe = context.getSharedPreferences(PREFERNCE_FILE_NAME, 0);
-        prefe.edit().putInt(key, value).commit();
+        prefe.edit().putInt(key, value).apply();
     }
 
 
@@ -115,7 +115,7 @@ public class SPUtils {
             SceneListString = new String(Base64.encode(byteArrayOutputStream.toByteArray()));
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(key, SceneListString);
-            editor.commit();
+            editor.apply();
             // 关闭objectOutputStream
             objectOutputStream.close();
         } catch (IOException e) {
@@ -156,7 +156,7 @@ public class SPUtils {
         SharedPreferences prefe = context.getSharedPreferences(PREFERNCE_FILE_NAME, 0);
         SharedPreferences.Editor editor = prefe.edit();
         editor.putString(key, "");
-        editor.commit();
+        editor.apply();
     }
 
     /**清除所有的缓存数据
@@ -166,7 +166,7 @@ public class SPUtils {
         SharedPreferences prefe = context.getSharedPreferences(PREFERNCE_FILE_NAME, 0);
         SharedPreferences.Editor editor = prefe.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 }
 

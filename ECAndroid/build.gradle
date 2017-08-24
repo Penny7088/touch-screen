@@ -88,7 +88,7 @@ dependencies {
     compile 'org.androidannotations:androidannotations-api:4.3.0'
     compile 'com.afollestad.material-dialogs:core:0.9.4.4'
     provided files('libs/framework.jar')
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.2.9'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
