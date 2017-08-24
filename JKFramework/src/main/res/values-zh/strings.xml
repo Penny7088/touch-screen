@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="tFrameworkExit">退出</string>
-    <string name="tCurrentPath">当前路径：</string>
-    <string name="tFrameworkDebug">调试</string>
-    <string name="tInput">请输入反射函数</string>
-</resources>

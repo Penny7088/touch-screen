@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
+import com.yysp.ecandroid.task.distribute.TaskFactory;
 import com.yysp.ecandroid.util.ContactUtil;
 
 
@@ -60,8 +61,19 @@ public class LongRunningService extends Service {
                 try {
                     Thread.sleep(1000 * ECConfig.hbTimer);
                     String tsId = ContactUtil.TaskId;
+
+
+                    //TODO 从这里开始进行任务的分发;
+                    TaskFactory.createTask(501,ContactUtil.mHelpServic).running();
+                    if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")){
+//                    isTasking = true;
+//                    taskType = JKPreferences.GetSharePersistentInt("taskType");
+//                    Gson gson = new Gson();
+//                    TaskBean = gson.fromJson(JKPreferences.GetSharePersistentString("pushData"),DisGetTaskBean.class);
+//                    StarWx();
+                    }
 //                    final Gson gson = new Gson();"  AliasName: " + AliasName);
-//                    ECRequest.searchToDoJobByDevice(tsId, AliasName)
+//                    ECRequest.searchToDoJobByDevice(tsId, "")
 //                            .subscribe(new BaseSubscriber<DisGetTaskBean>() {
 //                                @Override
 //                                public void onNext(DisGetTaskBean disGetTaskBean) {
@@ -84,7 +96,6 @@ public class LongRunningService extends Service {
 //                                    }
 //                                }
 //                            });
-//                    Logger.i(TAG, "tsId:" + tsId +
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
