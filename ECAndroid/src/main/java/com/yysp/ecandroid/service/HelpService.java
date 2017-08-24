@@ -33,6 +33,8 @@ public class HelpService extends AccessibilityService {
                 ContactUtil.ActivityName = event.getClassName().toString();
                 Logger.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
+
+                //TODO 从这里开始进行任务的分发;
                 TaskFactory.createTask(501,this).running();
                 if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")){
 //                    isTasking = true;
