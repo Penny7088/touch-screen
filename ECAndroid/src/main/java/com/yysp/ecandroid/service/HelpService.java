@@ -8,7 +8,6 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
-import com.yysp.ecandroid.task.distribute.TaskFactory;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.Logger;
 
@@ -33,16 +32,6 @@ public class HelpService extends AccessibilityService {
                 ContactUtil.ActivityName = event.getClassName().toString();
                 Logger.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
-
-                //TODO 从这里开始进行任务的分发;
-                TaskFactory.createTask(501,this).running();
-                if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")){
-//                    isTasking = true;
-//                    taskType = JKPreferences.GetSharePersistentInt("taskType");
-//                    Gson gson = new Gson();
-//                    TaskBean = gson.fromJson(JKPreferences.GetSharePersistentString("pushData"),DisGetTaskBean.class);
-//                    StarWx();
-                }
         }
     }
 
