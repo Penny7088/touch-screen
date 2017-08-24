@@ -6,14 +6,11 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.jkframework.config.JKPreferences;
-import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
+import com.yysp.ecandroid.task.distribute.TaskFactory;
 import com.yysp.ecandroid.util.ContactUtil;
-import com.yysp.ecandroid.util.PerformClickUtils;
-
-import static com.yysp.ecandroid.config.ECConfig.AliasName;
+import com.yysp.ecandroid.util.Logger;
 
 @RequiresApi(api = Build.VERSION_CODES.DONUT)
 public class HelpService extends AccessibilityService {
@@ -34,9 +31,9 @@ public class HelpService extends AccessibilityService {
         switch (event_type) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 ContactUtil.ActivityName = event.getClassName().toString();
-                JKLog.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
+                Logger.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
-
+                TaskFactory.createTask(501,this).running();
                 if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")){
 //                    isTasking = true;
 //                    taskType = JKPreferences.GetSharePersistentInt("taskType");
@@ -60,17 +57,16 @@ public class HelpService extends AccessibilityService {
         public void run() {
             while (true) {
                 try {
-                    JKLog.i(ContactUtil.TAG, "taskId:" + JKPreferences.GetSharePersistentString("taskId") + "   WaitCount = " + ECConfig.WaitCount);
-                    if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
-                        ECConfig.WaitCount++;
-                    }
+//                    if (!JKPreferences.GetSharePersistentString("taskId").equals("")) {
+//                        ECConfig.WaitCount++;
+//                    }
                     if (ECConfig.WaitCount > 60) {
                         ECConfig.WaitCount = 0;
                         ECTaskResultResponse response = new ECTaskResultResponse();
                         response.setStatus(ECConfig.TASK_Fail);
-                        response.setDeviceAlias(AliasName);
+//                        response.setDeviceAlias(AliasName);
                         response.setReason("在该界面卡死：" + ContactUtil.ActivityName);
-                        response.setTaskId(JKPreferences.GetSharePersistentString("taskId"));
+                        response.setTaskId(ContactUtil.TaskId);
                         ContactUtil.doOfTaskEnd(response, HelpService.this);
                     }
                     Thread.sleep(10000);

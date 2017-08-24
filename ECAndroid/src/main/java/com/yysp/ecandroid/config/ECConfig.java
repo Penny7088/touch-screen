@@ -4,7 +4,6 @@ package com.yysp.ecandroid.config;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
-import com.jkframework.config.JKSystem;
 
 public class ECConfig {
     //任务结束
@@ -19,7 +18,7 @@ public class ECConfig {
     public final static String fail = "失败";
 
     //别名
-    public final static String AliasName = JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
+//    public final static String AliasName = JKSystem.GetGUID(TelephonyManager.PHONE_TYPE_GSM);
 
     //心跳时间
     public static int hbTimer = 30;

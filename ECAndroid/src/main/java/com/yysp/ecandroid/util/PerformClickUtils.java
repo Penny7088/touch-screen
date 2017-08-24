@@ -6,7 +6,6 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.config.ECConfig;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class PerformClickUtils {
         }
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
-            JKLog.i("RT", "findTextAndClick + nodeInfoList = " + nodeInfoList);
+            Logger.i("RT", "findTextAndClick + nodeInfoList = " + nodeInfoList);
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null) {
                     performClick(nodeInfo);
@@ -162,7 +161,7 @@ public class PerformClickUtils {
                 e.printStackTrace();
             }
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
-            JKLog.i("RT", "task_run:home");
+            Logger.i("RT", "task_run:home");
         }
     }
 

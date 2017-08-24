@@ -24,10 +24,10 @@
         tools:replace="icon,label,allowBackup">
 
         <activity
-            android:name=".view.activity.ECTaskActivity_"
+            android:name="com.yysp.ecandroid.ECTaskActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Design.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -9,22 +9,16 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 import com.google.gson.Gson;
-import com.jkframework.config.JKPreferences;
-import com.jkframework.debug.JKLog;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
-import com.yysp.ecandroid.net.ECNetSend;
+import com.yysp.ecandroid.net.BaseSubscriber;
+import com.yysp.ecandroid.net.ECRequest;
 import com.yysp.ecandroid.service.HelpService;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -151,7 +145,7 @@ public class ContactUtil {
                         //根据姓名求id
                         Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
                         if (uri != null && name != null) {
-                            if(!name.equals("")){
+                            if (!name.equals("")) {
                                 Cursor cursor1 = cr.query(uri, new String[]{ContactsContract.Contacts.Data._ID}, "display_name=?", new String[]{name}, null);
                                 if (cursor1 != null) {
                                     if (cursor1.moveToFirst()) {
@@ -180,45 +174,33 @@ public class ContactUtil {
         Gson gson = new Gson();
         List<DisGetTaskBean.DataBean.TargetAccountsBean> list = gson.fromJson(custom, DisGetTaskBean.DataBean.class).getTargetAccounts();
         List<String> phoneList = new ArrayList<>();
-        JKLog.i(TAG, "phone_size:" + list.size());
+        Logger.i(TAG, "phone_size:" + list.size());
         for (int i = 0; i < list.size(); i++) {
             if (ContactUtil.addContact(context, list.get(i).getMobile())) {
-                JKLog.i(TAG, "phone:" + list.get(i).getMobile());
+                Logger.i(TAG, "phone:" + list.get(i).getMobile());
                 phoneList.add(list.get(i).getMobile());
             }
 
         }
-        JKPreferences.SaveSharePersistent("phoneList", (ArrayList<String>) phoneList);
+//        JKPreferences.SaveSharePersistent("phoneList", (ArrayList<String>) phoneList);
     }
 
     public static void doOfTaskEnd(ECTaskResultResponse resultResponse, Context context) {
+        ECRequest.taskStatus(resultResponse, context)
+                .subscribe(new BaseSubscriber<DisBean>() {
+                    @Override
+                    public void onNext(DisBean pDisBean) {
+                        PerformClickUtils.performHome(mHelpServic);//任务完成进入home
+                        isTasking = false;
+                    }
 
-
-        ECNetSend.taskStatus(resultResponse, context).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(DisBean disBean) {
-                PerformClickUtils.performHome(mHelpServic);//任务完成进入home
-                isTasking = false;
-            }
-
-
-            @Override
-            public void onError(Throwable e) {
-                PerformClickUtils.performHome(mHelpServic);//任务完成进入home
-                isTasking = false;
-                AddErrorMsgUtil("taskStatus" + e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-
+                    @Override
+                    public void onError(Throwable e) {
+                        PerformClickUtils.performHome(mHelpServic);//任务完成进入home
+                        isTasking = false;
+                        AddErrorMsgUtil("taskStatus" + e.getMessage());
+                    }
+                });
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -228,27 +210,27 @@ public class ContactUtil {
 
     public static void AddErrorMsgUtil(String msg) {
         AddErrorMsgResponse errorMsgResponse = new AddErrorMsgResponse(msg);
-        ECNetSend.addErrorMsg(errorMsgResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(DisBean disBean) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+//        ECRequest.addErrorMsg(errorMsgResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+//            @Override
+//            public void onSubscribe(Disposable d) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(DisBean disBean) {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//
+//            }
+//        });
     }
 }
 
