@@ -12,6 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.Logger;
+import com.yysp.ecandroid.util.PerformClickUtils;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -23,6 +24,8 @@ public class ECTaskActivity extends AppCompatActivity {
     private boolean bInit = false;
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     public static final String MM = "com.tencent.mm";
+    private AccessibilityManager mAccessibilityManager;
+    public static boolean isOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +51,8 @@ public class ECTaskActivity extends AppCompatActivity {
             bInit = true;
         }
         ECConfig.OpenScreenOrder(this);
-        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
-        if (!accessibilityManager.isEnabled()) {
+        mAccessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
+        if (!mAccessibilityManager.isEnabled()) {
             ContactUtil.isTasking = false;
 //            ContactUtil.AddErrorMsgUtil(AliasName + "   辅助未打开");
             new MaterialDialog.Builder(this).content("请打开空容器辅助功能!").positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -62,5 +65,15 @@ public class ECTaskActivity extends AppCompatActivity {
             }).show();
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Logger.d("onResume","================");
+        isOpen = mAccessibilityManager.isEnabled();
+//        if(mAccessibilityManager.isEnabled()){
+//
+//        }
     }
 }

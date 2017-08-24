@@ -2,14 +2,20 @@ package com.yysp.ecandroid.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.yysp.ecandroid.ECTaskActivity;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.task.distribute.TaskFactory;
 import com.yysp.ecandroid.util.ContactUtil;
+import com.yysp.ecandroid.util.Logger;
+import com.yysp.ecandroid.util.PerformClickUtils;
 
 
 /**
@@ -38,6 +44,7 @@ public class LongRunningService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, final int startId) {
+
         if (!mIMThread.isAlive()) {
             mIMThread.start();
         }
@@ -55,6 +62,7 @@ public class LongRunningService extends Service {
     }
 
     protected Thread mIMThread = new Thread(new Runnable() {
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void run() {
             while (true) {
@@ -64,8 +72,13 @@ public class LongRunningService extends Service {
 
 
                     //TODO 从这里开始进行任务的分发;
-                    TaskFactory.createTask(501,ContactUtil.mHelpServic).running();
-                    if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")){
+                    if (ECTaskActivity.isOpen) {
+                        PerformClickUtils.launcherWeChat(LongRunningService.this);
+                        Thread.sleep(2000);
+                        TaskFactory.createTask(500).running();
+
+                    }
+                    if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")) {
 //                    isTasking = true;
 //                    taskType = JKPreferences.GetSharePersistentInt("taskType");
 //                    Gson gson = new Gson();

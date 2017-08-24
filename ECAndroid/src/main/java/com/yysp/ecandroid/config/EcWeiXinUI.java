@@ -23,7 +23,8 @@ public class EcWeiXinUI {
     public static final String userHeadImgId = "com.tencent.mm:id/ik";
     public static final String isEndNoReadId = "com.tencent.mm:id/buf";
     public static final String addBt = "com.tencent.mm:id/aej";
-
+    public static final String login = "com.tencent.mm:id/ck1";
+    public static final String login_edit_phone = "com.tencent.mm:id/h9";
     //启动页
     public static final String LauncherUI = "com.tencent.mm.ui.LauncherUI";
     //新的朋友

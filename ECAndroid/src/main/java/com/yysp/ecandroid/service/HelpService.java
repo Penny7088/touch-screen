@@ -8,6 +8,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
+import com.yysp.ecandroid.task.distribute.SuperTask;
 import com.yysp.ecandroid.util.ContactUtil;
 import com.yysp.ecandroid.util.Logger;
 
@@ -15,14 +16,12 @@ import com.yysp.ecandroid.util.Logger;
 public class HelpService extends AccessibilityService {
 
 
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (ContactUtil.mHelpServic == null){
-            ContactUtil.mHelpServic = this;
-        }
+        ContactUtil.mHelpServic = this;
+        SuperTask.initService(this);
         if (!mActivityListenerThread.isAlive()) {
             mActivityListenerThread.start();
         }
@@ -32,6 +31,23 @@ public class HelpService extends AccessibilityService {
                 ContactUtil.ActivityName = event.getClassName().toString();
                 Logger.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
+//                if (ECTaskActivity.isOpen) {
+//                    PerformClickUtils.launcherWeChat(this);
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException pE) {
+//                        pE.printStackTrace();
+//                    }
+//                    AccessibilityNodeInfo lWindow = getRootInActiveWindow();
+//                    if (lWindow != null) {
+//                        Logger.d("lWindow","==================== != null");
+//                    } else {
+//                        Logger.d("lWindow","================null");
+//
+//                    }
+//                }
+
+
         }
     }
 
@@ -39,8 +55,6 @@ public class HelpService extends AccessibilityService {
     public void onInterrupt() {
 
     }
-
-
 
 
     protected Thread mActivityListenerThread = new Thread(new Runnable() {

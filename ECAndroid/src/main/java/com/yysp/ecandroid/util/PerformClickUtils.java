@@ -2,15 +2,20 @@ package com.yysp.ecandroid.util;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.PackageConst;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 /**
  * Created by Administrator on 2017/4/18.
@@ -264,6 +269,16 @@ public class PerformClickUtils {
         return "";
     }
 
+    /**
+     * 启动微信
+     * @param context
+     */
+    public static void launcherWeChat(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        intent.setClassName(PackageConst.APP, PackageConst.LauncherUI);
+        context.startActivity(intent);
+    }
 
     //模拟滑动事件
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
