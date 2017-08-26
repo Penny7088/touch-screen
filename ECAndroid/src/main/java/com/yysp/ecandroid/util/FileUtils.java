@@ -3,9 +3,16 @@ package com.yysp.ecandroid.util;
 import android.os.Environment;
 import android.util.Log;
 
+import com.yysp.ecandroid.config.PackageConst;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 /**
  * Created on 2017/8/19 0019.
@@ -16,7 +23,6 @@ public class FileUtils {
     private static final String DIR = "Android";
     private static final String CHILD_DIR = "data";
     private static final String TAG = "FileUtils";
-    public static final String TENCENT_PACKAGE = "com.tencent.mm";
 
     private static boolean isMount() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -53,7 +59,7 @@ public class FileUtils {
                                 File[] lDataList = j.listFiles();
                                 for (File k :
                                         lDataList) {
-                                    if (k.getName().equals(TENCENT_PACKAGE)) {
+                                    if (k.getName().equals(PackageConst.APP)) {
                                         if (k.isDirectory()) {
                                             tencentPath = k.getPath();
                                         }
@@ -62,6 +68,20 @@ public class FileUtils {
                             }
                         }
                     }
+                }
+            }
+        }
+        return tencentPath;
+    }
+
+    public static String findDataTencentDir(File pDirectory) {
+        String tencentPath = null;
+        if (pDirectory.exists()) {
+            if (pDirectory.isDirectory()) {
+                File[] lFiles = pDirectory.listFiles();
+                for (File f :
+                        lFiles) {
+                    Log.d("==========", "==:" + f.getName());
                 }
             }
         }
@@ -117,4 +137,139 @@ public class FileUtils {
         }
     }
 
+
+    private static boolean execCmdDeleteDir(String pStrings) {
+        Process process = null;
+        boolean isDelete = false;
+        try {
+            process = Runtime.getRuntime().exec("su");
+            OutputStream os = process.getOutputStream();
+            process.getErrorStream();
+            os.write((pStrings + "\n").getBytes());
+            os.write("exit\n".getBytes());
+            os.flush();
+            os.close();
+            isDelete = true;
+        } catch (IOException pE) {
+            pE.printStackTrace();
+            return isDelete;
+        }
+        return isDelete;
+    }
+
+
+    private static String execCmd_mkdir(String[] cmds) {
+        String path = null;
+        Process process = null;
+        try {
+            process = Runtime.getRuntime().exec("su");
+            OutputStream os = process.getOutputStream();
+            process.getErrorStream();
+            InputStream is = process.getInputStream();
+            int lLength = cmds.length;
+            for (int i = 0; i < lLength; i++) {
+                String str = cmds[i];
+                os.write((str + "\n").getBytes());
+            }
+            os.write("exit\n".getBytes());
+            os.flush();
+            os.close();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            while (true) {
+                String str = reader.readLine();
+                if (str.trim().equals(PackageConst.APP)) {
+                    path = str;
+                    break;
+                }
+            }
+            reader.close();
+            process.waitFor();
+            process.destroy();
+        } catch (Exception localException) {
+            return path;
+        }
+        return path;
+    }
+
+    private static String execCmdsforResult(String[] cmds) {
+        String path = null;
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            OutputStream os = process.getOutputStream();
+            process.getErrorStream();
+            InputStream is = process.getInputStream();
+            int lLength = cmds.length;
+            for (int i = 0; i < lLength; i++) {
+                String str = cmds[i];
+                os.write((str + "\n").getBytes());
+            }
+            os.write("exit\n".getBytes());
+            os.flush();
+            os.close();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            while (true) {
+                String str = reader.readLine();
+                if (str.trim().equals(PackageConst.APP)) {
+                    path = str;
+                    break;
+                }
+            }
+            reader.close();
+            process.waitFor();
+            process.destroy();
+        } catch (Exception localException) {
+            return null;
+        }
+        return path;
+    }
+
+    /**
+     * 查找文件夹
+     * @return
+     */
+    public static String findDir() {
+        String path = execCmdsforResult(new String[]{"cd /data/data/", "ls -R"});
+        return path == null ? null : path;
+    }
+
+    /**
+     * 删除文件夹
+     * @param path
+     * @return
+     */
+    public static boolean deleteDir(String path) {
+        return execCmdDeleteDir("rm -rf data/data/" + path);
+    }
+
+    /**
+     * 创建文件夹
+     * @return
+     */
+    public static String mkdir() {
+        return execCmd_mkdir(new String[]{"cd /data/data/", "mkdir com.tencent.mm", "ls -R"});
+    }
+
+    /**
+     * 允许权限
+     * @param path
+     */
+    public static void permissionAs(String path){
+        execPermission("chmod 777 /data/data/" + path);
+    }
+
+
+    public static void execPermission(String pS) {
+        Process process = null;
+        try {
+            process = Runtime.getRuntime().exec("su");
+            OutputStream os = process.getOutputStream();
+            process.getErrorStream();
+            os.write((pS + "\n").getBytes());
+            os.write("exit\n".getBytes());
+            os.flush();
+            os.close();
+        } catch (IOException pE) {
+            pE.printStackTrace();
+        }
+    }
 }

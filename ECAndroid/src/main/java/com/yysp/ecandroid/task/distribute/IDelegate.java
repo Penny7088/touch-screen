@@ -15,12 +15,17 @@ public interface IDelegate {
 
     AccessibilityNodeInfo getRootView(HelpService pSuper);
 
-    List<AccessibilityNodeInfo> findId(HelpService pSuper,String id);
+    List<AccessibilityNodeInfo> findId(HelpService pSuper, String id);
 
-    AccessibilityNodeInfo findText(HelpService pSuper,String text);
+    AccessibilityNodeInfo findText(HelpService pSuper, String text);
+
+    void setText(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String text);
+
+    void setText(HelpService pSuper, AccessibilityNodeInfo pNodeInfos, String text);
+
+//    boolean isInput(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String pText);
 
     void sleep(long time);
-
 
 
 }

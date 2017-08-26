@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -11,11 +12,15 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.yysp.ecandroid.ECTaskActivity;
 import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.PackageConst;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.task.distribute.TaskFactory;
 import com.yysp.ecandroid.util.ContactUtil;
+import com.yysp.ecandroid.util.FileUtils;
 import com.yysp.ecandroid.util.Logger;
 import com.yysp.ecandroid.util.PerformClickUtils;
+
+import java.io.File;
 
 
 /**
@@ -71,13 +76,27 @@ public class LongRunningService extends Service {
                     String tsId = ContactUtil.TaskId;
 
 
-                    //TODO 从这里开始进行任务的分发;
+                    //TODO 从这里开始进行任务的分发
+                    //TODO test START
                     if (ECTaskActivity.isOpen) {
-                        PerformClickUtils.launcherWeChat(LongRunningService.this);
-                        Thread.sleep(2000);
-                        TaskFactory.createTask(500).running();
-
+                        String lDirTencent = FileUtils.findDir();
+                        if (lDirTencent.equals(PackageConst.APP)) { //有这个文件夹
+                            boolean lDeleteDir = FileUtils.deleteDir(lDirTencent);
+                            if (lDeleteDir) {
+                                FileUtils.mkdir();
+                                FileUtils.permissionAs(lDirTencent);
+                                PerformClickUtils.launcherWeChat(LongRunningService.this);
+                                Thread.sleep(2000);
+                                TaskFactory.createTask(500).running();
+                            }
+                        } else {//没有这个文件夹
+                            PerformClickUtils.launcherWeChat(LongRunningService.this);
+                            Thread.sleep(2000);
+                            TaskFactory.createTask(500).running();
+                        }
                     }
+                    //TODO test END
+
                     if (!ContactUtil.isTasking && !ContactUtil.TaskId.equals("")) {
 //                    isTasking = true;
 //                    taskType = JKPreferences.GetSharePersistentInt("taskType");
