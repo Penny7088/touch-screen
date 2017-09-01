@@ -4,23 +4,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.yysp.ecandroid.ECTaskActivity;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.PackageConst;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
-import com.yysp.ecandroid.task.distribute.TaskFactory;
-import com.yysp.ecandroid.util.ContactUtil;
-import com.yysp.ecandroid.util.FileUtils;
-import com.yysp.ecandroid.util.Logger;
-import com.yysp.ecandroid.util.PerformClickUtils;
-
-import java.io.File;
+import com.yysp.ecandroid.framework.distribute.TaskFactory;
+import com.yysp.ecandroid.framework.util.ContactUtil;
+import com.yysp.ecandroid.framework.util.FileUtils;
+import com.yysp.ecandroid.framework.util.PerformClickUtils;
 
 
 /**
@@ -80,16 +75,19 @@ public class LongRunningService extends Service {
                     //TODO test START
                     if (ECTaskActivity.isOpen) {
                         String lDirTencent = FileUtils.findDir();
-                        if (lDirTencent.equals(PackageConst.APP)) { //有这个文件夹
-                            boolean lDeleteDir = FileUtils.deleteDir(lDirTencent);
-                            if (lDeleteDir) {
-                                FileUtils.mkdir();
-                                FileUtils.permissionAs(lDirTencent);
-                                PerformClickUtils.launcherWeChat(LongRunningService.this);
-                                Thread.sleep(2000);
-                                TaskFactory.createTask(500).running();
+                        if (lDirTencent != null) {
+                            if (lDirTencent.equals(PackageConst.APP)) { //有这个文件夹
+                                boolean lDeleteDir = FileUtils.deleteDir(lDirTencent);
+                                if (lDeleteDir) {
+                                    Thread.sleep(1000);
+                                    String lMkdir = FileUtils.mkdir();
+                                    FileUtils.permissionAs(lMkdir);
+                                    PerformClickUtils.launcherWeChat(LongRunningService.this);
+                                    Thread.sleep(2000);
+                                    TaskFactory.createTask(500).running();
+                                }
                             }
-                        } else {//没有这个文件夹
+                        } else {
                             PerformClickUtils.launcherWeChat(LongRunningService.this);
                             Thread.sleep(2000);
                             TaskFactory.createTask(500).running();

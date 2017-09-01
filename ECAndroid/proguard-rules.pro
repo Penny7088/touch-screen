@@ -124,7 +124,7 @@ public static final android.os.Parcelable$Creator *;
 -keep class com.yysp.ecandroid.data.model.** { *; }
 -keep class com.yysp.ecandroid.data.bean.** { *; }
 -keep class com.yysp.ecandroid.data.response.** { *; }
--keep class com.yysp.ecandroid.net.** { *; }
+-keep class com.yysp.ecandroid.framework.net.** { *; }
 -keep class com.yysp.ecandroid.persent.** { *; }
 -keep class com.yysp.ecandroid.test.ECReflect { *; }
 

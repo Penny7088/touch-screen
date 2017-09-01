@@ -8,20 +8,19 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
-import com.yysp.ecandroid.task.distribute.SuperTask;
-import com.yysp.ecandroid.util.ContactUtil;
-import com.yysp.ecandroid.util.Logger;
+import com.yysp.ecandroid.framework.distribute.SuperTask;
+import com.yysp.ecandroid.framework.util.ContactUtil;
+import com.yysp.ecandroid.framework.util.Logger;
 
 @RequiresApi(api = Build.VERSION_CODES.DONUT)
 public class HelpService extends AccessibilityService {
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         ContactUtil.mHelpServic = this;
-        SuperTask.initService(this);
+        SuperTask.initService(this, event);
         if (!mActivityListenerThread.isAlive()) {
             mActivityListenerThread.start();
         }
@@ -29,6 +28,7 @@ public class HelpService extends AccessibilityService {
         switch (event_type) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 ContactUtil.ActivityName = event.getClassName().toString();
+//                mChange.contentChanged(this);
                 Logger.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
 //                if (ECTaskActivity.isOpen) {

@@ -4,12 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.yysp.ecandroid.service.LongRunningService;
-import com.yysp.ecandroid.util.ContactUtil;
+import com.yysp.ecandroid.framework.util.ContactUtil;
 
 
-public class ECApplication extends Application {
+public class ECApplication extends MultiDexApplication {
 
     private static ECApplication sApplication;
 

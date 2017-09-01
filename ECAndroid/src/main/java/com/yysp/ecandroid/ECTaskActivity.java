@@ -10,8 +10,8 @@ import android.view.accessibility.AccessibilityManager;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.yysp.ecandroid.config.ECConfig;
-import com.yysp.ecandroid.util.ContactUtil;
-import com.yysp.ecandroid.util.Logger;
+import com.yysp.ecandroid.framework.util.ContactUtil;
+import com.yysp.ecandroid.framework.util.Logger;
 
 /**
  * Created by Administrator on 2017/4/15.

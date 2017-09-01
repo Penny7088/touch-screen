@@ -3,10 +3,9 @@ package com.yysp.ecandroid.task;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import com.yysp.ecandroid.service.HelpService;
-import com.yysp.ecandroid.task.distribute.IStrategy;
-import com.yysp.ecandroid.task.distribute.SuperTask;
-import com.yysp.ecandroid.util.Logger;
+import com.yysp.ecandroid.framework.distribute.IStrategy;
+import com.yysp.ecandroid.framework.distribute.SuperTask;
+import com.yysp.ecandroid.framework.util.Logger;
 
 /**
  * Created on 2017/8/24 0024.

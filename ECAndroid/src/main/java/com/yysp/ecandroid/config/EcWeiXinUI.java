@@ -30,6 +30,7 @@ public class EcWeiXinUI {
     public static final String login_edit_password = "com.tencent.mm:id/gz";
     public static final String login_button = "com.tencent.mm:id/ac6";
     public static final String login_next_button = "com.tencent.mm:id/aeb";
+    public static final String login_dialog_button = "com.tencent.mm:id/ad8";
 
 
 

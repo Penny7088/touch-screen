@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.StringRes;
 
+import com.yysp.ecandroid.framework.crashMonitor.CrashMonitor;
+
 import java.util.Random;
 
 
@@ -109,7 +111,7 @@ public class App {
      */
     public void initApplication(Context context) {
         //crash
-//        CrashMonitor.init(context,isDebug());
+        CrashMonitor.init(context,isDebug());
     }
 
 
