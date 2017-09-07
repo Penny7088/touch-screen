@@ -1,5 +1,6 @@
 package com.yysp.ecandroid.framework.distribute;
 
+import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityEvent;
@@ -19,6 +20,7 @@ import java.util.List;
 public class SuperTask {
 
     protected static HelpService mSuper;
+    protected static Context mContext;
     private static AccessibilityEvent mEvent;
 
     protected SuperTask() {
@@ -58,10 +60,11 @@ public class SuperTask {
 //        return Delegate.getInstance().isInput(mSuper, pNodeInfos, pText);
 //    }
 
-    public static void initService(HelpService pHelpService, AccessibilityEvent pEvent) {
+    public static void initService(HelpService pHelpService, AccessibilityEvent pEvent, Context pApplicationContext) {
         Logger.d("super", "====initService====");
         mSuper = pHelpService;
         mEvent = pEvent;
+        mContext = pApplicationContext;
     }
 
     protected boolean listNotEmpty(List<AccessibilityNodeInfo> pList) {
@@ -72,7 +75,12 @@ public class SuperTask {
         }
     }
 
-    protected boolean notEmpty(AccessibilityNodeInfo node) {
+    /**
+     * node isEmpty
+     * @param node
+     * @return
+     */
+    protected boolean nodeIsEmpty(AccessibilityNodeInfo node) {
         if (node != null) {
             return true;
         } else {
@@ -80,6 +88,10 @@ public class SuperTask {
         }
     }
 
+    /**
+     * rootView is null?
+     * @return
+     */
     protected boolean rootViewNotNull() {
         AccessibilityNodeInfo lRootView = getRootView();
         if (lRootView != null) {
@@ -98,4 +110,9 @@ public class SuperTask {
             return false;
         }
     }
+
+    protected Context getContext() {
+        return mContext;
+    }
+
 }

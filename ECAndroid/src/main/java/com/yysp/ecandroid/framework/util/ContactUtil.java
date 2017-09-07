@@ -14,7 +14,7 @@ import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.framework.net.BaseSubscriber;
-import com.yysp.ecandroid.framework.net.ECRequest;
+import com.yysp.ecandroid.framework.net.Request;
 import com.yysp.ecandroid.service.HelpService;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class ContactUtil {
     public static DisGetTaskBean TaskBean;
 
     //单个添加好友
-    public static Boolean addContact(Context context, String phoneNumber) {
+    public static Boolean addContact(Context context, String phoneNumber, String pName) {
         ContentValues values = new ContentValues();
         Uri rawContactUri = context.getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, values);
         if (rawContactUri != null) {
@@ -52,11 +52,12 @@ public class ContactUtil {
             values.clear();
             values.put(ContactsContract.Contacts.Data.RAW_CONTACT_ID, rawContactId);
             values.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE); //内容类型
-            values.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, phoneNumber);
+            values.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, pName);
             context.getContentResolver().insert(android.provider.ContactsContract.Data.CONTENT_URI, values);
 
             values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
             values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+
             // 联系人的电话号码
             values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, phoneNumber);
             // 电话类型
@@ -141,7 +142,7 @@ public class ContactUtil {
         List<String> phoneList = new ArrayList<>();
         Logger.i(TAG, "phone_size:" + list.size());
         for (int i = 0; i < list.size(); i++) {
-            if (ContactUtil.addContact(context, list.get(i).getMobile())) {
+            if (ContactUtil.addContact(context, list.get(i).getMobile(), "")) {
                 Logger.i(TAG, "phone:" + list.get(i).getMobile());
                 phoneList.add(list.get(i).getMobile());
             }
@@ -151,7 +152,7 @@ public class ContactUtil {
     }
 
     public static void doOfTaskEnd(ECTaskResultResponse resultResponse, Context context) {
-        ECRequest.taskStatus(resultResponse, context)
+        Request.taskStatus(resultResponse, context)
                 .subscribe(new BaseSubscriber<DisBean>() {
                     @Override
                     public void onNext(DisBean pDisBean) {
@@ -175,7 +176,7 @@ public class ContactUtil {
 
     public static void AddErrorMsgUtil(String msg) {
         AddErrorMsgResponse errorMsgResponse = new AddErrorMsgResponse(msg);
-//        ECRequest.addErrorMsg(errorMsgResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
+//        Request.addErrorMsg(errorMsgResponse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DisBean>() {
 //            @Override
 //            public void onSubscribe(Disposable d) {
 //

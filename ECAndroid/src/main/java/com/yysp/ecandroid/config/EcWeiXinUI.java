@@ -32,6 +32,16 @@ public class EcWeiXinUI {
     public static final String login_next_button = "com.tencent.mm:id/aeb";
     public static final String login_dialog_button = "com.tencent.mm:id/ad8";
 
+    //+add
+    public static final String add_ = "com.tencent.mm:id/fh";
+    public static final String jump_add_friend = "com.tencent.mm:id/hi";
+    public static final String jump_add_page_text = "微信号/QQ号/手机号";
+    public static final String jump_add_page_id = "com.tencent.mm:id/i_";
+    public static final String jump_add_friend_text = "添加朋友";
+    public static final String input_serach_text = "com.tencent.mm:id/h9";
+    public static final String input_serach_id = "搜索公众号";
+    public static final String serach_text_list = "com.tencent.mm:id/jo";
+
 
 
     //启动页

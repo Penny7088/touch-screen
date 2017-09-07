@@ -11,11 +11,18 @@ import android.support.annotation.RequiresApi;
 import com.yysp.ecandroid.ECTaskActivity;
 import com.yysp.ecandroid.config.ECConfig;
 import com.yysp.ecandroid.config.PackageConst;
+import com.yysp.ecandroid.data.TestBeautifyModel;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
+import com.yysp.ecandroid.data.test;
 import com.yysp.ecandroid.framework.distribute.TaskFactory;
 import com.yysp.ecandroid.framework.util.ContactUtil;
 import com.yysp.ecandroid.framework.util.FileUtils;
+import com.yysp.ecandroid.framework.util.Logger;
 import com.yysp.ecandroid.framework.util.PerformClickUtils;
+
+import junit.framework.Test;
+
+import java.util.ArrayList;
 
 
 /**
@@ -67,31 +74,52 @@ public class LongRunningService extends Service {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(1000 * ECConfig.hbTimer);
-                    String tsId = ContactUtil.TaskId;
+//                    Thread.sleep(1000 * ECConfig.hbTimer);
+//                    String tsId = ContactUtil.TaskId;
 
 
                     //TODO 从这里开始进行任务的分发
                     //TODO test START
                     if (ECTaskActivity.isOpen) {
-                        String lDirTencent = FileUtils.findDir();
-                        if (lDirTencent != null) {
-                            if (lDirTencent.equals(PackageConst.APP)) { //有这个文件夹
-                                boolean lDeleteDir = FileUtils.deleteDir(lDirTencent);
-                                if (lDeleteDir) {
-                                    Thread.sleep(1000);
-                                    String lMkdir = FileUtils.mkdir();
-                                    FileUtils.permissionAs(lMkdir);
-                                    PerformClickUtils.launcherWeChat(LongRunningService.this);
-                                    Thread.sleep(2000);
-                                    TaskFactory.createTask(500).running();
-                                }
-                            }
-                        } else {
+
+                        //登录
+//                        String lDirTencent = FileUtils.findDir();
+//                        if (lDirTencent != null) {
+//                            if (lDirTencent.equals(PackageConst.APP)) { //有这个文件夹
+//                                boolean lDeleteDir = FileUtils.deleteDir(lDirTencent);
+//                                if (lDeleteDir) {
+//                                    Thread.sleep(1000);
+//                                    String lMkdir = FileUtils.mkdir();
+//                                    FileUtils.permissionAs(lMkdir);
+//                                    PerformClickUtils.launcherWeChat(LongRunningService.this);
+//                                    Thread.sleep(2000);
+//                                    TaskFactory.createTask(500).running();
+//                                }
+//                            }
+//                        } else {
+//                            PerformClickUtils.launcherWeChat(LongRunningService.this);
+//                            Thread.sleep(2000);
+//                            TaskFactory.createTask(500).running();
+//                        }
+
+                        //加友
+//                        String lJson = test.getJson(LongRunningService.this, "beautify.json");
+//                        ArrayList<TestBeautifyModel> lBeautifyModels = test.parseData(lJson);
+//                        Logger.d("onResume", "================" + lBeautifyModels.size());
+//                        if (lBeautifyModels != null && lBeautifyModels.size() != 0) {
+                            ECTaskActivity.isOpen = false;
+                            //导入通讯录
+//                            for (int i = 0; i < lBeautifyModels.size(); i++) {
+//                                ContactUtil.addContact(LongRunningService.this,
+//                                            lBeautifyModels.get(i).getPhone(),
+//                                            lBeautifyModels.get(i).getCompany());
+//                            }
+                            Thread.sleep(1000);
                             PerformClickUtils.launcherWeChat(LongRunningService.this);
-                            Thread.sleep(2000);
-                            TaskFactory.createTask(500).running();
-                        }
+                            Thread.sleep(10000);
+                            TaskFactory.createTask(502).running();
+//                            TaskFactory.createTask(502).running(lBeautifyModels);
+//                        }
                     }
                     //TODO test END
 
@@ -103,7 +131,7 @@ public class LongRunningService extends Service {
 //                    StarWx();
                     }
 //                    final Gson gson = new Gson();"  AliasName: " + AliasName);
-//                    ECRequest.searchToDoJobByDevice(tsId, "")
+//                    Request.searchToDoJobByDevice(tsId, "")
 //                            .subscribe(new BaseSubscriber<DisGetTaskBean>() {
 //                                @Override
 //                                public void onNext(DisGetTaskBean disGetTaskBean) {

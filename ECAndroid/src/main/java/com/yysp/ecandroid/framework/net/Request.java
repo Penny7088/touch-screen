@@ -16,7 +16,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by 2016/7/5.
  */
-public class ECRequest {
+public class Request {
 
     public static Observable<DisBean> signUid(String deviceAlias, String machineCode) {
         DisSigndoResponse signdoResponse = new DisSigndoResponse(deviceAlias, machineCode);

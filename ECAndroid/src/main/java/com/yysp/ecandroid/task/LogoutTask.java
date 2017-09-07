@@ -7,6 +7,8 @@ import com.yysp.ecandroid.framework.distribute.IStrategy;
 import com.yysp.ecandroid.framework.distribute.SuperTask;
 import com.yysp.ecandroid.framework.util.Logger;
 
+import java.util.ArrayList;
+
 /**
  * Created on 2017/8/24 0024.
  * by penny
@@ -16,8 +18,15 @@ import com.yysp.ecandroid.framework.util.Logger;
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class LogoutTask extends SuperTask implements IStrategy {
 
+
+
     @Override
     public void running() {
         Logger.d("LogoutTask", "=========================");
+    }
+
+    @Override
+    public void running(ArrayList pArrayList) {
+
     }
 }

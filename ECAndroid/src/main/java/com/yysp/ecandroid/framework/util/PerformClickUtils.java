@@ -115,8 +115,8 @@ public class PerformClickUtils {
         if (!dialogWait.isEmpty() && !dialogConfirm.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : dialogWait) {
                 if (nodeInfo != null) {
-                    if (nodeInfo.getText() != null){
-                        if (text1.equals(nodeInfo.getText())){
+                    if (nodeInfo.getText() != null) {
+                        if (text1.equals(nodeInfo.getText())) {
                             performClick(nodeInfo);
                             break;
                         }
@@ -132,6 +132,7 @@ public class PerformClickUtils {
         if (nodeInfo == null) {
             return;
         }
+        Logger.d("performClick:", nodeInfo.toString());
         if (nodeInfo.isClickable()) {
             nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         } else {
@@ -171,7 +172,6 @@ public class PerformClickUtils {
     }
 
 
-
     /**
      * text
      */
@@ -187,9 +187,9 @@ public class PerformClickUtils {
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null) {
-                    if (nodeInfo.getText() != null){
+                    if (nodeInfo.getText() != null) {
                         return nodeInfo.getText().toString();
-                    }else{
+                    } else {
                         return "";
                     }
                 } else {
@@ -258,8 +258,8 @@ public class PerformClickUtils {
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null) {
-                    if (nodeInfo.getText() != null){
-                        if (nodeInfo.getText().toString().equals(text)){
+                    if (nodeInfo.getText() != null) {
+                        if (nodeInfo.getText().toString().equals(text)) {
                             return nodeInfo.getText().toString();
                         }
                     }
@@ -271,6 +271,7 @@ public class PerformClickUtils {
 
     /**
      * 启动微信
+     *
      * @param context
      */
     public static void launcherWeChat(Context context) {

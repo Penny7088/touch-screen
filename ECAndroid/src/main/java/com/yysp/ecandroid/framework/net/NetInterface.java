@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * Created by 2016/7/5.
  */
-interface ECNetInterface {
+interface NetInterface {
 
     //注册发送设备id
     @POST("device/sign.do")

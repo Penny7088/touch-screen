@@ -11,6 +11,7 @@ import com.yysp.ecandroid.framework.distribute.SuperTask;
 import com.yysp.ecandroid.framework.util.Logger;
 import com.yysp.ecandroid.framework.util.PerformClickUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,17 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class LoginTask extends SuperTask implements IStrategy {
 
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void running() {
         loginButton();
 
+
+    }
+
+    @Override
+    public void running(ArrayList pArrayList) {
 
     }
 

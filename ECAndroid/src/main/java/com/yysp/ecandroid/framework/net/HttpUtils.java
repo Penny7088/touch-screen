@@ -12,7 +12,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
 /**
  * 创建日期：2017/5/16 0016 on 16:18
- * 作者:penny Administrator
+ * 作者:penny
  */
 public class HttpUtils {
 
@@ -27,8 +27,8 @@ public class HttpUtils {
                 .build();
     }
 
-    public static ECNetInterface getApiService() {
-        return ClientHolder.retrofit.create(ECNetInterface.class);
+    public static NetInterface getApiService() {
+        return ClientHolder.retrofit.create(NetInterface.class);
     }
 
     /**

@@ -54,13 +54,13 @@ public class ECTaskActivity extends AppCompatActivity {
                     .content("请打开空容器辅助功能!")
                     .positiveText("确定")
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                    dialog.dismiss();
-                }
-            }).show();
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                            startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    }).show();
 
         }
     }
@@ -68,8 +68,8 @@ public class ECTaskActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Logger.d("onResume","================");
         isOpen = mAccessibilityManager.isEnabled();
+        Logger.d("onResume", "================" + isOpen);
 //        if(mAccessibilityManager.isEnabled()){
 //
 //        }

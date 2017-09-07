@@ -20,7 +20,7 @@ public class HelpService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         ContactUtil.mHelpServic = this;
-        SuperTask.initService(this, event);
+        SuperTask.initService(this, event, this.getApplicationContext());
         if (!mActivityListenerThread.isAlive()) {
             mActivityListenerThread.start();
         }
@@ -29,25 +29,8 @@ public class HelpService extends AccessibilityService {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 ContactUtil.ActivityName = event.getClassName().toString();
 //                mChange.contentChanged(this);
-                Logger.i("RT", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
+                Logger.i("HelpService", "task_activity:" + ContactUtil.ActivityName + "  taskType:" + ContactUtil.taskType + "/" + ContactUtil.isTasking);
                 ECConfig.WaitCount = 0;
-//                if (ECTaskActivity.isOpen) {
-//                    PerformClickUtils.launcherWeChat(this);
-//                    try {
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException pE) {
-//                        pE.printStackTrace();
-//                    }
-//                    AccessibilityNodeInfo lWindow = getRootInActiveWindow();
-//                    if (lWindow != null) {
-//                        Logger.d("lWindow","==================== != null");
-//                    } else {
-//                        Logger.d("lWindow","================null");
-//
-//                    }
-//                }
-
-
         }
     }
 

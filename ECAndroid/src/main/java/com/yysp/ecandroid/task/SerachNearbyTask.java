@@ -7,6 +7,8 @@ import com.yysp.ecandroid.framework.distribute.IStrategy;
 import com.yysp.ecandroid.framework.distribute.SuperTask;
 import com.yysp.ecandroid.framework.util.Logger;
 
+import java.util.ArrayList;
+
 /**
  * Created on 2017/8/24 0024.
  * by penny
@@ -20,5 +22,10 @@ public class SerachNearbyTask extends SuperTask implements IStrategy {
     @Override
     public void running() {
         Logger.d("SearchNearbyTask", "=========================");
+    }
+
+    @Override
+    public void running(ArrayList pArrayList) {
+
     }
 }
