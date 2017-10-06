@@ -9,7 +9,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.Config;
 import com.yysp.ecandroid.framework.util.ContactUtil;
 import com.yysp.ecandroid.framework.util.Logger;
 
@@ -45,7 +45,7 @@ public class ECTaskActivity extends AppCompatActivity {
         if (!bInit) {
             bInit = true;
         }
-        ECConfig.OpenScreenOrder(this);
+        Config.OpenScreenOrder(this);
         mAccessibilityManager = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
         if (!mAccessibilityManager.isEnabled()) {
             ContactUtil.isTasking = false;

@@ -2,7 +2,7 @@ package com.yysp.ecandroid.framework.net;
 
 import android.content.Context;
 
-import com.yysp.ecandroid.config.ECConfig;
+import com.yysp.ecandroid.config.Config;
 import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.bean.DisGetTaskBean;
 import com.yysp.ecandroid.data.response.AddErrorMsgResponse;
@@ -39,7 +39,7 @@ public class Request {
     }
 
     public static Observable<DisBean> taskStatus(ECTaskResultResponse resultResponse, Context context) {
-        ECConfig.OpenScreenOrder(context);
+        Config.OpenScreenOrder(context);
         return HttpUtils.getApiService().taskStatus(resultResponse)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -51,5 +51,18 @@ public class Request {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+
+    public static Observable<DisBean> getAuthCode(int type, String mobile) {
+        return HttpUtils.getApiService().getAuthCode(type, mobile)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    public static Observable<DisBean> notifyUserScan(int type, String mobile) {
+        return HttpUtils.getApiService().notifyUserScan(type, mobile)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
 }

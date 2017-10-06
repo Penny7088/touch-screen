@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Administrator on 2017/4/18.
  */
 
-public class EcContactBean {
+public class ContactBean {
 
     /**
      * targetAccounts : ["TaskAccountVO"]

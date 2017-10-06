@@ -9,18 +9,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
 import com.yysp.ecandroid.ECTaskActivity;
-import com.yysp.ecandroid.config.ECConfig;
-import com.yysp.ecandroid.config.PackageConst;
 import com.yysp.ecandroid.data.TestBeautifyModel;
+import com.yysp.ecandroid.data.bean.DisBean;
 import com.yysp.ecandroid.data.response.ECTaskResultResponse;
 import com.yysp.ecandroid.data.test;
 import com.yysp.ecandroid.framework.distribute.TaskFactory;
+import com.yysp.ecandroid.framework.net.BaseSubscriber;
+import com.yysp.ecandroid.framework.net.Request;
 import com.yysp.ecandroid.framework.util.ContactUtil;
-import com.yysp.ecandroid.framework.util.FileUtils;
 import com.yysp.ecandroid.framework.util.Logger;
 import com.yysp.ecandroid.framework.util.PerformClickUtils;
-
-import junit.framework.Test;
 
 import java.util.ArrayList;
 
@@ -74,7 +72,7 @@ public class LongRunningService extends Service {
         public void run() {
             while (true) {
                 try {
-//                    Thread.sleep(1000 * ECConfig.hbTimer);
+//                    Thread.sleep(1000 * Config.hbTimer);
 //                    String tsId = ContactUtil.TaskId;
 
 
@@ -101,25 +99,21 @@ public class LongRunningService extends Service {
 //                            Thread.sleep(2000);
 //                            TaskFactory.createTask(500).running();
 //                        }
-
                         //加友
-//                        String lJson = test.getJson(LongRunningService.this, "beautify.json");
-//                        ArrayList<TestBeautifyModel> lBeautifyModels = test.parseData(lJson);
-//                        Logger.d("onResume", "================" + lBeautifyModels.size());
-//                        if (lBeautifyModels != null && lBeautifyModels.size() != 0) {
+                        String lJson = test.getJson(LongRunningService.this, "beautify.json");
+                        ArrayList<TestBeautifyModel> lBeautifyModels = test.parseData(lJson);
+                        Logger.d("onResume", "================" + lBeautifyModels.size());
+                        if (lBeautifyModels != null && lBeautifyModels.size() != 0) {
                             ECTaskActivity.isOpen = false;
-                            //导入通讯录
-//                            for (int i = 0; i < lBeautifyModels.size(); i++) {
-//                                ContactUtil.addContact(LongRunningService.this,
-//                                            lBeautifyModels.get(i).getPhone(),
-//                                            lBeautifyModels.get(i).getCompany());
-//                            }
+
                             Thread.sleep(1000);
-                            PerformClickUtils.launcherWeChat(LongRunningService.this);
-                            Thread.sleep(10000);
-                            TaskFactory.createTask(502).running();
-//                            TaskFactory.createTask(502).running(lBeautifyModels);
-//                        }
+//                            PerformClickUtils.launcherWeChat(LongRunningService.this);
+//                            Thread.sleep(10000);
+//                            TaskFactory.createTask(502).running(lBeautifyModels);//加友
+//                            TaskFactory.createTask(504).running(lBeautifyModels);
+                            TaskFactory.createTask(500).running();
+
+                        }
                     }
                     //TODO test END
 
@@ -138,11 +132,11 @@ public class LongRunningService extends Service {
 //                                    if (disGetTaskBean.getData() != null && disGetTaskBean.getData().size() > 0 && disGetTaskBean.getData().get(0) != null) {
 //                                        Logger.i(TAG, "disGetTaskBean:" + disGetTaskBean + "  gethbTimer: " + disGetTaskBean.getData().get(0).gethbTimer());
 //                                        if (disGetTaskBean.getData().get(0).gethbTimer() > 0) {
-//                                            ECConfig.hbTimer = disGetTaskBean.getData().get(0).gethbTimer();
+//                                            Config.hbTimer = disGetTaskBean.getData().get(0).gethbTimer();
 //                                            if (disGetTaskBean.getData().get(0).getTaskId() != null && !disGetTaskBean.getData().get(0).getTaskId().equals("")) {
 //                                                disGetTaskBean.setTaskIndex(0);
 //                                                Logger.i(TAG, "dis:" + disGetTaskBean.getData().get(disGetTaskBean.getTaskIndex()).getTaskId() + "'*'" + disGetTaskBean.getData().get(disGetTaskBean.getTaskIndex()).getTaskType());
-//                                                ECConfig.CloseScreenOrder(LongRunningService.this);
+//                                                Config.CloseScreenOrder(LongRunningService.this);
 //
 //                                                for (int i = 0 ; i < disGetTaskBean.getData().size(); i++){
 //                                                }

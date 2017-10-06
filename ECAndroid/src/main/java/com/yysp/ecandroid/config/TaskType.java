@@ -4,7 +4,7 @@ package com.yysp.ecandroid.config;
  * Created by Administrator on 2017/8/3 0003.
  */
 
-public class ECTaskType {
+public class TaskType {
     public final static int BreakTask = 500;
     public final static int SearchAddFriendType = 501;
     public final static int ContactGetFriendInfo = 502;

@@ -1,11 +1,14 @@
 package com.yysp.ecandroid.framework.distribute;
 
+import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.yysp.ecandroid.config.PackageConst;
+import com.yysp.ecandroid.framework.util.Logger;
 import com.yysp.ecandroid.service.HelpService;
 
 import java.util.List;
@@ -36,7 +39,7 @@ public class Delegate implements IDelegate {
     }
 
     @Override
-    public AccessibilityNodeInfo getRootView(HelpService pSuper) {
+    public AccessibilityNodeInfo getRootView(AccessibilityService pSuper) {
         AccessibilityNodeInfo lNodeInfo = pSuper.getRootInActiveWindow();
         if (lNodeInfo != null) {
             return lNodeInfo;
@@ -47,7 +50,7 @@ public class Delegate implements IDelegate {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
-    public List<AccessibilityNodeInfo> findId(HelpService pSuper, String id) {
+    public List<AccessibilityNodeInfo> findId(AccessibilityService pSuper, String id) {
         AccessibilityNodeInfo lRootView = getRootView(pSuper);
         if (lRootView != null) {
             List<AccessibilityNodeInfo> nodeInfosByViewId = lRootView.findAccessibilityNodeInfosByViewId(id);
@@ -58,7 +61,7 @@ public class Delegate implements IDelegate {
     }
 
     @Override
-    public AccessibilityNodeInfo findText(HelpService pSuper, String text) {
+    public AccessibilityNodeInfo findText(AccessibilityService pSuper, String text) {
         AccessibilityNodeInfo nodeInfo = null;
         AccessibilityNodeInfo lRootView = getRootView(pSuper);
         if (lRootView != null) {
@@ -80,9 +83,10 @@ public class Delegate implements IDelegate {
     }
 
     @Override
-    public void setText(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String text) {
+    public void setText(AccessibilityService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String text) {
         AccessibilityNodeInfo lRootView = getRootView(pSuper);
         if (lRootView != null) {
+            Logger.d("AddFriendTask", "开始输入.....");
             for (AccessibilityNodeInfo i :
                     pNodeInfos) {
                 if (i.getClassName().equals(PackageConst.EDIT_TEXT)) {
@@ -91,6 +95,7 @@ public class Delegate implements IDelegate {
                         arguments.putCharSequence(
                                 AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
                         i.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+                        Logger.d("AddFriendTask", "输入成功" + text);
                     }
                 }
             }
@@ -98,10 +103,10 @@ public class Delegate implements IDelegate {
     }
 
     @Override
-    public void setText(HelpService pSuper, AccessibilityNodeInfo pNodeInfos, String text) {
+    public void setText(AccessibilityService pSuper, AccessibilityNodeInfo pNodeInfos, String text) {
         AccessibilityNodeInfo lRootView = getRootView(pSuper);
         if (lRootView != null) {
-            if (lRootView.getClassName().equals(PackageConst.EDIT_TEXT)) {
+            if (pNodeInfos.getClassName().equals(PackageConst.EDIT_TEXT)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Bundle arguments = new Bundle();
                     arguments.putCharSequence(
@@ -112,52 +117,48 @@ public class Delegate implements IDelegate {
         }
     }
 
-//    @Override
-//    public void setPassWord(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String text) {
-//        AccessibilityNodeInfo lRootView = getRootView(pSuper);
-//        if (lRootView != null) {
-//            for (AccessibilityNodeInfo i :
-//                    pNodeInfos) {
-//                if (i.getClassName().equals(PackageConst.EDIT_TEXT)) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//                        ClipboardManager clipboard = (ClipboardManager) App.getInstance().getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-//                        ClipData clip = ClipData.newPlainText("label", text);
-//                        clipboard.setPrimaryClip(clip);
-//                        i.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-//                        i.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @Override
+    public void scroll(AccessibilityNodeInfo pNodeInfos) {
+        if (pNodeInfos.isScrollable()) {
+            pNodeInfos.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+        } else {
+            scroll(pNodeInfos.getParent());
+        }
+    }
 
-//    @Override
-//    public boolean isInput(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String pText) {
-//        sleep(500);
-//        AccessibilityNodeInfo lRootView = getRootView(pSuper);
-//        if (lRootView != null) {
-//            for (AccessibilityNodeInfo i :
-//                    pNodeInfos) {
-//                if (i.getClassName().equals(PackageConst.EDIT_TEXT)) {
-//                    if (i.getText().equals(pText)) {
-//                        Logger.d("setText", "已输入==========");
-//                        mInput = true;
-//                    } else {
-//                        Logger.d("setText", "未输入==========");
-//                        mInput = false;
-//                    }
-//                }
-//            }
-//        }
-//        return mInput;
-//    }
+    @Override
+    public String getText(AccessibilityNodeInfo pNodeInfo) {
+        return pNodeInfo.getText().toString();
+    }
 
     @Override
     public void sleep(long time) {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(time);
         } catch (InterruptedException pE) {
             pE.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isScroll(AccessibilityEvent pAccessibilityEvent) {
+        int lEventType = pAccessibilityEvent.getEventType();
+        Logger.d("Delegate", ":" + lEventType);
+        if (lEventType == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            Logger.d("Delegate", "yes scroll");
+            return true;
+        } else {
+            Logger.d("Delegate", "no scroll");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean currentPageIsChanged(String currentPage, String pageName) {
+        if (currentPage.equals(pageName)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

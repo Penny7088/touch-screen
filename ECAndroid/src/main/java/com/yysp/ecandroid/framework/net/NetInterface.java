@@ -40,5 +40,13 @@ interface NetInterface {
     @POST("/error/addErrorMessage.do")
     Observable<DisBean> addErrorMessage(@Body AddErrorMsgResponse msgResponse);
 
+    //获取验证码
+    @FormUrlEncoded
+    @POST(API.BASE_URL + "dis-shop-api/getLoginTest.do")
+    Observable<DisBean> getAuthCode(@Field("queryType") int type, @Field("wechatNo") String mobile);
 
+    //获取验证码
+    @FormUrlEncoded
+    @POST(API.BASE_URL + "dis-shop-api/getLoginTest.do")
+    Observable<DisBean> notifyUserScan(@Field("queryType") int type, @Field("mobile") String mobile);
 }

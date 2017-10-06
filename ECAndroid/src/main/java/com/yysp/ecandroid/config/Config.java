@@ -5,7 +5,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 
 
-public class ECConfig {
+public class Config {
     //任务结束
     public final static int TASK_FINISH = 604;
     //任务失败

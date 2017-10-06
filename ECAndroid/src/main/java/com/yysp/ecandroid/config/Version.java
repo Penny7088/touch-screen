@@ -1,6 +1,6 @@
 package com.yysp.ecandroid.config;
 
-public class ECVersion {
+public class Version {
 	
 	/**
 	 * 更新老版本

@@ -1,5 +1,7 @@
 package com.yysp.ecandroid.framework.distribute;
 
+import android.accessibilityservice.AccessibilityService;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.yysp.ecandroid.service.HelpService;
@@ -13,19 +15,24 @@ import java.util.List;
 
 public interface IDelegate {
 
-    AccessibilityNodeInfo getRootView(HelpService pSuper);
+    AccessibilityNodeInfo getRootView(AccessibilityService pSuper);
 
-    List<AccessibilityNodeInfo> findId(HelpService pSuper, String id);
+    List<AccessibilityNodeInfo> findId(AccessibilityService pSuper, String id);
 
-    AccessibilityNodeInfo findText(HelpService pSuper, String text);
+    AccessibilityNodeInfo findText(AccessibilityService pSuper, String text);
 
-    void setText(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String text);
+    void setText(AccessibilityService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String text);
 
-    void setText(HelpService pSuper, AccessibilityNodeInfo pNodeInfos, String text);
+    void setText(AccessibilityService pSuper, AccessibilityNodeInfo pNodeInfos, String text);
 
-//    boolean isInput(HelpService pSuper, List<AccessibilityNodeInfo> pNodeInfos, String pText);
+    void scroll(AccessibilityNodeInfo pNodeInfos);
+
+    String getText(AccessibilityNodeInfo pNodeInfo);
 
     void sleep(long time);
 
+    boolean isScroll(AccessibilityEvent pAccessibilityEvent);
+
+    boolean currentPageIsChanged(String currentPage, String pageName);
 
 }
